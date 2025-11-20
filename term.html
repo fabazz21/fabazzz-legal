@@ -1,1 +1,787 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapping Matters - Projection Mapping Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+
+        #container {
+            display: flex;
+            height: 100vh;
+        }
+
+        #canvas-container {
+            flex: 1;
+            position: relative;
+        }
+
+        #sidebar {
+            width: 320px;
+            background: #2a2a2a;
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #3a3a3a;
+        }
+
+        h1 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            font-size: 14px;
+            margin: 20px 0 10px;
+            color: #aaa;
+            text-transform: uppercase;
+            border-bottom: 1px solid #3a3a3a;
+            padding-bottom: 5px;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            margin: 5px 0;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 35px;
+            border: none;
+            cursor: pointer;
+            background: #1a1a1a;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #e0e0e0;
+            border-radius: 3px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            background: #1a1a1a;
+            border: 1px solid #3a3a3a;
+            color: #e0e0e0;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #00d4ff;
+            border: none;
+            color: #1a1a1a;
+            cursor: pointer;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #00b8e6;
+        }
+
+        button.secondary {
+            background: #4a4a4a;
+            color: #e0e0e0;
+        }
+
+        button.secondary:hover {
+            background: #5a5a5a;
+        }
+
+        .value-display {
+            display: inline-block;
+            float: right;
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .projector-item {
+            background: #1a1a1a;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            border-left: 3px solid #00d4ff;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .projector-item:hover {
+            background: #252525;
+        }
+
+        .projector-item.active {
+            border-left-color: #ff00ff;
+            background: #252525;
+        }
+
+        .projector-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .projector-info {
+            font-size: 11px;
+            color: #666;
+        }
+
+        #stats {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 8px;
+            background: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #e0e0e0;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: #00d4ff;
+            color: #1a1a1a;
+            border-color: #00d4ff;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="canvas-container">
+            <div id="stats">
+                <div>FPS: <span id="fps">0</span></div>
+                <div>Projectors: <span id="projector-count">0</span></div>
+                <div>Objects: <span id="object-count">0</span></div>
+            </div>
+        </div>
+        <div id="sidebar">
+            <h1>⚡ Mapping Matters</h1>
+
+            <h2>Scene Objects</h2>
+            <div class="control-group">
+                <label>Add Primitive Object</label>
+                <select id="primitive-select">
+                    <option value="box">Box</option>
+                    <option value="sphere">Sphere</option>
+                    <option value="cylinder">Cylinder</option>
+                    <option value="torus">Torus</option>
+                    <option value="plane">Plane</option>
+                </select>
+                <button onclick="addPrimitive()">Add Object</button>
+            </div>
+
+            <div class="control-group">
+                <label>Import 3D Model (.glb, .gltf)</label>
+                <div class="file-input-wrapper">
+                    <button class="secondary">Choose File</button>
+                    <input type="file" id="model-upload" accept=".glb,.gltf" onchange="loadModel(event)">
+                </div>
+            </div>
+
+            <h2>Projectors</h2>
+            <div id="projector-list"></div>
+            <button onclick="addProjector()">+ Add Projector</button>
+
+            <div id="projector-controls" style="display: none;">
+                <h2>Projector Settings</h2>
+
+                <div class="control-group">
+                    <label>Color</label>
+                    <input type="color" id="proj-color" onchange="updateProjectorColor()">
+                </div>
+
+                <div class="control-group">
+                    <label>Brightness <span class="value-display" id="brightness-val">100</span></label>
+                    <input type="range" id="proj-brightness" min="0" max="200" value="100" oninput="updateProjectorBrightness()">
+                </div>
+
+                <div class="control-group">
+                    <label>Position X <span class="value-display" id="pos-x-val">0</span></label>
+                    <input type="range" id="proj-pos-x" min="-20" max="20" step="0.1" value="0" oninput="updateProjectorPosition()">
+                </div>
+
+                <div class="control-group">
+                    <label>Position Y <span class="value-display" id="pos-y-val">5</span></label>
+                    <input type="range" id="proj-pos-y" min="-20" max="20" step="0.1" value="5" oninput="updateProjectorPosition()">
+                </div>
+
+                <div class="control-group">
+                    <label>Position Z <span class="value-display" id="pos-z-val">10</span></label>
+                    <input type="range" id="proj-pos-z" min="-20" max="20" step="0.1" value="10" oninput="updateProjectorPosition()">
+                </div>
+
+                <div class="control-group">
+                    <label>Angle (degrees) <span class="value-display" id="angle-val">30</span></label>
+                    <input type="range" id="proj-angle" min="5" max="90" value="30" oninput="updateProjectorAngle()">
+                </div>
+
+                <div class="control-group">
+                    <label>Distance <span class="value-display" id="distance-val">50</span></label>
+                    <input type="range" id="proj-distance" min="1" max="100" value="50" oninput="updateProjectorDistance()">
+                </div>
+
+                <div class="control-group">
+                    <label>Penumbra <span class="value-display" id="penumbra-val">0.1</span></label>
+                    <input type="range" id="proj-penumbra" min="0" max="1" step="0.01" value="0.1" oninput="updateProjectorPenumbra()">
+                </div>
+
+                <div class="toggle-group">
+                    <button class="toggle-btn active" id="helper-toggle" onclick="toggleHelper()">Show Helper</button>
+                    <button class="toggle-btn" id="shadow-toggle" onclick="toggleShadows()">Shadows</button>
+                </div>
+
+                <button class="secondary" onclick="deleteProjector()" style="margin-top: 20px;">Delete Projector</button>
+            </div>
+
+            <h2>Environment</h2>
+            <div class="control-group">
+                <label>Ambient Light <span class="value-display" id="ambient-val">20</span></label>
+                <input type="range" id="ambient-light" min="0" max="100" value="20" oninput="updateAmbientLight()">
+            </div>
+
+            <div class="control-group">
+                <label>Background</label>
+                <input type="color" id="bg-color" value="#000000" onchange="updateBackground()">
+            </div>
+
+            <div class="toggle-group">
+                <button class="toggle-btn active" id="grid-toggle" onclick="toggleGrid()">Grid</button>
+                <button class="toggle-btn active" id="axes-toggle" onclick="toggleAxes()">Axes</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
+        // Global variables
+        let scene, camera, renderer, controls, transformControls;
+        let projectors = [];
+        let selectedProjector = null;
+        let gridHelper, axesHelper;
+        let ambientLight;
+        let sceneObjects = [];
+        let clock = new THREE.Clock();
+        let frameCount = 0;
+        let lastTime = performance.now();
+
+        // Initialize scene
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x000000);
+
+            // Camera
+            camera = new THREE.PerspectiveCamera(
+                75,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(15, 10, 15);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth - 320, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Transform Controls
+            transformControls = new TransformControls(camera, renderer.domElement);
+            transformControls.addEventListener('dragging-changed', function (event) {
+                controls.enabled = !event.value;
+            });
+            scene.add(transformControls);
+
+            // Lights
+            ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            scene.add(ambientLight);
+
+            // Grid
+            gridHelper = new THREE.GridHelper(20, 20, 0x444444, 0x222222);
+            scene.add(gridHelper);
+
+            // Axes
+            axesHelper = new THREE.AxesHelper(5);
+            scene.add(axesHelper);
+
+            // Add default objects
+            addDefaultScene();
+
+            // Add default projectors
+            addProjector();
+
+            // Window resize
+            window.addEventListener('resize', onWindowResize);
+
+            // Start animation
+            animate();
+
+            updateStats();
+        }
+
+        function addDefaultScene() {
+            // Add floor
+            const floorGeometry = new THREE.PlaneGeometry(20, 20);
+            const floorMaterial = new THREE.MeshStandardMaterial({
+                color: 0x333333,
+                roughness: 0.8,
+                metalness: 0.2
+            });
+            const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+            floor.rotation.x = -Math.PI / 2;
+            floor.receiveShadow = true;
+            scene.add(floor);
+            sceneObjects.push(floor);
+
+            // Add a default object
+            const geometry = new THREE.BoxGeometry(3, 3, 3);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0x666666,
+                roughness: 0.7,
+                metalness: 0.3
+            });
+            const cube = new THREE.Mesh(geometry, material);
+            cube.position.y = 1.5;
+            cube.castShadow = true;
+            cube.receiveShadow = true;
+            scene.add(cube);
+            sceneObjects.push(cube);
+        }
+
+        function addPrimitive() {
+            const type = document.getElementById('primitive-select').value;
+            let geometry;
+
+            switch(type) {
+                case 'box':
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    break;
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    break;
+                case 'cylinder':
+                    geometry = new THREE.CylinderGeometry(1, 1, 3, 32);
+                    break;
+                case 'torus':
+                    geometry = new THREE.TorusGeometry(1.5, 0.5, 16, 100);
+                    break;
+                case 'plane':
+                    geometry = new THREE.PlaneGeometry(3, 3);
+                    break;
+            }
+
+            const material = new THREE.MeshStandardMaterial({
+                color: Math.random() * 0xffffff,
+                roughness: 0.7,
+                metalness: 0.3
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(
+                Math.random() * 6 - 3,
+                2,
+                Math.random() * 6 - 3
+            );
+            mesh.castShadow = true;
+            mesh.receiveShadow = true;
+
+            scene.add(mesh);
+            sceneObjects.push(mesh);
+            updateStats();
+        }
+
+        function loadModel(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const loader = new GLTFLoader();
+            const url = URL.createObjectURL(file);
+
+            loader.load(url, function(gltf) {
+                const model = gltf.scene;
+
+                // Calculate bounding box to scale appropriately
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scale = 5 / maxDim;
+
+                model.scale.set(scale, scale, scale);
+                model.position.y = 0;
+
+                model.traverse((child) => {
+                    if (child.isMesh) {
+                        child.castShadow = true;
+                        child.receiveShadow = true;
+                    }
+                });
+
+                scene.add(model);
+                sceneObjects.push(model);
+                updateStats();
+
+                URL.revokeObjectURL(url);
+            }, undefined, function(error) {
+                console.error('Error loading model:', error);
+                alert('Error loading 3D model. Please make sure it\'s a valid .glb or .gltf file.');
+            });
+        }
+
+        function addProjector() {
+            const color = new THREE.Color().setHSL(Math.random(), 1, 0.5);
+
+            const spotlight = new THREE.SpotLight(color, 100);
+            spotlight.position.set(
+                Math.random() * 10 - 5,
+                5 + Math.random() * 5,
+                Math.random() * 10 - 5
+            );
+            spotlight.angle = Math.PI / 6;
+            spotlight.penumbra = 0.1;
+            spotlight.decay = 2;
+            spotlight.distance = 50;
+            spotlight.castShadow = true;
+            spotlight.shadow.mapSize.width = 1024;
+            spotlight.shadow.mapSize.height = 1024;
+
+            const helper = new THREE.SpotLightHelper(spotlight);
+            scene.add(helper);
+
+            const projector = {
+                light: spotlight,
+                helper: helper,
+                id: projectors.length,
+                name: `Projector ${projectors.length + 1}`,
+                color: color,
+                helperVisible: true
+            };
+
+            scene.add(spotlight);
+            projectors.push(projector);
+
+            updateProjectorList();
+            selectProjector(projector);
+            updateStats();
+        }
+
+        function updateProjectorList() {
+            const list = document.getElementById('projector-list');
+            list.innerHTML = '';
+
+            projectors.forEach((proj) => {
+                const item = document.createElement('div');
+                item.className = 'projector-item';
+                if (selectedProjector === proj) {
+                    item.className += ' active';
+                }
+
+                const colorHex = '#' + proj.color.getHexString();
+                item.innerHTML = `
+                    <div class="projector-name" style="color: ${colorHex}">${proj.name}</div>
+                    <div class="projector-info">
+                        Intensity: ${proj.light.intensity.toFixed(0)} |
+                        Angle: ${(proj.light.angle * 180 / Math.PI).toFixed(0)}°
+                    </div>
+                `;
+
+                item.onclick = () => selectProjector(proj);
+                list.appendChild(item);
+            });
+        }
+
+        function selectProjector(projector) {
+            selectedProjector = projector;
+            updateProjectorList();
+
+            const controls = document.getElementById('projector-controls');
+            controls.style.display = 'block';
+
+            // Update UI
+            document.getElementById('proj-color').value = '#' + projector.color.getHexString();
+            document.getElementById('proj-brightness').value = projector.light.intensity;
+            document.getElementById('brightness-val').textContent = projector.light.intensity.toFixed(0);
+
+            document.getElementById('proj-pos-x').value = projector.light.position.x;
+            document.getElementById('pos-x-val').textContent = projector.light.position.x.toFixed(1);
+
+            document.getElementById('proj-pos-y').value = projector.light.position.y;
+            document.getElementById('pos-y-val').textContent = projector.light.position.y.toFixed(1);
+
+            document.getElementById('proj-pos-z').value = projector.light.position.z;
+            document.getElementById('pos-z-val').textContent = projector.light.position.z.toFixed(1);
+
+            document.getElementById('proj-angle').value = projector.light.angle * 180 / Math.PI;
+            document.getElementById('angle-val').textContent = (projector.light.angle * 180 / Math.PI).toFixed(0);
+
+            document.getElementById('proj-distance').value = projector.light.distance;
+            document.getElementById('distance-val').textContent = projector.light.distance.toFixed(0);
+
+            document.getElementById('proj-penumbra').value = projector.light.penumbra;
+            document.getElementById('penumbra-val').textContent = projector.light.penumbra.toFixed(2);
+
+            // Update helper toggle
+            const helperBtn = document.getElementById('helper-toggle');
+            if (projector.helperVisible) {
+                helperBtn.classList.add('active');
+            } else {
+                helperBtn.classList.remove('active');
+            }
+
+            // Update shadow toggle
+            const shadowBtn = document.getElementById('shadow-toggle');
+            if (projector.light.castShadow) {
+                shadowBtn.classList.add('active');
+            } else {
+                shadowBtn.classList.remove('active');
+            }
+
+            // Attach transform controls
+            transformControls.attach(projector.light);
+        }
+
+        function updateProjectorColor() {
+            if (!selectedProjector) return;
+            const color = document.getElementById('proj-color').value;
+            selectedProjector.color.set(color);
+            selectedProjector.light.color.set(color);
+            updateProjectorList();
+        }
+
+        function updateProjectorBrightness() {
+            if (!selectedProjector) return;
+            const value = parseFloat(document.getElementById('proj-brightness').value);
+            selectedProjector.light.intensity = value;
+            document.getElementById('brightness-val').textContent = value.toFixed(0);
+            updateProjectorList();
+        }
+
+        function updateProjectorPosition() {
+            if (!selectedProjector) return;
+            const x = parseFloat(document.getElementById('proj-pos-x').value);
+            const y = parseFloat(document.getElementById('proj-pos-y').value);
+            const z = parseFloat(document.getElementById('proj-pos-z').value);
+
+            selectedProjector.light.position.set(x, y, z);
+
+            document.getElementById('pos-x-val').textContent = x.toFixed(1);
+            document.getElementById('pos-y-val').textContent = y.toFixed(1);
+            document.getElementById('pos-z-val').textContent = z.toFixed(1);
+        }
+
+        function updateProjectorAngle() {
+            if (!selectedProjector) return;
+            const degrees = parseFloat(document.getElementById('proj-angle').value);
+            const radians = degrees * Math.PI / 180;
+            selectedProjector.light.angle = radians;
+            document.getElementById('angle-val').textContent = degrees.toFixed(0);
+            updateProjectorList();
+        }
+
+        function updateProjectorDistance() {
+            if (!selectedProjector) return;
+            const value = parseFloat(document.getElementById('proj-distance').value);
+            selectedProjector.light.distance = value;
+            document.getElementById('distance-val').textContent = value.toFixed(0);
+        }
+
+        function updateProjectorPenumbra() {
+            if (!selectedProjector) return;
+            const value = parseFloat(document.getElementById('proj-penumbra').value);
+            selectedProjector.light.penumbra = value;
+            document.getElementById('penumbra-val').textContent = value.toFixed(2);
+        }
+
+        function toggleHelper() {
+            if (!selectedProjector) return;
+            selectedProjector.helperVisible = !selectedProjector.helperVisible;
+            selectedProjector.helper.visible = selectedProjector.helperVisible;
+
+            const btn = document.getElementById('helper-toggle');
+            btn.classList.toggle('active');
+        }
+
+        function toggleShadows() {
+            if (!selectedProjector) return;
+            selectedProjector.light.castShadow = !selectedProjector.light.castShadow;
+
+            const btn = document.getElementById('shadow-toggle');
+            btn.classList.toggle('active');
+        }
+
+        function deleteProjector() {
+            if (!selectedProjector) return;
+
+            scene.remove(selectedProjector.light);
+            scene.remove(selectedProjector.helper);
+
+            const index = projectors.indexOf(selectedProjector);
+            projectors.splice(index, 1);
+
+            selectedProjector = null;
+            transformControls.detach();
+
+            document.getElementById('projector-controls').style.display = 'none';
+            updateProjectorList();
+            updateStats();
+        }
+
+        function updateAmbientLight() {
+            const value = parseFloat(document.getElementById('ambient-light').value) / 100;
+            ambientLight.intensity = value;
+            document.getElementById('ambient-val').textContent = (value * 100).toFixed(0);
+        }
+
+        function updateBackground() {
+            const color = document.getElementById('bg-color').value;
+            scene.background = new THREE.Color(color);
+        }
+
+        function toggleGrid() {
+            gridHelper.visible = !gridHelper.visible;
+            document.getElementById('grid-toggle').classList.toggle('active');
+        }
+
+        function toggleAxes() {
+            axesHelper.visible = !axesHelper.visible;
+            document.getElementById('axes-toggle').classList.toggle('active');
+        }
+
+        function updateStats() {
+            document.getElementById('projector-count').textContent = projectors.length;
+            document.getElementById('object-count').textContent = sceneObjects.length;
+        }
+
+        function onWindowResize() {
+            camera.aspect = (window.innerWidth - 320) / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth - 320, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            controls.update();
+
+            // Update helpers
+            projectors.forEach(proj => {
+                if (proj.helperVisible) {
+                    proj.helper.update();
+                }
+            });
+
+            renderer.render(scene, camera);
+
+            // FPS counter
+            frameCount++;
+            const currentTime = performance.now();
+            if (currentTime >= lastTime + 1000) {
+                document.getElementById('fps').textContent = frameCount;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+        }
+
+        // Make functions global
+        window.addPrimitive = addPrimitive;
+        window.loadModel = loadModel;
+        window.addProjector = addProjector;
+        window.updateProjectorColor = updateProjectorColor;
+        window.updateProjectorBrightness = updateProjectorBrightness;
+        window.updateProjectorPosition = updateProjectorPosition;
+        window.updateProjectorAngle = updateProjectorAngle;
+        window.updateProjectorDistance = updateProjectorDistance;
+        window.updateProjectorPenumbra = updateProjectorPenumbra;
+        window.toggleHelper = toggleHelper;
+        window.toggleShadows = toggleShadows;
+        window.deleteProjector = deleteProjector;
+        window.updateAmbientLight = updateAmbientLight;
+        window.updateBackground = updateBackground;
+        window.toggleGrid = toggleGrid;
+        window.toggleAxes = toggleAxes;
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
