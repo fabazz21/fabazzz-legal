@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapping Matters - Projection Mapping Tool</title>
+    <title>Mapping Matter - Projection Mapping Simulation</title>
     <style>
         * {
             margin: 0;
@@ -12,302 +12,672 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a1a;
-            color: #e0e0e0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #1e1e1e;
+            color: #cccccc;
             overflow: hidden;
+            font-size: 13px;
         }
 
-        #container {
+        /* Top Menu Bar */
+        #menubar {
+            background: #2d2d2d;
+            border-bottom: 1px solid #1a1a1a;
+            padding: 0;
             display: flex;
-            height: 100vh;
+            align-items: center;
+            height: 36px;
         }
 
-        #canvas-container {
+        .menu-item {
+            padding: 0 15px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .menu-item:hover {
+            background: #3e3e3e;
+        }
+
+        .menu-separator {
+            width: 1px;
+            height: 24px;
+            background: #3a3a3a;
+            margin: 0 5px;
+        }
+
+        /* Main Container */
+        #main-container {
+            display: flex;
+            height: calc(100vh - 36px);
+        }
+
+        /* Left Panel - Scene Objects */
+        #left-panel {
+            width: 260px;
+            background: #252526;
+            border-right: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            background: #2d2d2d;
+            padding: 8px 12px;
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #scene-objects-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 4px;
+        }
+
+        .scene-object-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 2px 0;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: background 0.2s;
+        }
+
+        .scene-object-item:hover {
+            background: #2a2d2e;
+        }
+
+        .scene-object-item.selected {
+            background: #094771;
+        }
+
+        .object-visibility {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        .object-visibility:hover {
+            opacity: 1;
+        }
+
+        .object-lock {
+            width: 14px;
+            height: 14px;
+            margin-left: auto;
+            cursor: pointer;
+            opacity: 0.4;
+        }
+
+        .object-lock:hover {
+            opacity: 1;
+        }
+
+        .object-icon {
+            width: 16px;
+            height: 16px;
+            margin-right: 6px;
+            opacity: 0.7;
+        }
+
+        .object-name {
+            flex: 1;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Center - Viewport */
+        #viewport-container {
             flex: 1;
             position: relative;
-        }
-
-        #sidebar {
-            width: 320px;
-            background: #2a2a2a;
-            padding: 20px;
-            overflow-y: auto;
-            border-left: 1px solid #3a3a3a;
-        }
-
-        h1 {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #00d4ff;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        h2 {
-            font-size: 14px;
-            margin: 20px 0 10px;
-            color: #aaa;
-            text-transform: uppercase;
-            border-bottom: 1px solid #3a3a3a;
-            padding-bottom: 5px;
-        }
-
-        .control-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 12px;
-            color: #999;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            margin: 5px 0;
-        }
-
-        input[type="color"] {
-            width: 100%;
-            height: 35px;
-            border: none;
-            cursor: pointer;
             background: #1a1a1a;
         }
 
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            background: #1a1a1a;
-            border: 1px solid #3a3a3a;
-            color: #e0e0e0;
-            border-radius: 3px;
-        }
-
-        select {
-            width: 100%;
-            padding: 8px;
-            background: #1a1a1a;
-            border: 1px solid #3a3a3a;
-            color: #e0e0e0;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        button {
-            width: 100%;
-            padding: 10px;
-            background: #00d4ff;
-            border: none;
-            color: #1a1a1a;
-            cursor: pointer;
-            border-radius: 3px;
-            font-weight: bold;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #00b8e6;
-        }
-
-        button.secondary {
-            background: #4a4a4a;
-            color: #e0e0e0;
-        }
-
-        button.secondary:hover {
-            background: #5a5a5a;
-        }
-
-        .value-display {
-            display: inline-block;
-            float: right;
-            color: #00d4ff;
-            font-weight: bold;
-        }
-
-        .projector-item {
-            background: #1a1a1a;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 3px;
-            border-left: 3px solid #00d4ff;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .projector-item:hover {
-            background: #252525;
-        }
-
-        .projector-item.active {
-            border-left-color: #ff00ff;
-            background: #252525;
-        }
-
-        .projector-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .projector-info {
-            font-size: 11px;
-            color: #666;
-        }
-
-        #stats {
+        #stats-overlay {
             position: absolute;
             top: 10px;
             left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 10px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            line-height: 1.6;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .stat-line {
+            margin: 2px 0;
+        }
+
+        .stat-label {
+            color: #888;
+        }
+
+        .stat-value {
+            color: #0d9488;
+            margin-left: 8px;
+        }
+
+        /* Viewport Mode Switcher */
+        #viewport-mode {
+            position: absolute;
+            top: 10px;
+            right: 280px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 6px;
+            border-radius: 4px;
+            display: flex;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .view-mode-btn {
+            padding: 6px 12px;
+            background: #2d2d2d;
+            border: 1px solid #3a3a3a;
+            color: #cccccc;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 11px;
+            transition: all 0.2s;
+        }
+
+        .view-mode-btn:hover {
+            background: #3e3e3e;
+        }
+
+        .view-mode-btn.active {
+            background: #0d9488;
+            border-color: #0d9488;
+            color: white;
+        }
+
+        /* Right Panel - Properties */
+        #right-panel {
+            width: 320px;
+            background: #252526;
+            border-left: 1px solid #1a1a1a;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #properties-panel {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .property-section {
+            background: #2d2d2d;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .property-section-header {
+            padding: 10px 12px;
+            background: #323233;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .property-section-header:hover {
+            background: #3a3a3a;
+        }
+
+        .section-toggle {
+            margin-right: 8px;
+            transition: transform 0.2s;
+        }
+
+        .property-section.collapsed .section-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .property-section-content {
+            padding: 12px;
+        }
+
+        .property-section.collapsed .property-section-content {
+            display: none;
+        }
+
+        .property-row {
+            margin-bottom: 12px;
+        }
+
+        .property-label {
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+            color: #9d9d9d;
+        }
+
+        .property-input {
+            width: 100%;
+            padding: 6px 8px;
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            color: #cccccc;
             border-radius: 3px;
             font-size: 12px;
-            font-family: monospace;
         }
 
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
+        .property-input:focus {
+            outline: none;
+            border-color: #0d9488;
         }
 
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
-
-        .toggle-group {
+        .property-input-group {
             display: flex;
-            gap: 10px;
-            margin-top: 10px;
+            gap: 4px;
         }
 
-        .toggle-btn {
+        .property-input-group .property-input {
             flex: 1;
-            padding: 8px;
-            background: #3a3a3a;
-            border: 1px solid #4a4a4a;
-            color: #e0e0e0;
+        }
+
+        .axis-label {
+            width: 20px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #2d2d2d;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .axis-label.x { color: #ef4444; }
+        .axis-label.y { color: #22c55e; }
+        .axis-label.z { color: #3b82f6; }
+
+        .property-slider {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .property-color {
+            width: 100%;
+            height: 32px;
+            border: 1px solid #3a3a3a;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .property-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .property-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .property-select {
+            width: 100%;
+            padding: 6px 8px;
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            color: #cccccc;
+            border-radius: 3px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 8px 16px;
+            background: #0d9488;
+            border: none;
+            color: white;
             cursor: pointer;
             border-radius: 3px;
             font-size: 12px;
-            transition: all 0.3s;
+            font-weight: 500;
+            transition: background 0.2s;
+            width: 100%;
+            margin-top: 8px;
         }
 
-        .toggle-btn.active {
-            background: #00d4ff;
-            color: #1a1a1a;
-            border-color: #00d4ff;
+        .btn:hover {
+            background: #0f766e;
+        }
+
+        .btn-secondary {
+            background: #3a3a3a;
+        }
+
+        .btn-secondary:hover {
+            background: #4a4a4a;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        /* Layers Panel */
+        #layers-panel {
+            background: #2d2d2d;
+            border-top: 1px solid #1a1a1a;
+            height: 180px;
+            padding: 8px;
+        }
+
+        .layers-header {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            color: #9d9d9d;
+        }
+
+        .layer-item {
+            display: flex;
+            align-items: center;
+            padding: 6px 8px;
+            background: #252526;
+            margin-bottom: 4px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .layer-item:hover {
+            background: #2a2d2e;
+        }
+
+        .layer-item.active {
+            background: #094771;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3a3a3a;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a4a4a;
+        }
+
+        /* Value Display */
+        .value-display {
+            float: right;
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        /* Transform Gizmo Mode Buttons */
+        #gizmo-mode {
+            position: absolute;
+            top: 60px;
+            right: 280px;
+            background: rgba(0, 0, 0, 0.75);
+            padding: 6px;
+            border-radius: 4px;
+            display: flex;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .gizmo-btn {
+            width: 32px;
+            height: 32px;
+            background: #2d2d2d;
+            border: 1px solid #3a3a3a;
+            color: #cccccc;
+            cursor: pointer;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .gizmo-btn:hover {
+            background: #3e3e3e;
+        }
+
+        .gizmo-btn.active {
+            background: #0d9488;
+            border-color: #0d9488;
+            color: white;
+        }
+
+        /* File Input */
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 8px 16px;
+            background: #3a3a3a;
+            text-align: center;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .file-upload-label:hover {
+            background: #4a4a4a;
+        }
+
+        /* Dropdown Menu */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #2d2d2d;
+            border: 1px solid #1a1a1a;
+            border-radius: 4px;
+            min-width: 160px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background: #3e3e3e;
+        }
+
+        /* Number Spinner */
+        .number-spinner {
+            display: flex;
+            align-items: center;
+        }
+
+        .number-spinner input {
+            flex: 1;
+            text-align: center;
+        }
+
+        .spinner-btn {
+            width: 24px;
+            height: 14px;
+            background: #2d2d2d;
+            border: 1px solid #3a3a3a;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            user-select: none;
+        }
+
+        .spinner-btn:hover {
+            background: #3e3e3e;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <div id="canvas-container">
-            <div id="stats">
-                <div>FPS: <span id="fps">0</span></div>
-                <div>Projectors: <span id="projector-count">0</span></div>
-                <div>Objects: <span id="object-count">0</span></div>
+    <!-- Top Menu Bar -->
+    <div id="menubar">
+        <div class="menu-item dropdown">
+            File
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="newProject()">New Project</div>
+                <div class="dropdown-item" onclick="saveProject()">Save Project</div>
+                <div class="dropdown-item" onclick="loadProject()">Load Project</div>
+                <div class="dropdown-item" onclick="exportScene()">Export Scene</div>
             </div>
         </div>
-        <div id="sidebar">
-            <h1>⚡ Mapping Matters</h1>
+        <div class="menu-item dropdown">
+            Edit
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="undo()">Undo</div>
+                <div class="dropdown-item" onclick="redo()">Redo</div>
+                <div class="dropdown-item" onclick="duplicateObject()">Duplicate</div>
+                <div class="dropdown-item" onclick="deleteSelected()">Delete</div>
+            </div>
+        </div>
+        <div class="menu-item dropdown">
+            Viewport
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="setViewMode('perspective')">Perspective</div>
+                <div class="dropdown-item" onclick="setViewMode('top')">Top View</div>
+                <div class="dropdown-item" onclick="setViewMode('front')">Front View</div>
+                <div class="dropdown-item" onclick="setViewMode('side')">Side View</div>
+            </div>
+        </div>
+        <div class="menu-item dropdown">
+            Array/Sym.
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="createLinearArray()">Linear Array</div>
+                <div class="dropdown-item" onclick="createPolarArray()">Polar Array</div>
+                <div class="dropdown-item" onclick="createMirrorSymmetry()">Mirror Symmetry</div>
+            </div>
+        </div>
+        <div class="menu-item dropdown">
+            Tools
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="addAnnotation()">Add Annotation</div>
+                <div class="dropdown-item" onclick="measureDistance()">Measure Distance</div>
+                <div class="dropdown-item" onclick="togglePhotometric()">Photometric Analysis</div>
+            </div>
+        </div>
+        <div class="menu-item dropdown">
+            Primitives
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="addPrimitive('box')">Box</div>
+                <div class="dropdown-item" onclick="addPrimitive('sphere')">Sphere</div>
+                <div class="dropdown-item" onclick="addPrimitive('cylinder')">Cylinder</div>
+                <div class="dropdown-item" onclick="addPrimitive('plane')">Plane</div>
+                <div class="dropdown-item" onclick="addPrimitive('torus')">Torus</div>
+            </div>
+        </div>
+        <div class="menu-separator"></div>
+        <div class="menu-item" onclick="addProjector()">+ Add Projector</div>
+        <div class="menu-item" onclick="addCamera()">+ Add Camera</div>
+    </div>
 
-            <h2>Scene Objects</h2>
-            <div class="control-group">
-                <label>Add Primitive Object</label>
-                <select id="primitive-select">
-                    <option value="box">Box</option>
-                    <option value="sphere">Sphere</option>
-                    <option value="cylinder">Cylinder</option>
-                    <option value="torus">Torus</option>
-                    <option value="plane">Plane</option>
-                </select>
-                <button onclick="addPrimitive()">Add Object</button>
+    <!-- Main Container -->
+    <div id="main-container">
+        <!-- Left Panel - Scene Objects -->
+        <div id="left-panel">
+            <div class="panel-header">Scene Objects</div>
+            <div id="scene-objects-list">
+                <!-- Scene objects will be populated here -->
+            </div>
+        </div>
+
+        <!-- Center - Viewport -->
+        <div id="viewport-container">
+            <div id="stats-overlay">
+                <div class="stat-line"><span class="stat-label">FPS:</span><span class="stat-value" id="fps">0</span></div>
+                <div class="stat-line"><span class="stat-label">Objects:</span><span class="stat-value" id="object-count">0</span></div>
+                <div class="stat-line"><span class="stat-label">Projectors:</span><span class="stat-value" id="projector-count">0</span></div>
+                <div class="stat-line"><span class="stat-label">Triangles:</span><span class="stat-value" id="tri-count">0</span></div>
             </div>
 
-            <div class="control-group">
-                <label>Import 3D Model (.glb, .gltf)</label>
-                <div class="file-input-wrapper">
-                    <button class="secondary">Choose File</button>
-                    <input type="file" id="model-upload" accept=".glb,.gltf" onchange="loadModel(event)">
-                </div>
+            <div id="viewport-mode">
+                <button class="view-mode-btn" onclick="toggleRenderMode('normal')">Normal</button>
+                <button class="view-mode-btn" onclick="toggleRenderMode('illuminance')">Illuminance</button>
+                <button class="view-mode-btn" onclick="toggleRenderMode('luminance')">Luminance</button>
             </div>
 
-            <h2>Projectors</h2>
-            <div id="projector-list"></div>
-            <button onclick="addProjector()">+ Add Projector</button>
+            <div id="gizmo-mode">
+                <button class="gizmo-btn active" onclick="setGizmoMode('translate')" title="Translate (G)">⟷</button>
+                <button class="gizmo-btn" onclick="setGizmoMode('rotate')" title="Rotate (R)">↻</button>
+                <button class="gizmo-btn" onclick="setGizmoMode('scale')" title="Scale (S)">⊡</button>
+            </div>
+        </div>
 
-            <div id="projector-controls" style="display: none;">
-                <h2>Projector Settings</h2>
-
-                <div class="control-group">
-                    <label>Color</label>
-                    <input type="color" id="proj-color" onchange="updateProjectorColor()">
+        <!-- Right Panel - Properties -->
+        <div id="right-panel">
+            <div class="panel-header">Properties</div>
+            <div id="properties-panel">
+                <div id="no-selection" style="padding: 20px; text-align: center; color: #666;">
+                    No object selected
                 </div>
-
-                <div class="control-group">
-                    <label>Brightness <span class="value-display" id="brightness-val">100</span></label>
-                    <input type="range" id="proj-brightness" min="0" max="200" value="100" oninput="updateProjectorBrightness()">
-                </div>
-
-                <div class="control-group">
-                    <label>Position X <span class="value-display" id="pos-x-val">0</span></label>
-                    <input type="range" id="proj-pos-x" min="-20" max="20" step="0.1" value="0" oninput="updateProjectorPosition()">
-                </div>
-
-                <div class="control-group">
-                    <label>Position Y <span class="value-display" id="pos-y-val">5</span></label>
-                    <input type="range" id="proj-pos-y" min="-20" max="20" step="0.1" value="5" oninput="updateProjectorPosition()">
-                </div>
-
-                <div class="control-group">
-                    <label>Position Z <span class="value-display" id="pos-z-val">10</span></label>
-                    <input type="range" id="proj-pos-z" min="-20" max="20" step="0.1" value="10" oninput="updateProjectorPosition()">
-                </div>
-
-                <div class="control-group">
-                    <label>Angle (degrees) <span class="value-display" id="angle-val">30</span></label>
-                    <input type="range" id="proj-angle" min="5" max="90" value="30" oninput="updateProjectorAngle()">
-                </div>
-
-                <div class="control-group">
-                    <label>Distance <span class="value-display" id="distance-val">50</span></label>
-                    <input type="range" id="proj-distance" min="1" max="100" value="50" oninput="updateProjectorDistance()">
-                </div>
-
-                <div class="control-group">
-                    <label>Penumbra <span class="value-display" id="penumbra-val">0.1</span></label>
-                    <input type="range" id="proj-penumbra" min="0" max="1" step="0.01" value="0.1" oninput="updateProjectorPenumbra()">
-                </div>
-
-                <div class="toggle-group">
-                    <button class="toggle-btn active" id="helper-toggle" onclick="toggleHelper()">Show Helper</button>
-                    <button class="toggle-btn" id="shadow-toggle" onclick="toggleShadows()">Shadows</button>
-                </div>
-
-                <button class="secondary" onclick="deleteProjector()" style="margin-top: 20px;">Delete Projector</button>
+                <!-- Properties will be populated when object is selected -->
             </div>
 
-            <h2>Environment</h2>
-            <div class="control-group">
-                <label>Ambient Light <span class="value-display" id="ambient-val">20</span></label>
-                <input type="range" id="ambient-light" min="0" max="100" value="20" oninput="updateAmbientLight()">
-            </div>
-
-            <div class="control-group">
-                <label>Background</label>
-                <input type="color" id="bg-color" value="#000000" onchange="updateBackground()">
-            </div>
-
-            <div class="toggle-group">
-                <button class="toggle-btn active" id="grid-toggle" onclick="toggleGrid()">Grid</button>
-                <button class="toggle-btn active" id="axes-toggle" onclick="toggleAxes()">Axes</button>
+            <!-- Layers Panel -->
+            <div id="layers-panel">
+                <div class="layers-header">Layers / Layouts</div>
+                <div class="layer-item active">
+                    <span>● Default Layer</span>
+                </div>
+                <div class="layer-item">
+                    <span>○ Projection Layer</span>
+                </div>
+                <div class="layer-item">
+                    <span>○ Lighting Layer</span>
+                </div>
             </div>
         </div>
     </div>
@@ -324,30 +694,35 @@
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
         import { TransformControls } from 'three/addons/controls/TransformControls.js';
+        import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-        // Global variables
+        // Global State
         let scene, camera, renderer, controls, transformControls;
-        let projectors = [];
-        let selectedProjector = null;
-        let gridHelper, axesHelper;
-        let ambientLight;
         let sceneObjects = [];
-        let clock = new THREE.Clock();
+        let projectors = [];
+        let selectedObject = null;
+        let gizmoMode = 'translate';
+        let renderMode = 'normal';
+        let gridHelper, axesHelper;
+        let humanReference;
+
+        // Performance tracking
         let frameCount = 0;
         let lastTime = performance.now();
 
-        // Initialize scene
+        // Initialize
         function init() {
             // Scene
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x000000);
+            scene.background = new THREE.Color(0x1a1a1a);
+            scene.fog = new THREE.Fog(0x1a1a1a, 50, 100);
 
             // Camera
+            const container = document.getElementById('viewport-container');
             camera = new THREE.PerspectiveCamera(
-                75,
-                window.innerWidth / window.innerHeight,
+                60,
+                container.clientWidth / container.clientHeight,
                 0.1,
                 1000
             );
@@ -356,65 +731,108 @@
 
             // Renderer
             renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(window.innerWidth - 320, window.innerHeight);
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.0;
+            container.appendChild(renderer.domElement);
 
             // Controls
             controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
+            controls.screenSpacePanning = false;
+            controls.minDistance = 1;
+            controls.maxDistance = 100;
+            controls.maxPolarAngle = Math.PI / 2;
 
             // Transform Controls
             transformControls = new TransformControls(camera, renderer.domElement);
-            transformControls.addEventListener('dragging-changed', function (event) {
+            transformControls.addEventListener('dragging-changed', (event) => {
                 controls.enabled = !event.value;
+            });
+            transformControls.addEventListener('objectChange', () => {
+                updatePropertiesPanel();
             });
             scene.add(transformControls);
 
             // Lights
-            ambientLight = new THREE.AmbientLight(0xffffff, 0.2);
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
             scene.add(ambientLight);
 
             // Grid
-            gridHelper = new THREE.GridHelper(20, 20, 0x444444, 0x222222);
+            gridHelper = new THREE.GridHelper(50, 50, 0x444444, 0x222222);
             scene.add(gridHelper);
 
             // Axes
             axesHelper = new THREE.AxesHelper(5);
             scene.add(axesHelper);
 
-            // Add default objects
-            addDefaultScene();
+            // Human Reference (180cm tall)
+            createHumanReference();
 
-            // Add default projectors
-            addProjector();
-
-            // Window resize
-            window.addEventListener('resize', onWindowResize);
-
-            // Start animation
-            animate();
-
-            updateStats();
-        }
-
-        function addDefaultScene() {
-            // Add floor
-            const floorGeometry = new THREE.PlaneGeometry(20, 20);
+            // Floor
+            const floorGeometry = new THREE.PlaneGeometry(100, 100);
             const floorMaterial = new THREE.MeshStandardMaterial({
-                color: 0x333333,
+                color: 0x2a2a2a,
                 roughness: 0.8,
                 metalness: 0.2
             });
             const floor = new THREE.Mesh(floorGeometry, floorMaterial);
             floor.rotation.x = -Math.PI / 2;
             floor.receiveShadow = true;
+            floor.userData.name = 'Floor';
+            floor.userData.type = 'primitive';
+            floor.userData.locked = true;
             scene.add(floor);
             sceneObjects.push(floor);
 
-            // Add a default object
+            // Add initial objects
+            addDefaultScene();
+
+            // Event Listeners
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('keydown', onKeyDown);
+
+            // Start animation loop
+            animate();
+
+            // Update UI
+            updateSceneObjectsList();
+            updateStats();
+        }
+
+        function createHumanReference() {
+            const humanGroup = new THREE.Group();
+
+            // Body
+            const bodyGeometry = new THREE.CapsuleGeometry(0.15, 1.4, 8, 16);
+            const bodyMaterial = new THREE.MeshStandardMaterial({ color: 0xffdd00, roughness: 0.5 });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.position.y = 0.9;
+            body.castShadow = true;
+            humanGroup.add(body);
+
+            // Head
+            const headGeometry = new THREE.SphereGeometry(0.12, 16, 16);
+            const head = new THREE.Mesh(headGeometry, bodyMaterial);
+            head.position.y = 1.68;
+            head.castShadow = true;
+            humanGroup.add(head);
+
+            humanGroup.userData.name = 'Human Reference (180cm)';
+            humanGroup.userData.type = 'reference';
+            humanGroup.userData.locked = false;
+
+            scene.add(humanGroup);
+            sceneObjects.push(humanGroup);
+            humanReference = humanGroup;
+        }
+
+        function addDefaultScene() {
+            // Add a default cube
             const geometry = new THREE.BoxGeometry(3, 3, 3);
             const material = new THREE.MeshStandardMaterial({
                 color: 0x666666,
@@ -422,320 +840,702 @@
                 metalness: 0.3
             });
             const cube = new THREE.Mesh(geometry, material);
-            cube.position.y = 1.5;
+            cube.position.set(0, 1.5, 0);
             cube.castShadow = true;
             cube.receiveShadow = true;
+            cube.userData.name = 'Cube';
+            cube.userData.type = 'primitive';
+            cube.userData.locked = false;
             scene.add(cube);
             sceneObjects.push(cube);
+
+            // Add initial projector
+            addProjector();
         }
 
-        function addPrimitive() {
-            const type = document.getElementById('primitive-select').value;
+        function addPrimitive(type) {
             let geometry;
+            let name = '';
 
             switch(type) {
                 case 'box':
                     geometry = new THREE.BoxGeometry(2, 2, 2);
+                    name = 'Box';
                     break;
                 case 'sphere':
-                    geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                    geometry = new THREE.SphereGeometry(1, 32, 32);
+                    name = 'Sphere';
                     break;
                 case 'cylinder':
-                    geometry = new THREE.CylinderGeometry(1, 1, 3, 32);
-                    break;
-                case 'torus':
-                    geometry = new THREE.TorusGeometry(1.5, 0.5, 16, 100);
+                    geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
+                    name = 'Cylinder';
                     break;
                 case 'plane':
-                    geometry = new THREE.PlaneGeometry(3, 3);
+                    geometry = new THREE.PlaneGeometry(4, 4);
+                    name = 'Plane';
+                    break;
+                case 'torus':
+                    geometry = new THREE.TorusGeometry(1, 0.4, 16, 100);
+                    name = 'Torus';
                     break;
             }
 
             const material = new THREE.MeshStandardMaterial({
-                color: Math.random() * 0xffffff,
+                color: 0x808080,
                 roughness: 0.7,
                 metalness: 0.3
             });
 
             const mesh = new THREE.Mesh(geometry, material);
             mesh.position.set(
-                Math.random() * 6 - 3,
+                Math.random() * 4 - 2,
                 2,
-                Math.random() * 6 - 3
+                Math.random() * 4 - 2
             );
             mesh.castShadow = true;
             mesh.receiveShadow = true;
+            mesh.userData.name = name + ' ' + (sceneObjects.length + 1);
+            mesh.userData.type = 'primitive';
+            mesh.userData.locked = false;
 
             scene.add(mesh);
             sceneObjects.push(mesh);
+            updateSceneObjectsList();
             updateStats();
         }
 
-        function loadModel(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const loader = new GLTFLoader();
-            const url = URL.createObjectURL(file);
-
-            loader.load(url, function(gltf) {
-                const model = gltf.scene;
-
-                // Calculate bounding box to scale appropriately
-                const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3());
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const scale = 5 / maxDim;
-
-                model.scale.set(scale, scale, scale);
-                model.position.y = 0;
-
-                model.traverse((child) => {
-                    if (child.isMesh) {
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                    }
-                });
-
-                scene.add(model);
-                sceneObjects.push(model);
-                updateStats();
-
-                URL.revokeObjectURL(url);
-            }, undefined, function(error) {
-                console.error('Error loading model:', error);
-                alert('Error loading 3D model. Please make sure it\'s a valid .glb or .gltf file.');
-            });
-        }
-
         function addProjector() {
-            const color = new THREE.Color().setHSL(Math.random(), 1, 0.5);
+            const color = new THREE.Color().setHSL(Math.random(), 1, 0.6);
 
-            const spotlight = new THREE.SpotLight(color, 100);
+            // Create spotlight
+            const spotlight = new THREE.SpotLight(color, 150);
             spotlight.position.set(
-                Math.random() * 10 - 5,
-                5 + Math.random() * 5,
-                Math.random() * 10 - 5
+                Math.random() * 8 - 4,
+                6 + Math.random() * 4,
+                Math.random() * 8 - 4
             );
             spotlight.angle = Math.PI / 6;
             spotlight.penumbra = 0.1;
             spotlight.decay = 2;
             spotlight.distance = 50;
             spotlight.castShadow = true;
-            spotlight.shadow.mapSize.width = 1024;
-            spotlight.shadow.mapSize.height = 1024;
+            spotlight.shadow.mapSize.width = 2048;
+            spotlight.shadow.mapSize.height = 2048;
+            spotlight.shadow.camera.near = 0.5;
+            spotlight.shadow.camera.far = 50;
 
+            // Target helper
+            const target = new THREE.Object3D();
+            target.position.set(0, 0, 0);
+            scene.add(target);
+            spotlight.target = target;
+
+            // Visualization helper
             const helper = new THREE.SpotLightHelper(spotlight);
             scene.add(helper);
 
-            const projector = {
-                light: spotlight,
-                helper: helper,
-                id: projectors.length,
-                name: `Projector ${projectors.length + 1}`,
-                color: color,
-                helperVisible: true
-            };
+            // Projector data
+            spotlight.userData.name = 'Projector ' + (projectors.length + 1);
+            spotlight.userData.type = 'projector';
+            spotlight.userData.locked = false;
+            spotlight.userData.helper = helper;
+            spotlight.userData.target = target;
+            spotlight.userData.lumens = 10000;
+            spotlight.userData.throwRatio = 1.5;
+            spotlight.userData.resolution = '1920x1080';
+            spotlight.userData.lensShiftH = 0;
+            spotlight.userData.lensShiftV = 0;
+            spotlight.userData.brightnessFactor = 1.0;
 
             scene.add(spotlight);
-            projectors.push(projector);
+            sceneObjects.push(spotlight);
+            projectors.push(spotlight);
 
-            updateProjectorList();
-            selectProjector(projector);
+            updateSceneObjectsList();
             updateStats();
         }
 
-        function updateProjectorList() {
-            const list = document.getElementById('projector-list');
+        function addCamera() {
+            const camera = new THREE.PerspectiveCamera(60, 16/9, 0.1, 100);
+            camera.position.set(5, 3, 5);
+            camera.lookAt(0, 0, 0);
+
+            const helper = new THREE.CameraHelper(camera);
+            scene.add(helper);
+
+            camera.userData.name = 'Camera ' + (sceneObjects.filter(o => o.userData.type === 'camera').length + 1);
+            camera.userData.type = 'camera';
+            camera.userData.locked = false;
+            camera.userData.helper = helper;
+
+            scene.add(camera);
+            sceneObjects.push(camera);
+            updateSceneObjectsList();
+            updateStats();
+        }
+
+        function updateSceneObjectsList() {
+            const list = document.getElementById('scene-objects-list');
             list.innerHTML = '';
 
-            projectors.forEach((proj) => {
+            sceneObjects.forEach((obj, index) => {
                 const item = document.createElement('div');
-                item.className = 'projector-item';
-                if (selectedProjector === proj) {
-                    item.className += ' active';
+                item.className = 'scene-object-item';
+                if (selectedObject === obj) {
+                    item.className += ' selected';
                 }
 
-                const colorHex = '#' + proj.color.getHexString();
+                const icon = obj.userData.type === 'projector' ? '🔦' :
+                             obj.userData.type === 'camera' ? '📷' :
+                             obj.userData.type === 'reference' ? '🚶' : '📦';
+
                 item.innerHTML = `
-                    <div class="projector-name" style="color: ${colorHex}">${proj.name}</div>
-                    <div class="projector-info">
-                        Intensity: ${proj.light.intensity.toFixed(0)} |
-                        Angle: ${(proj.light.angle * 180 / Math.PI).toFixed(0)}°
-                    </div>
+                    <span class="object-visibility" onclick="toggleVisibility(${index})">👁</span>
+                    <span class="object-icon">${icon}</span>
+                    <span class="object-name">${obj.userData.name || 'Object ' + index}</span>
+                    <span class="object-lock" onclick="toggleLock(${index})">${obj.userData.locked ? '🔒' : '🔓'}</span>
                 `;
 
-                item.onclick = () => selectProjector(proj);
+                item.onclick = (e) => {
+                    if (!e.target.classList.contains('object-visibility') &&
+                        !e.target.classList.contains('object-lock')) {
+                        selectObject(obj);
+                    }
+                };
+
                 list.appendChild(item);
             });
         }
 
-        function selectProjector(projector) {
-            selectedProjector = projector;
-            updateProjectorList();
+        function selectObject(obj) {
+            if (obj.userData.locked) return;
 
-            const controls = document.getElementById('projector-controls');
-            controls.style.display = 'block';
+            selectedObject = obj;
+            transformControls.attach(obj);
+            updateSceneObjectsList();
+            updatePropertiesPanel();
+        }
 
-            // Update UI
-            document.getElementById('proj-color').value = '#' + projector.color.getHexString();
-            document.getElementById('proj-brightness').value = projector.light.intensity;
-            document.getElementById('brightness-val').textContent = projector.light.intensity.toFixed(0);
+        function updatePropertiesPanel() {
+            const panel = document.getElementById('properties-panel');
 
-            document.getElementById('proj-pos-x').value = projector.light.position.x;
-            document.getElementById('pos-x-val').textContent = projector.light.position.x.toFixed(1);
-
-            document.getElementById('proj-pos-y').value = projector.light.position.y;
-            document.getElementById('pos-y-val').textContent = projector.light.position.y.toFixed(1);
-
-            document.getElementById('proj-pos-z').value = projector.light.position.z;
-            document.getElementById('pos-z-val').textContent = projector.light.position.z.toFixed(1);
-
-            document.getElementById('proj-angle').value = projector.light.angle * 180 / Math.PI;
-            document.getElementById('angle-val').textContent = (projector.light.angle * 180 / Math.PI).toFixed(0);
-
-            document.getElementById('proj-distance').value = projector.light.distance;
-            document.getElementById('distance-val').textContent = projector.light.distance.toFixed(0);
-
-            document.getElementById('proj-penumbra').value = projector.light.penumbra;
-            document.getElementById('penumbra-val').textContent = projector.light.penumbra.toFixed(2);
-
-            // Update helper toggle
-            const helperBtn = document.getElementById('helper-toggle');
-            if (projector.helperVisible) {
-                helperBtn.classList.add('active');
-            } else {
-                helperBtn.classList.remove('active');
+            if (!selectedObject) {
+                panel.innerHTML = '<div id="no-selection" style="padding: 20px; text-align: center; color: #666;">No object selected</div>';
+                return;
             }
 
-            // Update shadow toggle
-            const shadowBtn = document.getElementById('shadow-toggle');
-            if (projector.light.castShadow) {
-                shadowBtn.classList.add('active');
-            } else {
-                shadowBtn.classList.remove('active');
+            const obj = selectedObject;
+            const isProjector = obj.userData.type === 'projector';
+            const isPrimitive = obj.userData.type === 'primitive';
+
+            let html = '';
+
+            // Object Properties Section
+            html += `
+                <div class="property-section">
+                    <div class="property-section-header">
+                        <span class="section-toggle">▼</span>
+                        Object
+                    </div>
+                    <div class="property-section-content">
+                        <div class="property-row">
+                            <label class="property-label">Name</label>
+                            <input type="text" class="property-input" value="${obj.userData.name}"
+                                onchange="updateObjectName(this.value)">
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Type</label>
+                            <input type="text" class="property-input" value="${obj.userData.type}" disabled>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Transform Section
+            html += `
+                <div class="property-section">
+                    <div class="property-section-header">
+                        <span class="section-toggle">▼</span>
+                        Transform
+                    </div>
+                    <div class="property-section-content">
+                        <div class="property-row">
+                            <label class="property-label">Position</label>
+                            <div class="property-input-group">
+                                <span class="axis-label x">X</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.position.x.toFixed(2)}"
+                                    onchange="updatePosition('x', parseFloat(this.value))">
+                                <span class="axis-label y">Y</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.position.y.toFixed(2)}"
+                                    onchange="updatePosition('y', parseFloat(this.value))">
+                                <span class="axis-label z">Z</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.position.z.toFixed(2)}"
+                                    onchange="updatePosition('z', parseFloat(this.value))">
+                            </div>
+                        </div>
+                        <div class="property-row">
+                            <label class="property-label">Rotation (degrees)</label>
+                            <div class="property-input-group">
+                                <span class="axis-label x">X</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${THREE.MathUtils.radToDeg(obj.rotation.x).toFixed(1)}"
+                                    onchange="updateRotation('x', THREE.MathUtils.degToRad(parseFloat(this.value)))">
+                                <span class="axis-label y">Y</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${THREE.MathUtils.radToDeg(obj.rotation.y).toFixed(1)}"
+                                    onchange="updateRotation('y', THREE.MathUtils.degToRad(parseFloat(this.value)))">
+                                <span class="axis-label z">Z</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${THREE.MathUtils.radToDeg(obj.rotation.z).toFixed(1)}"
+                                    onchange="updateRotation('z', THREE.MathUtils.degToRad(parseFloat(this.value)))">
+                            </div>
+                        </div>
+                        ${!isProjector ? `
+                        <div class="property-row">
+                            <label class="property-label">Scale</label>
+                            <div class="property-input-group">
+                                <span class="axis-label x">X</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.scale.x.toFixed(2)}"
+                                    onchange="updateScale('x', parseFloat(this.value))">
+                                <span class="axis-label y">Y</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.scale.y.toFixed(2)}"
+                                    onchange="updateScale('y', parseFloat(this.value))">
+                                <span class="axis-label z">Z</span>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.scale.z.toFixed(2)}"
+                                    onchange="updateScale('z', parseFloat(this.value))">
+                            </div>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            // Projector-specific properties
+            if (isProjector) {
+                html += `
+                    <div class="property-section">
+                        <div class="property-section-header">
+                            <span class="section-toggle">▼</span>
+                            Projector Settings
+                        </div>
+                        <div class="property-section-content">
+                            <div class="property-row">
+                                <label class="property-label">Lumens <span class="value-display">${obj.userData.lumens}</span></label>
+                                <input type="range" class="property-slider" min="1000" max="50000" step="100"
+                                    value="${obj.userData.lumens}"
+                                    oninput="updateProjectorLumens(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Brightness Factor <span class="value-display">${obj.userData.brightnessFactor.toFixed(2)}</span></label>
+                                <input type="range" class="property-slider" min="0" max="2" step="0.01"
+                                    value="${obj.userData.brightnessFactor}"
+                                    oninput="updateBrightnessFactor(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Intensity <span class="value-display">${obj.intensity.toFixed(0)}</span></label>
+                                <input type="range" class="property-slider" min="0" max="500" step="1"
+                                    value="${obj.intensity}"
+                                    oninput="updateProjectorIntensity(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Beam Angle (degrees) <span class="value-display">${THREE.MathUtils.radToDeg(obj.angle).toFixed(1)}</span></label>
+                                <input type="range" class="property-slider" min="5" max="120" step="0.5"
+                                    value="${THREE.MathUtils.radToDeg(obj.angle)}"
+                                    oninput="updateProjectorAngle(THREE.MathUtils.degToRad(parseFloat(this.value)))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Throw Distance <span class="value-display">${obj.distance.toFixed(1)}m</span></label>
+                                <input type="range" class="property-slider" min="1" max="100" step="0.5"
+                                    value="${obj.distance}"
+                                    oninput="updateProjectorDistance(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Throw Ratio <span class="value-display">${obj.userData.throwRatio.toFixed(2)}</span></label>
+                                <input type="number" class="property-input" step="0.1"
+                                    value="${obj.userData.throwRatio}"
+                                    onchange="updateThrowRatio(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Penumbra <span class="value-display">${obj.penumbra.toFixed(2)}</span></label>
+                                <input type="range" class="property-slider" min="0" max="1" step="0.01"
+                                    value="${obj.penumbra}"
+                                    oninput="updateProjectorPenumbra(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Color</label>
+                                <input type="color" class="property-color"
+                                    value="#${obj.color.getHexString()}"
+                                    onchange="updateProjectorColor(this.value)">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Lens Shift Horizontal <span class="value-display">${obj.userData.lensShiftH.toFixed(2)}</span></label>
+                                <input type="range" class="property-slider" min="-2" max="2" step="0.01"
+                                    value="${obj.userData.lensShiftH}"
+                                    oninput="updateLensShift('h', parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Lens Shift Vertical <span class="value-display">${obj.userData.lensShiftV.toFixed(2)}</span></label>
+                                <input type="range" class="property-slider" min="-2" max="2" step="0.01"
+                                    value="${obj.userData.lensShiftV}"
+                                    oninput="updateLensShift('v', parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Resolution</label>
+                                <select class="property-select" onchange="updateResolution(this.value)">
+                                    <option ${obj.userData.resolution === '1920x1080' ? 'selected' : ''}>1920x1080</option>
+                                    <option ${obj.userData.resolution === '1920x1200' ? 'selected' : ''}>1920x1200</option>
+                                    <option ${obj.userData.resolution === '2560x1440' ? 'selected' : ''}>2560x1440</option>
+                                    <option ${obj.userData.resolution === '3840x2160' ? 'selected' : ''}>3840x2160</option>
+                                    <option ${obj.userData.resolution === '4096x2160' ? 'selected' : ''}>4096x2160</option>
+                                </select>
+                            </div>
+                            <div class="property-row">
+                                <label class="property-checkbox">
+                                    <input type="checkbox" ${obj.castShadow ? 'checked' : ''}
+                                        onchange="updateCastShadow(this.checked)">
+                                    <span>Cast Shadows</span>
+                                </label>
+                            </div>
+                            <div class="property-row">
+                                <label class="property-checkbox">
+                                    <input type="checkbox" ${obj.userData.helper?.visible ? 'checked' : ''}
+                                        onchange="toggleHelper(this.checked)">
+                                    <span>Show Helper</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                `;
             }
 
-            // Attach transform controls
-            transformControls.attach(projector.light);
+            // Material Section (for primitives)
+            if (isPrimitive && obj.material) {
+                html += `
+                    <div class="property-section">
+                        <div class="property-section-header">
+                            <span class="section-toggle">▼</span>
+                            Material
+                        </div>
+                        <div class="property-section-content">
+                            <div class="property-row">
+                                <label class="property-label">Color</label>
+                                <input type="color" class="property-color"
+                                    value="#${obj.material.color.getHexString()}"
+                                    onchange="updateMaterialColor(this.value)">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Roughness <span class="value-display">${obj.material.roughness.toFixed(2)}</span></label>
+                                <input type="range" class="property-slider" min="0" max="1" step="0.01"
+                                    value="${obj.material.roughness}"
+                                    oninput="updateMaterialRoughness(parseFloat(this.value))">
+                            </div>
+                            <div class="property-row">
+                                <label class="property-label">Metalness <span class="value-display">${obj.material.metalness.toFixed(2)}</span></label>
+                                <input type="range" class="property-slider" min="0" max="1" step="0.01"
+                                    value="${obj.material.metalness}"
+                                    oninput="updateMaterialMetalness(parseFloat(this.value))">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Actions
+            html += `
+                <button class="btn btn-danger" onclick="deleteSelected()">Delete Object</button>
+                <button class="btn btn-secondary" onclick="duplicateObject()">Duplicate</button>
+            `;
+
+            panel.innerHTML = html;
+
+            // Make sections collapsible
+            document.querySelectorAll('.property-section-header').forEach(header => {
+                header.onclick = () => {
+                    header.parentElement.classList.toggle('collapsed');
+                };
+            });
         }
 
-        function updateProjectorColor() {
-            if (!selectedProjector) return;
-            const color = document.getElementById('proj-color').value;
-            selectedProjector.color.set(color);
-            selectedProjector.light.color.set(color);
-            updateProjectorList();
-        }
+        // Update functions
+        window.updateObjectName = (value) => {
+            if (selectedObject) {
+                selectedObject.userData.name = value;
+                updateSceneObjectsList();
+            }
+        };
 
-        function updateProjectorBrightness() {
-            if (!selectedProjector) return;
-            const value = parseFloat(document.getElementById('proj-brightness').value);
-            selectedProjector.light.intensity = value;
-            document.getElementById('brightness-val').textContent = value.toFixed(0);
-            updateProjectorList();
-        }
+        window.updatePosition = (axis, value) => {
+            if (selectedObject) {
+                selectedObject.position[axis] = value;
+            }
+        };
 
-        function updateProjectorPosition() {
-            if (!selectedProjector) return;
-            const x = parseFloat(document.getElementById('proj-pos-x').value);
-            const y = parseFloat(document.getElementById('proj-pos-y').value);
-            const z = parseFloat(document.getElementById('proj-pos-z').value);
+        window.updateRotation = (axis, value) => {
+            if (selectedObject) {
+                selectedObject.rotation[axis] = value;
+            }
+        };
 
-            selectedProjector.light.position.set(x, y, z);
+        window.updateScale = (axis, value) => {
+            if (selectedObject) {
+                selectedObject.scale[axis] = value;
+            }
+        };
 
-            document.getElementById('pos-x-val').textContent = x.toFixed(1);
-            document.getElementById('pos-y-val').textContent = y.toFixed(1);
-            document.getElementById('pos-z-val').textContent = z.toFixed(1);
-        }
+        window.updateProjectorLumens = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.userData.lumens = value;
+                document.querySelector('.property-label:has(+ .property-slider) .value-display').textContent = value;
+            }
+        };
 
-        function updateProjectorAngle() {
-            if (!selectedProjector) return;
-            const degrees = parseFloat(document.getElementById('proj-angle').value);
-            const radians = degrees * Math.PI / 180;
-            selectedProjector.light.angle = radians;
-            document.getElementById('angle-val').textContent = degrees.toFixed(0);
-            updateProjectorList();
-        }
+        window.updateBrightnessFactor = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.userData.brightnessFactor = value;
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[1].textContent = value.toFixed(2);
+            }
+        };
 
-        function updateProjectorDistance() {
-            if (!selectedProjector) return;
-            const value = parseFloat(document.getElementById('proj-distance').value);
-            selectedProjector.light.distance = value;
-            document.getElementById('distance-val').textContent = value.toFixed(0);
-        }
+        window.updateProjectorIntensity = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.intensity = value;
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[2].textContent = value.toFixed(0);
+            }
+        };
 
-        function updateProjectorPenumbra() {
-            if (!selectedProjector) return;
-            const value = parseFloat(document.getElementById('proj-penumbra').value);
-            selectedProjector.light.penumbra = value;
-            document.getElementById('penumbra-val').textContent = value.toFixed(2);
-        }
+        window.updateProjectorAngle = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.angle = value;
+                selectedObject.userData.helper.update();
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[3].textContent = THREE.MathUtils.radToDeg(value).toFixed(1);
+            }
+        };
 
-        function toggleHelper() {
-            if (!selectedProjector) return;
-            selectedProjector.helperVisible = !selectedProjector.helperVisible;
-            selectedProjector.helper.visible = selectedProjector.helperVisible;
+        window.updateProjectorDistance = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.distance = value;
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[4].textContent = value.toFixed(1) + 'm';
+            }
+        };
 
-            const btn = document.getElementById('helper-toggle');
-            btn.classList.toggle('active');
-        }
+        window.updateThrowRatio = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.userData.throwRatio = value;
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[5].textContent = value.toFixed(2);
+            }
+        };
 
-        function toggleShadows() {
-            if (!selectedProjector) return;
-            selectedProjector.light.castShadow = !selectedProjector.light.castShadow;
+        window.updateProjectorPenumbra = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.penumbra = value;
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[6].textContent = value.toFixed(2);
+            }
+        };
 
-            const btn = document.getElementById('shadow-toggle');
-            btn.classList.toggle('active');
-        }
+        window.updateProjectorColor = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.color.set(value);
+            }
+        };
 
-        function deleteProjector() {
-            if (!selectedProjector) return;
+        window.updateLensShift = (axis, value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                if (axis === 'h') {
+                    selectedObject.userData.lensShiftH = value;
+                    const labels = document.querySelectorAll('.property-label .value-display');
+                    labels[7].textContent = value.toFixed(2);
+                } else {
+                    selectedObject.userData.lensShiftV = value;
+                    const labels = document.querySelectorAll('.property-label .value-display');
+                    labels[8].textContent = value.toFixed(2);
+                }
+            }
+        };
 
-            scene.remove(selectedProjector.light);
-            scene.remove(selectedProjector.helper);
+        window.updateResolution = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.userData.resolution = value;
+            }
+        };
 
-            const index = projectors.indexOf(selectedProjector);
-            projectors.splice(index, 1);
+        window.updateCastShadow = (value) => {
+            if (selectedObject) {
+                selectedObject.castShadow = value;
+            }
+        };
 
-            selectedProjector = null;
-            transformControls.detach();
+        window.toggleHelper = (value) => {
+            if (selectedObject && selectedObject.userData.helper) {
+                selectedObject.userData.helper.visible = value;
+            }
+        };
 
-            document.getElementById('projector-controls').style.display = 'none';
-            updateProjectorList();
-            updateStats();
-        }
+        window.updateMaterialColor = (value) => {
+            if (selectedObject && selectedObject.material) {
+                selectedObject.material.color.set(value);
+            }
+        };
 
-        function updateAmbientLight() {
-            const value = parseFloat(document.getElementById('ambient-light').value) / 100;
-            ambientLight.intensity = value;
-            document.getElementById('ambient-val').textContent = (value * 100).toFixed(0);
-        }
+        window.updateMaterialRoughness = (value) => {
+            if (selectedObject && selectedObject.material) {
+                selectedObject.material.roughness = value;
+                document.querySelectorAll('.property-label .value-display')[0].textContent = value.toFixed(2);
+            }
+        };
 
-        function updateBackground() {
-            const color = document.getElementById('bg-color').value;
-            scene.background = new THREE.Color(color);
-        }
+        window.updateMaterialMetalness = (value) => {
+            if (selectedObject && selectedObject.material) {
+                selectedObject.material.metalness = value;
+                document.querySelectorAll('.property-label .value-display')[1].textContent = value.toFixed(2);
+            }
+        };
 
-        function toggleGrid() {
-            gridHelper.visible = !gridHelper.visible;
-            document.getElementById('grid-toggle').classList.toggle('active');
-        }
+        window.toggleVisibility = (index) => {
+            const obj = sceneObjects[index];
+            obj.visible = !obj.visible;
+            if (obj.userData.helper) {
+                obj.userData.helper.visible = obj.visible;
+            }
+        };
 
-        function toggleAxes() {
-            axesHelper.visible = !axesHelper.visible;
-            document.getElementById('axes-toggle').classList.toggle('active');
-        }
+        window.toggleLock = (index) => {
+            const obj = sceneObjects[index];
+            obj.userData.locked = !obj.userData.locked;
+            updateSceneObjectsList();
+        };
+
+        window.deleteSelected = () => {
+            if (selectedObject && !selectedObject.userData.locked) {
+                scene.remove(selectedObject);
+                if (selectedObject.userData.helper) {
+                    scene.remove(selectedObject.userData.helper);
+                }
+                if (selectedObject.userData.target) {
+                    scene.remove(selectedObject.userData.target);
+                }
+
+                const index = sceneObjects.indexOf(selectedObject);
+                if (index > -1) {
+                    sceneObjects.splice(index, 1);
+                }
+
+                const projIndex = projectors.indexOf(selectedObject);
+                if (projIndex > -1) {
+                    projectors.splice(projIndex, 1);
+                }
+
+                transformControls.detach();
+                selectedObject = null;
+                updateSceneObjectsList();
+                updatePropertiesPanel();
+                updateStats();
+            }
+        };
+
+        window.duplicateObject = () => {
+            if (selectedObject && !selectedObject.userData.locked) {
+                const clone = selectedObject.clone();
+                clone.position.x += 2;
+                clone.userData = { ...selectedObject.userData };
+                clone.userData.name += ' Copy';
+                scene.add(clone);
+                sceneObjects.push(clone);
+                updateSceneObjectsList();
+                updateStats();
+            }
+        };
+
+        window.setGizmoMode = (mode) => {
+            gizmoMode = mode;
+            transformControls.setMode(mode);
+
+            document.querySelectorAll('.gizmo-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        };
+
+        window.setViewMode = (mode) => {
+            switch(mode) {
+                case 'perspective':
+                    camera.position.set(15, 10, 15);
+                    break;
+                case 'top':
+                    camera.position.set(0, 30, 0);
+                    break;
+                case 'front':
+                    camera.position.set(0, 5, 30);
+                    break;
+                case 'side':
+                    camera.position.set(30, 5, 0);
+                    break;
+            }
+            camera.lookAt(0, 0, 0);
+            controls.update();
+        };
+
+        window.toggleRenderMode = (mode) => {
+            renderMode = mode;
+            document.querySelectorAll('#viewport-mode .view-mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        };
 
         function updateStats() {
-            document.getElementById('projector-count').textContent = projectors.length;
             document.getElementById('object-count').textContent = sceneObjects.length;
+            document.getElementById('projector-count').textContent = projectors.length;
+
+            let triangles = 0;
+            scene.traverse((obj) => {
+                if (obj.geometry) {
+                    const positions = obj.geometry.attributes.position;
+                    if (positions) {
+                        triangles += positions.count / 3;
+                    }
+                }
+            });
+            document.getElementById('tri-count').textContent = Math.floor(triangles);
+        }
+
+        function onKeyDown(event) {
+            switch(event.key) {
+                case 'g':
+                case 'G':
+                    setGizmoMode('translate');
+                    break;
+                case 'r':
+                case 'R':
+                    setGizmoMode('rotate');
+                    break;
+                case 's':
+                case 'S':
+                    setGizmoMode('scale');
+                    break;
+                case 'Delete':
+                case 'Backspace':
+                    deleteSelected();
+                    break;
+            }
         }
 
         function onWindowResize() {
-            camera.aspect = (window.innerWidth - 320) / window.innerHeight;
+            const container = document.getElementById('viewport-container');
+            camera.aspect = container.clientWidth / container.clientHeight;
             camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth - 320, window.innerHeight);
+            renderer.setSize(container.clientWidth, container.clientHeight);
         }
 
         function animate() {
@@ -745,8 +1545,8 @@
 
             // Update helpers
             projectors.forEach(proj => {
-                if (proj.helperVisible) {
-                    proj.helper.update();
+                if (proj.userData.helper && proj.userData.helper.visible) {
+                    proj.userData.helper.update();
                 }
             });
 
@@ -762,25 +1562,24 @@
             }
         }
 
-        // Make functions global
+        // Menu functions
+        window.newProject = () => console.log('New Project');
+        window.saveProject = () => console.log('Save Project');
+        window.loadProject = () => console.log('Load Project');
+        window.exportScene = () => console.log('Export Scene');
+        window.undo = () => console.log('Undo');
+        window.redo = () => console.log('Redo');
+        window.createLinearArray = () => console.log('Linear Array');
+        window.createPolarArray = () => console.log('Polar Array');
+        window.createMirrorSymmetry = () => console.log('Mirror Symmetry');
+        window.addAnnotation = () => console.log('Add Annotation');
+        window.measureDistance = () => console.log('Measure Distance');
+        window.togglePhotometric = () => console.log('Toggle Photometric');
         window.addPrimitive = addPrimitive;
-        window.loadModel = loadModel;
         window.addProjector = addProjector;
-        window.updateProjectorColor = updateProjectorColor;
-        window.updateProjectorBrightness = updateProjectorBrightness;
-        window.updateProjectorPosition = updateProjectorPosition;
-        window.updateProjectorAngle = updateProjectorAngle;
-        window.updateProjectorDistance = updateProjectorDistance;
-        window.updateProjectorPenumbra = updateProjectorPenumbra;
-        window.toggleHelper = toggleHelper;
-        window.toggleShadows = toggleShadows;
-        window.deleteProjector = deleteProjector;
-        window.updateAmbientLight = updateAmbientLight;
-        window.updateBackground = updateBackground;
-        window.toggleGrid = toggleGrid;
-        window.toggleAxes = toggleAxes;
+        window.addCamera = addCamera;
 
-        // Initialize on load
+        // Initialize
         init();
     </script>
 </body>
