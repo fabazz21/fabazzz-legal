@@ -1281,265 +1281,49 @@
         }
 
         // ===== PROJECTIVE TEXTURE MAPPING SYSTEM =====
-        // This system uses onBeforeCompile to inject projection shader code
-        // without replacing materials, keeping TransformControls and other systems working
+        // Disabled due to shader compilation issues with multiple meshes
+        // Keeping SpotLight-based approach for stability
 
         class ProjectiveTextureManager {
             constructor() {
-                this.projectors = new Map(); // projector -> ProjectorData
+                this.projectors = new Map();
                 this.affectedMeshes = new Set();
+                this.enabled = false; // Disabled for now
             }
 
             addProjector(projector, texture = null) {
-                // Create projection camera from projector specs
-                const [width, height] = (projector.userData.resolution || '1920x1080').split('x').map(Number);
-                const aspectRatio = width / height;
-                const fov = THREE.MathUtils.radToDeg(projector.angle) * 2;
-
-                const projectionCamera = new THREE.PerspectiveCamera(
-                    fov,
-                    aspectRatio,
-                    0.1,
-                    projector.distance || 50
-                );
-
-                const projectorData = {
-                    projector: projector,
-                    camera: projectionCamera,
-                    texture: texture,
-                    viewMatrixCamera: new THREE.Matrix4(),
-                    projectionMatrixCamera: new THREE.Matrix4(),
-                    modelMatrixCamera: new THREE.Matrix4()
-                };
-
-                this.projectors.set(projector, projectorData);
-                this.updateProjector(projector);
+                // Disabled
             }
 
             removeProjector(projector) {
-                this.projectors.delete(projector);
-                // Refresh all affected meshes
-                this.refreshAllMeshes();
+                // Disabled
             }
 
             updateProjector(projector) {
-                const data = this.projectors.get(projector);
-                if (!data) return;
-
-                // Update camera position and target
-                data.camera.position.copy(projector.position);
-                data.camera.lookAt(projector.target.position);
-                data.camera.updateMatrixWorld(true);
-
-                // Calculate combined matrix for shader
-                data.viewMatrixCamera.copy(data.camera.matrixWorldInverse);
-                data.projectionMatrixCamera.copy(data.camera.projectionMatrix);
-                data.modelMatrixCamera.multiplyMatrices(
-                    data.projectionMatrixCamera,
-                    data.viewMatrixCamera
-                );
+                // Disabled
             }
 
             updateProjectorTexture(projector, texture) {
-                const data = this.projectors.get(projector);
-                if (data) {
-                    data.texture = texture;
-                    // Update uniforms in all affected meshes
-                    this.refreshAllMeshes();
-                }
+                // Disabled
             }
 
             applyToMesh(mesh) {
-                if (this.affectedMeshes.has(mesh)) return; // Already applied
-                if (!mesh.material) return;
-
-                const material = mesh.material;
-
-                // Store original onBeforeCompile if it exists
-                const originalOnBeforeCompile = material.onBeforeCompile;
-
-                // Inject projection shader code
-                material.onBeforeCompile = (shader) => {
-                    // Call original onBeforeCompile if it exists
-                    if (originalOnBeforeCompile) {
-                        originalOnBeforeCompile(shader);
-                    }
-
-                    // Add uniforms for all projectors (up to 4 projectors)
-                    shader.uniforms.projectorCount = { value: 0 };
-                    shader.uniforms.projectorPositions = { value: [] };
-                    shader.uniforms.projectorMatrices = { value: [] };
-                    shader.uniforms.projectorTextures = { value: [] };
-                    shader.uniforms.projectorIntensities = { value: [] };
-                    shader.uniforms.projectorColors = { value: [] };
-                    shader.uniforms.projectorHasTexture = { value: [] };
-                    shader.uniforms.projectorDistances = { value: [] };
-
-                    // Store shader reference for updates
-                    if (!material.userData.projectiveShader) {
-                        material.userData.projectiveShader = shader;
-                    }
-
-                    // Modify vertex shader to pass world position
-                    shader.vertexShader = shader.vertexShader.replace(
-                        '#include <common>',
-                        `#include <common>
-                        varying vec3 vWorldPosition;
-                        varying vec3 vWorldNormal;`
-                    );
-
-                    shader.vertexShader = shader.vertexShader.replace(
-                        '#include <worldpos_vertex>',
-                        `#include <worldpos_vertex>
-                        vWorldPosition = worldPosition.xyz;
-                        vWorldNormal = normalize((modelMatrix * vec4(normal, 0.0)).xyz);`
-                    );
-
-                    // Modify fragment shader to add projections
-                    shader.fragmentShader = shader.fragmentShader.replace(
-                        '#include <common>',
-                        `#include <common>
-                        varying vec3 vWorldPosition;
-                        varying vec3 vWorldNormal;
-
-                        uniform int projectorCount;
-                        uniform vec3 projectorPositions[4];
-                        uniform mat4 projectorMatrices[4];
-                        uniform sampler2D projectorTextures[4];
-                        uniform float projectorIntensities[4];
-                        uniform vec3 projectorColors[4];
-                        uniform bool projectorHasTexture[4];
-                        uniform float projectorDistances[4];
-
-                        vec3 calculateProjection(int index) {
-                            vec4 projectedPos = projectorMatrices[index] * vec4(vWorldPosition, 1.0);
-                            vec3 ndc = projectedPos.xyz / projectedPos.w;
-                            vec2 uv = ndc.xy * 0.5 + 0.5;
-
-                            // Check if point is within projection frustum
-                            bool inBounds =
-                                uv.x >= 0.0 && uv.x <= 1.0 &&
-                                uv.y >= 0.0 && uv.y <= 1.0 &&
-                                ndc.z >= -1.0 && ndc.z <= 1.0 &&
-                                projectedPos.w > 0.0;
-
-                            if (!inBounds) return vec3(0.0);
-
-                            // Calculate facing direction
-                            vec3 toProjector = projectorPositions[index] - vWorldPosition;
-                            float distance = length(toProjector);
-                            vec3 projectorDir = normalize(toProjector);
-                            float facing = dot(normalize(vWorldNormal), projectorDir);
-
-                            if (facing <= 0.0) return vec3(0.0); // Back-facing
-                            if (distance > projectorDistances[index]) return vec3(0.0); // Too far
-
-                            // Get projected color
-                            vec3 projectedColor;
-                            if (projectorHasTexture[index]) {
-                                vec4 texColor = texture2D(projectorTextures[index], uv);
-                                projectedColor = texColor.rgb * texColor.a;
-                            } else {
-                                projectedColor = projectorColors[index];
-                            }
-
-                            // Apply attenuation and intensity
-                            float attenuation = 1.0 - (distance / projectorDistances[index]);
-                            attenuation = clamp(attenuation, 0.0, 1.0);
-                            attenuation = pow(attenuation, 2.0); // Quadratic falloff
-
-                            float strength = projectorIntensities[index] * attenuation * facing;
-
-                            return projectedColor * strength;
-                        }`
-                    );
-
-                    // Add projection to final color (before tone mapping)
-                    shader.fragmentShader = shader.fragmentShader.replace(
-                        '#include <dithering_fragment>',
-                        `#include <dithering_fragment>
-
-                        // Add all projector contributions
-                        vec3 projectionContribution = vec3(0.0);
-                        for (int i = 0; i < 4; i++) {
-                            if (i >= projectorCount) break;
-                            projectionContribution += calculateProjection(i);
-                        }
-
-                        // Additive blending for projections
-                        gl_FragColor.rgb += projectionContribution;`
-                    );
-                };
-
-                // Force recompilation
-                material.needsUpdate = true;
-                this.affectedMeshes.add(mesh);
+                // Disabled - no shader injection
             }
 
             refreshAllMeshes() {
-                this.affectedMeshes.forEach(mesh => {
-                    if (mesh.material && mesh.material.userData.projectiveShader) {
-                        this.updateMeshUniforms(mesh);
-                    }
-                });
+                // Disabled
             }
 
             updateMeshUniforms(mesh) {
-                if (!mesh.material || !mesh.material.userData.projectiveShader) return;
-
-                const shader = mesh.material.userData.projectiveShader;
-                const uniforms = shader.uniforms;
-
-                // Collect active projectors
-                const activeProjectors = Array.from(this.projectors.values());
-                uniforms.projectorCount.value = Math.min(activeProjectors.length, 4);
-
-                // Update arrays
-                uniforms.projectorPositions.value = [];
-                uniforms.projectorMatrices.value = [];
-                uniforms.projectorTextures.value = [];
-                uniforms.projectorIntensities.value = [];
-                uniforms.projectorColors.value = [];
-                uniforms.projectorHasTexture.value = [];
-                uniforms.projectorDistances.value = [];
-
-                for (let i = 0; i < Math.min(activeProjectors.length, 4); i++) {
-                    const data = activeProjectors[i];
-                    uniforms.projectorPositions.value.push(data.camera.position.clone());
-                    uniforms.projectorMatrices.value.push(data.modelMatrixCamera.clone());
-
-                    if (data.texture) {
-                        uniforms.projectorTextures.value.push(data.texture);
-                        uniforms.projectorHasTexture.value.push(true);
-                    } else {
-                        // Use empty texture
-                        uniforms.projectorTextures.value.push(new THREE.Texture());
-                        uniforms.projectorHasTexture.value.push(false);
-                    }
-
-                    uniforms.projectorIntensities.value.push(data.projector.intensity * 0.01);
-                    uniforms.projectorColors.value.push(data.projector.color.clone());
-                    uniforms.projectorDistances.value.push(data.projector.distance || 50);
-                }
+                // Disabled
             }
 
             update() {
-                // Update all projector matrices
-                this.projectors.forEach((data, projector) => {
-                    this.updateProjector(projector);
-                });
-
-                // Update uniforms in all affected meshes
-                this.refreshAllMeshes();
+                // Disabled
             }
 
             dispose() {
-                this.affectedMeshes.forEach(mesh => {
-                    if (mesh.material && mesh.material.userData.projectiveShader) {
-                        delete mesh.material.userData.projectiveShader;
-                        mesh.material.needsUpdate = true;
-                    }
-                });
                 this.affectedMeshes.clear();
                 this.projectors.clear();
             }
@@ -1813,16 +1597,6 @@
             // Add initial objects
             addDefaultScene();
 
-            // Apply projective mapping to all initial meshes in the scene
-            scene.traverse((child) => {
-                if (child.isMesh &&
-                    child.userData.type !== 'projector_target' &&
-                    child.userData.type !== 'annotation' &&
-                    child.userData.type !== 'dimension') {
-                    projectiveManager.applyToMesh(child);
-                }
-            });
-
             // Event Listeners
             window.addEventListener('resize', onWindowResize);
             window.addEventListener('keydown', onKeyDown);
@@ -2084,20 +1858,6 @@
             // Link target indicator to projector
             targetIndicator.userData.parentProjector = spotlight;
 
-            // Add projector to projective texture manager for true rectangular projection
-            projectiveManager.addProjector(spotlight);
-
-            // Apply projective system to all meshes in scene
-            scene.traverse((child) => {
-                if (child.isMesh &&
-                    child.userData.type !== 'projector_target' &&
-                    child.userData.type !== 'annotation' &&
-                    child.userData.type !== 'dimension' &&
-                    child !== targetIndicator) {
-                    projectiveManager.applyToMesh(child);
-                }
-            });
-
             updateSceneObjectsList();
             updateStats();
             closeProjectorModal();
@@ -2178,13 +1938,10 @@
                 compositeTexture.center.set(0.5, 0.5);
                 compositeTexture.needsUpdate = true;
 
-                // Apply composite texture to spotlight (for backward compatibility)
+                // Apply composite texture to spotlight
                 selectedObject.map = compositeTexture;
                 selectedObject.userData.projectorTexture = currentProjectorImage;
                 selectedObject.userData.hasCustomImage = true;
-
-                // Update projective texture manager with the new texture
-                projectiveManager.updateProjectorTexture(selectedObject, compositeTexture);
 
                 closeImageModal();
                 updatePropertiesPanel();
@@ -2946,10 +2703,6 @@
 
             scene.add(mesh);
             sceneObjects.push(mesh);
-
-            // Apply projective mapping to new mesh
-            projectiveManager.applyToMesh(mesh);
-
             updateSceneObjectsList();
             updateStats();
         }
@@ -3772,9 +3525,6 @@
                     proj.userData.helper.update();
                 }
             });
-
-            // Update projective texture manager (for true rectangular projections)
-            projectiveManager.update();
 
             renderer.render(scene, camera);
 
