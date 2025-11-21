@@ -561,9 +561,352 @@
         .spinner-btn:hover {
             background: #3e3e3e;
         }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #2d2d2d;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 16px 20px;
+            background: #323233;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #0d9488;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #999;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #3e3e3e;
+            color: #fff;
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 20px;
+            background: #252526;
+            border-top: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .modal-footer .btn {
+            width: auto;
+            margin-top: 0;
+        }
+
+        /* Projector Library Grid */
+        .projector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .projector-card {
+            background: #252526;
+            border: 2px solid #3a3a3a;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .projector-card:hover {
+            border-color: #0d9488;
+            background: #2a2d2e;
+        }
+
+        .projector-card.selected {
+            border-color: #0d9488;
+            background: #094771;
+        }
+
+        .projector-brand {
+            font-size: 10px;
+            color: #999;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .projector-model {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .projector-specs {
+            font-size: 10px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        /* Lens Selection */
+        .lens-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lens-item {
+            background: #252526;
+            border: 1px solid #3a3a3a;
+            border-radius: 4px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lens-item:hover {
+            border-color: #0d9488;
+            background: #2a2d2e;
+        }
+
+        .lens-item.selected {
+            border-color: #0d9488;
+            background: #094771;
+        }
+
+        .lens-name {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .lens-specs {
+            font-size: 10px;
+            color: #666;
+        }
+
+        .modal-section {
+            margin-bottom: 24px;
+        }
+
+        .modal-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #0d9488;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Target Point Indicator */
+        .target-point {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ff0000 0%, rgba(255,0,0,0.3) 70%, transparent 100%);
+            border: 2px solid #ff0000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .target-point::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 6px;
+            height: 6px;
+            background: #ff0000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Projector Info Overlay */
+        .projector-info-overlay {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            pointer-events: none;
+            white-space: nowrap;
+            border: 1px solid #0d9488;
+        }
+
+        .projector-info-overlay .info-line {
+            margin: 2px 0;
+        }
+
+        .projector-info-overlay .info-label {
+            color: #999;
+        }
+
+        .projector-info-overlay .info-value {
+            color: #0d9488;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        /* Search Input */
+        .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #1e1e1e;
+            border: 1px solid #3a3a3a;
+            color: #cccccc;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0d9488;
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
     </style>
 </head>
 <body>
+    <!-- Projector Creation Modal -->
+    <div id="projector-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Add Projector</h2>
+                <button class="modal-close" onclick="closeProjectorModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">1. Select Projector Model</div>
+                    <input type="text" class="search-input" id="projector-search" placeholder="Search projectors..." oninput="filterProjectors()">
+                    <div class="projector-grid" id="projector-grid">
+                        <!-- Projectors will be populated here -->
+                    </div>
+                </div>
+
+                <div class="modal-section" id="lens-section" style="display: none;">
+                    <div class="modal-section-title">2. Select Lens</div>
+                    <div class="lens-list" id="lens-list">
+                        <!-- Lenses will be populated here -->
+                    </div>
+                </div>
+
+                <div class="modal-section" id="config-section" style="display: none;">
+                    <div class="modal-section-title">3. Configuration</div>
+                    <div class="property-row">
+                        <label class="property-label">Projector Name</label>
+                        <input type="text" class="property-input" id="new-projector-name" placeholder="My Projector">
+                    </div>
+                    <div class="property-row">
+                        <label class="property-label">Position</label>
+                        <div class="property-input-group">
+                            <span class="axis-label x">X</span>
+                            <input type="number" class="property-input" id="new-proj-x" value="0" step="0.5">
+                            <span class="axis-label y">Y</span>
+                            <input type="number" class="property-input" id="new-proj-y" value="5" step="0.5">
+                            <span class="axis-label z">Z</span>
+                            <input type="number" class="property-input" id="new-proj-z" value="5" step="0.5">
+                        </div>
+                    </div>
+                    <div class="property-row">
+                        <label class="property-label">Target Point</label>
+                        <div class="property-input-group">
+                            <span class="axis-label x">X</span>
+                            <input type="number" class="property-input" id="new-target-x" value="0" step="0.5">
+                            <span class="axis-label y">Y</span>
+                            <input type="number" class="property-input" id="new-target-y" value="0" step="0.5">
+                            <span class="axis-label z">Z</span>
+                            <input type="number" class="property-input" id="new-target-z" value="0" step="0.5">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeProjectorModal()">Cancel</button>
+                <button class="btn" id="create-projector-btn" onclick="createProjectorFromModal()" disabled>Create Projector</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Import Modal -->
+    <div id="image-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Import Projector Image</h2>
+                <button class="modal-close" onclick="closeImageModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-section">
+                    <div class="modal-section-title">Select Image or Video</div>
+                    <input type="file" id="projector-image-input" accept="image/*,video/*" style="display: none;" onchange="handleImageUpload(event)">
+                    <label for="projector-image-input" class="file-upload-label" style="display: block;">
+                        Choose File
+                    </label>
+                    <div id="image-preview" style="margin-top: 16px; text-align: center;">
+                        <!-- Preview will be shown here -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeImageModal()">Cancel</button>
+                <button class="btn" onclick="applyProjectorImage()" id="apply-image-btn" disabled>Apply Image</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Menu Bar -->
     <div id="menubar">
         <div class="menu-item dropdown">
@@ -620,7 +963,7 @@
             </div>
         </div>
         <div class="menu-separator"></div>
-        <div class="menu-item" onclick="addProjector()">+ Add Projector</div>
+        <div class="menu-item" onclick="openProjectorModal()">+ Add Projector</div>
         <div class="menu-item" onclick="addCamera()">+ Add Camera</div>
     </div>
 
@@ -697,6 +1040,156 @@
         import { TransformControls } from 'three/addons/controls/TransformControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+        // Projector Library Database
+        const PROJECTOR_LIBRARY = [
+            {
+                id: 'barco-uhd-4k32',
+                brand: 'Barco',
+                model: 'UDX-4K32',
+                lumens: 31000,
+                resolution: '4096x2160',
+                lenses: ['lens-uhd-0.38-0.6', 'lens-uhd-0.73-1.06', 'lens-uhd-1.16-1.49', 'lens-uhd-1.52-2.89', 'lens-uhd-3.0-6.5']
+            },
+            {
+                id: 'christie-m-4k25',
+                brand: 'Christie',
+                model: 'Griffyn 4K32-RGB',
+                lumens: 28000,
+                resolution: '4096x2160',
+                lenses: ['lens-christie-0.38', 'lens-christie-0.67-0.9', 'lens-christie-0.9-1.18', 'lens-christie-1.18-1.5']
+            },
+            {
+                id: 'panasonic-pt-rz31k',
+                brand: 'Panasonic',
+                model: 'PT-RZ31K',
+                lumens: 31000,
+                resolution: '1920x1200',
+                lenses: ['lens-pana-et-dle055', 'lens-pana-et-dle085', 'lens-pana-et-dle150', 'lens-pana-et-dle250', 'lens-pana-et-dle350', 'lens-pana-et-dle450']
+            },
+            {
+                id: 'barco-f70',
+                brand: 'Barco',
+                model: 'F70-4K7',
+                lumens: 6500,
+                resolution: '3840x2160',
+                lenses: ['lens-f70-en11', 'lens-f70-en12', 'lens-f70-en13', 'lens-f70-en14', 'lens-f70-en15']
+            },
+            {
+                id: 'christie-boxer',
+                brand: 'Christie',
+                model: 'Boxer 4K30',
+                lumens: 28500,
+                resolution: '4096x2160',
+                lenses: ['lens-boxer-0.38', 'lens-boxer-0.67-0.9', 'lens-boxer-1.16-1.49', 'lens-boxer-1.45-2.17']
+            },
+            {
+                id: 'epson-eb-l25000u',
+                brand: 'Epson',
+                model: 'EB-L25000U',
+                lumens: 25000,
+                resolution: '1920x1200',
+                lenses: ['lens-epson-elplm08', 'lens-epson-elplm09', 'lens-epson-elplm10', 'lens-epson-elplm11', 'lens-epson-elplm15']
+            },
+            {
+                id: 'nec-ph3501ql',
+                brand: 'NEC',
+                model: 'PH3501QL',
+                lumens: 35000,
+                resolution: '4096x2160',
+                lenses: ['lens-nec-np41zl', 'lens-nec-np42zl', 'lens-nec-np43zl', 'lens-nec-np44zl']
+            },
+            {
+                id: 'sony-srx-r515ds',
+                brand: 'Sony',
+                model: 'SRX-R515DS',
+                lumens: 15000,
+                resolution: '4096x2160',
+                lenses: ['lens-sony-0.9-1.2', 'lens-sony-1.2-1.85', 'lens-sony-1.85-2.7', 'lens-sony-2.7-4.1']
+            },
+            {
+                id: 'digital-projection-m-vision',
+                brand: 'Digital Projection',
+                model: 'M-Vision 21000',
+                lumens: 21000,
+                resolution: '1920x1200',
+                lenses: ['lens-dp-0.75-0.93', 'lens-dp-0.93-1.22', 'lens-dp-1.22-1.52', 'lens-dp-1.52-2.92']
+            },
+            {
+                id: 'panasonic-pt-rq50k',
+                brand: 'Panasonic',
+                model: 'PT-RQ50K',
+                lumens: 50000,
+                resolution: '4096x2160',
+                lenses: ['lens-pana-rq-et-dle055', 'lens-pana-rq-et-dle085', 'lens-pana-rq-et-dle150']
+            }
+        ];
+
+        const LENS_LIBRARY = {
+            // Barco UDX Lenses
+            'lens-uhd-0.38-0.6': { name: 'TLD+ 0.38-0.6:1', throwRatio: 0.49, type: 'Ultra Short Throw' },
+            'lens-uhd-0.73-1.06': { name: 'TLD+ 0.73-1.06:1', throwRatio: 0.895, type: 'Short Throw' },
+            'lens-uhd-1.16-1.49': { name: 'TLD+ 1.16-1.49:1', throwRatio: 1.325, type: 'Standard' },
+            'lens-uhd-1.52-2.89': { name: 'TLD+ 1.52-2.89:1', throwRatio: 2.205, type: 'Medium Throw' },
+            'lens-uhd-3.0-6.5': { name: 'TLD+ 3.0-6.5:1', throwRatio: 4.75, type: 'Long Throw' },
+
+            // Christie Lenses
+            'lens-christie-0.38': { name: '0.38:1 Fixed Ultra Short', throwRatio: 0.38, type: 'Ultra Short Throw' },
+            'lens-christie-0.67-0.9': { name: '0.67-0.9:1 Zoom', throwRatio: 0.785, type: 'Short Throw' },
+            'lens-christie-0.9-1.18': { name: '0.9-1.18:1 Zoom', throwRatio: 1.04, type: 'Standard' },
+            'lens-christie-1.18-1.5': { name: '1.18-1.5:1 Zoom', throwRatio: 1.34, type: 'Standard' },
+
+            // Panasonic Lenses
+            'lens-pana-et-dle055': { name: 'ET-DLE055 (0.8:1)', throwRatio: 0.8, type: 'Short Throw' },
+            'lens-pana-et-dle085': { name: 'ET-DLE085 (0.8-1.0:1)', throwRatio: 0.9, type: 'Short Throw' },
+            'lens-pana-et-dle150': { name: 'ET-DLE150 (1.5-1.8:1)', throwRatio: 1.65, type: 'Standard' },
+            'lens-pana-et-dle250': { name: 'ET-DLE250 (2.4-3.7:1)', throwRatio: 3.05, type: 'Medium Throw' },
+            'lens-pana-et-dle350': { name: 'ET-DLE350 (3.5-5.4:1)', throwRatio: 4.45, type: 'Long Throw' },
+            'lens-pana-et-dle450': { name: 'ET-DLE450 (5.4-8.6:1)', throwRatio: 7.0, type: 'Long Throw' },
+
+            // Barco F70 Lenses
+            'lens-f70-en11': { name: 'EN11 (0.8:1)', throwRatio: 0.8, type: 'Short Throw' },
+            'lens-f70-en12': { name: 'EN12 (1.16-1.49:1)', throwRatio: 1.325, type: 'Standard' },
+            'lens-f70-en13': { name: 'EN13 (1.43-2.17:1)', throwRatio: 1.8, type: 'Standard' },
+            'lens-f70-en14': { name: 'EN14 (2.1-3.8:1)', throwRatio: 2.95, type: 'Medium Throw' },
+            'lens-f70-en15': { name: 'EN15 (3.5-6.0:1)', throwRatio: 4.75, type: 'Long Throw' },
+
+            // Christie Boxer Lenses
+            'lens-boxer-0.38': { name: '0.38:1 Fixed', throwRatio: 0.38, type: 'Ultra Short Throw' },
+            'lens-boxer-0.67-0.9': { name: '0.67-0.9:1 Zoom', throwRatio: 0.785, type: 'Short Throw' },
+            'lens-boxer-1.16-1.49': { name: '1.16-1.49:1 Zoom', throwRatio: 1.325, type: 'Standard' },
+            'lens-boxer-1.45-2.17': { name: '1.45-2.17:1 Zoom', throwRatio: 1.81, type: 'Standard' },
+
+            // Epson Lenses
+            'lens-epson-elplm08': { name: 'ELPLM08 (1.45-2.33:1)', throwRatio: 1.89, type: 'Standard' },
+            'lens-epson-elplm09': { name: 'ELPLM09 (2.25-3.65:1)', throwRatio: 2.95, type: 'Medium Throw' },
+            'lens-epson-elplm10': { name: 'ELPLM10 (3.5-5.5:1)', throwRatio: 4.5, type: 'Long Throw' },
+            'lens-epson-elplm11': { name: 'ELPLM11 (5.3-8.7:1)', throwRatio: 7.0, type: 'Long Throw' },
+            'lens-epson-elplm15': { name: 'ELPLM15 (0.84:1)', throwRatio: 0.84, type: 'Short Throw' },
+
+            // NEC Lenses
+            'lens-nec-np41zl': { name: 'NP41ZL (0.88-1.08:1)', throwRatio: 0.98, type: 'Short Throw' },
+            'lens-nec-np42zl': { name: 'NP42ZL (1.16-1.52:1)', throwRatio: 1.34, type: 'Standard' },
+            'lens-nec-np43zl': { name: 'NP43ZL (1.50-3.02:1)', throwRatio: 2.26, type: 'Medium Throw' },
+            'lens-nec-np44zl': { name: 'NP44ZL (2.99-5.93:1)', throwRatio: 4.46, type: 'Long Throw' },
+
+            // Sony Lenses
+            'lens-sony-0.9-1.2': { name: 'VPLL-Z1032 (0.9-1.2:1)', throwRatio: 1.05, type: 'Short Throw' },
+            'lens-sony-1.2-1.85': { name: 'VPLL-Z1025 (1.2-1.85:1)', throwRatio: 1.525, type: 'Standard' },
+            'lens-sony-1.85-2.7': { name: 'VPLL-Z1045 (1.85-2.7:1)', throwRatio: 2.275, type: 'Medium Throw' },
+            'lens-sony-2.7-4.1': { name: 'VPLL-Z1050 (2.7-4.1:1)', throwRatio: 3.4, type: 'Long Throw' },
+
+            // Digital Projection Lenses
+            'lens-dp-0.75-0.93': { name: 'Short 0.75-0.93:1', throwRatio: 0.84, type: 'Short Throw' },
+            'lens-dp-0.93-1.22': { name: 'Standard 0.93-1.22:1', throwRatio: 1.075, type: 'Standard' },
+            'lens-dp-1.22-1.52': { name: 'Medium 1.22-1.52:1', throwRatio: 1.37, type: 'Standard' },
+            'lens-dp-1.52-2.92': { name: 'Long 1.52-2.92:1', throwRatio: 2.22, type: 'Medium Throw' },
+
+            // Panasonic RQ Lenses
+            'lens-pana-rq-et-dle055': { name: 'ET-DLE055 (0.8:1)', throwRatio: 0.8, type: 'Short Throw' },
+            'lens-pana-rq-et-dle085': { name: 'ET-DLE085 (0.8-1.0:1)', throwRatio: 0.9, type: 'Short Throw' },
+            'lens-pana-rq-et-dle150': { name: 'ET-DLE150 (1.5-1.8:1)', throwRatio: 1.65, type: 'Standard' }
+        };
+
         // Global State
         let scene, camera, renderer, controls, transformControls;
         let sceneObjects = [];
@@ -706,6 +1199,11 @@
         let renderMode = 'normal';
         let gridHelper, axesHelper;
         let humanReference;
+
+        // Modal State
+        let selectedProjectorModel = null;
+        let selectedLens = null;
+        let currentProjectorImage = null;
 
         // Performance tracking
         let frameCount = 0;
@@ -852,6 +1350,241 @@
             // Add initial projector
             addProjector();
         }
+
+        // ===== PROJECTOR MODAL FUNCTIONS =====
+
+        function openProjectorModal() {
+            selectedProjectorModel = null;
+            selectedLens = null;
+            document.getElementById('projector-modal').classList.add('show');
+            document.getElementById('lens-section').style.display = 'none';
+            document.getElementById('config-section').style.display = 'none';
+            document.getElementById('create-projector-btn').disabled = true;
+            populateProjectorGrid();
+        }
+
+        function closeProjectorModal() {
+            document.getElementById('projector-modal').classList.remove('show');
+        }
+
+        function populateProjectorGrid() {
+            const grid = document.getElementById('projector-grid');
+            grid.innerHTML = '';
+
+            PROJECTOR_LIBRARY.forEach(proj => {
+                const card = document.createElement('div');
+                card.className = 'projector-card';
+                card.innerHTML = `
+                    <div class="projector-brand">${proj.brand}</div>
+                    <div class="projector-model">${proj.model}</div>
+                    <div class="projector-specs">
+                        ${proj.lumens.toLocaleString()} Lumens<br>
+                        ${proj.resolution}
+                    </div>
+                `;
+                card.onclick = () => selectProjectorModel(proj);
+                grid.appendChild(card);
+            });
+        }
+
+        function filterProjectors() {
+            const search = document.getElementById('projector-search').value.toLowerCase();
+            const cards = document.querySelectorAll('.projector-card');
+
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = text.includes(search) ? 'block' : 'none';
+            });
+        }
+
+        function selectProjectorModel(proj) {
+            selectedProjectorModel = proj;
+
+            // Highlight selected
+            document.querySelectorAll('.projector-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.target.closest('.projector-card').classList.add('selected');
+
+            // Show lens section
+            document.getElementById('lens-section').style.display = 'block';
+            populateLenses(proj.lenses);
+
+            // Scroll to lens section
+            document.getElementById('lens-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function populateLenses(lensIds) {
+            const list = document.getElementById('lens-list');
+            list.innerHTML = '';
+
+            lensIds.forEach(lensId => {
+                const lens = LENS_LIBRARY[lensId];
+                const item = document.createElement('div');
+                item.className = 'lens-item';
+                item.innerHTML = `
+                    <div>
+                        <div class="lens-name">${lens.name}</div>
+                        <div class="lens-specs">${lens.type} • Throw Ratio: ${lens.throwRatio}</div>
+                    </div>
+                `;
+                item.onclick = () => selectLens(lensId, lens);
+                list.appendChild(item);
+            });
+        }
+
+        function selectLens(lensId, lens) {
+            selectedLens = { id: lensId, ...lens };
+
+            // Highlight selected
+            document.querySelectorAll('.lens-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.closest('.lens-item').classList.add('selected');
+
+            // Show configuration section
+            document.getElementById('config-section').style.display = 'block';
+            document.getElementById('create-projector-btn').disabled = false;
+
+            // Set default name
+            const projCount = projectors.length + 1;
+            document.getElementById('new-projector-name').value =
+                `${selectedProjectorModel.brand} ${selectedProjectorModel.model} #${projCount}`;
+
+            // Scroll to config
+            document.getElementById('config-section').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function createProjectorFromModal() {
+            if (!selectedProjectorModel || !selectedLens) return;
+
+            const name = document.getElementById('new-projector-name').value ||
+                        `${selectedProjectorModel.brand} ${selectedProjectorModel.model}`;
+
+            const posX = parseFloat(document.getElementById('new-proj-x').value);
+            const posY = parseFloat(document.getElementById('new-proj-y').value);
+            const posZ = parseFloat(document.getElementById('new-proj-z').value);
+
+            const targetX = parseFloat(document.getElementById('new-target-x').value);
+            const targetY = parseFloat(document.getElementById('new-target-y').value);
+            const targetZ = parseFloat(document.getElementById('new-target-z').value);
+
+            // Create spotlight with specs from library
+            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
+            const lumensToIntensity = selectedProjectorModel.lumens / 200; // Scale factor
+            const spotlight = new THREE.SpotLight(color, lumensToIntensity);
+
+            spotlight.position.set(posX, posY, posZ);
+            spotlight.angle = Math.PI / 6;
+            spotlight.penumbra = 0.1;
+            spotlight.decay = 2;
+            spotlight.distance = 50;
+            spotlight.castShadow = true;
+            spotlight.shadow.mapSize.width = 2048;
+            spotlight.shadow.mapSize.height = 2048;
+
+            // Create and position target
+            const target = new THREE.Object3D();
+            target.position.set(targetX, targetY, targetZ);
+            scene.add(target);
+            spotlight.target = target;
+
+            // Make spotlight look at target
+            spotlight.lookAt(targetX, targetY, targetZ);
+
+            // Create helper
+            const helper = new THREE.SpotLightHelper(spotlight);
+            scene.add(helper);
+
+            // Create target point indicator (red sphere)
+            const targetGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+            const targetMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            const targetIndicator = new THREE.Mesh(targetGeometry, targetMaterial);
+            targetIndicator.position.copy(target.position);
+            scene.add(targetIndicator);
+
+            // Store complete projector data
+            spotlight.userData = {
+                name: name,
+                type: 'projector',
+                locked: false,
+                helper: helper,
+                target: target,
+                targetIndicator: targetIndicator,
+                lumens: selectedProjectorModel.lumens,
+                throwRatio: selectedLens.throwRatio,
+                resolution: selectedProjectorModel.resolution,
+                lensShiftH: 0,
+                lensShiftV: 0,
+                brightnessFactor: 1.0,
+                projectorModel: selectedProjectorModel,
+                lensModel: selectedLens,
+                brand: selectedProjectorModel.brand,
+                model: selectedProjectorModel.model
+            };
+
+            scene.add(spotlight);
+            sceneObjects.push(spotlight);
+            projectors.push(spotlight);
+
+            updateSceneObjectsList();
+            updateStats();
+            closeProjectorModal();
+        }
+
+        // ===== IMAGE IMPORT FUNCTIONS =====
+
+        function openImageModal() {
+            if (!selectedObject || selectedObject.userData.type !== 'projector') {
+                alert('Please select a projector first');
+                return;
+            }
+            document.getElementById('image-modal').classList.add('show');
+            document.getElementById('image-preview').innerHTML = '';
+            document.getElementById('apply-image-btn').disabled = true;
+        }
+
+        function closeImageModal() {
+            document.getElementById('image-modal').classList.remove('show');
+            currentProjectorImage = null;
+        }
+
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('image-preview');
+
+                if (file.type.startsWith('image/')) {
+                    preview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 300px; border-radius: 4px;">`;
+                } else if (file.type.startsWith('video/')) {
+                    preview.innerHTML = `<video src="${e.target.result}" style="max-width: 100%; max-height: 300px; border-radius: 4px;" controls></video>`;
+                }
+
+                currentProjectorImage = e.target.result;
+                document.getElementById('apply-image-btn').disabled = false;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function applyProjectorImage() {
+            if (!currentProjectorImage || !selectedObject) return;
+
+            const textureLoader = new THREE.TextureLoader();
+            textureLoader.load(currentProjectorImage, (texture) => {
+                // Apply texture to spotlight
+                selectedObject.map = texture;
+                selectedObject.userData.projectorTexture = currentProjectorImage;
+
+                closeImageModal();
+                updatePropertiesPanel();
+            });
+        }
+
+        // Add button to properties panel for image import
+        window.openImageModal = openImageModal;
 
         function addPrimitive(type) {
             let geometry;
@@ -1211,6 +1944,58 @@
                             </div>
                         </div>
                     </div>
+
+                    ${obj.userData.target ? `
+                    <div class="property-section">
+                        <div class="property-section-header">
+                            <span class="section-toggle">▼</span>
+                            Target Point
+                        </div>
+                        <div class="property-section-content">
+                            <div class="property-row">
+                                <label class="property-label">Target Position</label>
+                                <div class="property-input-group">
+                                    <span class="axis-label x">X</span>
+                                    <input type="number" class="property-input" step="0.1"
+                                        value="${obj.userData.target.position.x.toFixed(2)}"
+                                        onchange="updateTargetPosition('x', parseFloat(this.value))">
+                                    <span class="axis-label y">Y</span>
+                                    <input type="number" class="property-input" step="0.1"
+                                        value="${obj.userData.target.position.y.toFixed(2)}"
+                                        onchange="updateTargetPosition('y', parseFloat(this.value))">
+                                    <span class="axis-label z">Z</span>
+                                    <input type="number" class="property-input" step="0.1"
+                                        value="${obj.userData.target.position.z.toFixed(2)}"
+                                        onchange="updateTargetPosition('z', parseFloat(this.value))">
+                                </div>
+                            </div>
+                            <div class="property-row">
+                                <label class="property-checkbox">
+                                    <input type="checkbox" ${obj.userData.targetIndicator?.visible !== false ? 'checked' : ''}
+                                        onchange="toggleTargetIndicator(this.checked)">
+                                    <span>Show Target Indicator</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <div class="property-section">
+                        <div class="property-section-header">
+                            <span class="section-toggle">▼</span>
+                            Projector Image
+                        </div>
+                        <div class="property-section-content">
+                            <div class="property-row">
+                                <button class="btn" onclick="openImageModal()">Import Image / Video</button>
+                                ${obj.userData.projectorTexture ? `
+                                <div style="margin-top: 10px; font-size: 11px; color: #0d9488;">
+                                    ✓ Image loaded
+                                </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
                 `;
             }
 
@@ -1402,6 +2187,24 @@
             }
         };
 
+        window.updateTargetPosition = (axis, value) => {
+            if (selectedObject && selectedObject.userData.target) {
+                selectedObject.userData.target.position[axis] = value;
+                if (selectedObject.userData.targetIndicator) {
+                    selectedObject.userData.targetIndicator.position[axis] = value;
+                }
+                if (selectedObject.userData.helper) {
+                    selectedObject.userData.helper.update();
+                }
+            }
+        };
+
+        window.toggleTargetIndicator = (value) => {
+            if (selectedObject && selectedObject.userData.targetIndicator) {
+                selectedObject.userData.targetIndicator.visible = value;
+            }
+        };
+
         window.toggleVisibility = (index) => {
             const obj = sceneObjects[index];
             obj.visible = !obj.visible;
@@ -1576,8 +2379,18 @@
         window.measureDistance = () => console.log('Measure Distance');
         window.togglePhotometric = () => console.log('Toggle Photometric');
         window.addPrimitive = addPrimitive;
-        window.addProjector = addProjector;
         window.addCamera = addCamera;
+
+        // Projector Modal functions
+        window.openProjectorModal = openProjectorModal;
+        window.closeProjectorModal = closeProjectorModal;
+        window.filterProjectors = filterProjectors;
+        window.createProjectorFromModal = createProjectorFromModal;
+
+        // Image Modal functions
+        window.closeImageModal = closeImageModal;
+        window.handleImageUpload = handleImageUpload;
+        window.applyProjectorImage = applyProjectorImage;
 
         // Initialize
         init();
