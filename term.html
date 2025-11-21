@@ -1136,37 +1136,41 @@
         // Function to create rectangular projection texture
         function createRectangularProjectionTexture(aspectRatio) {
             const canvas = document.createElement('canvas');
-            canvas.width = 512;
-            canvas.height = 512;
+            canvas.width = 1024;
+            canvas.height = 1024;
             const ctx = canvas.getContext('2d');
 
-            // Clear to black (transparent)
-            ctx.fillStyle = 'black';
+            // Clear to black
+            ctx.fillStyle = 'rgb(0, 0, 0)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Draw white rectangle based on aspect ratio
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = 'rgb(255, 255, 255)';
 
             let rectWidth, rectHeight;
-            const margin = 0; // No margin for full coverage
 
             if (aspectRatio >= 1) {
                 // Landscape (16:9, 16:10, etc.)
-                rectWidth = canvas.width - margin * 2;
-                rectHeight = rectWidth / aspectRatio;
+                rectWidth = canvas.width;
+                rectHeight = canvas.width / aspectRatio;
             } else {
                 // Portrait (rare)
-                rectHeight = canvas.height - margin * 2;
-                rectWidth = rectHeight * aspectRatio;
+                rectHeight = canvas.height;
+                rectWidth = canvas.height * aspectRatio;
             }
 
             const x = (canvas.width - rectWidth) / 2;
             const y = (canvas.height - rectHeight) / 2;
 
+            // Fill the rectangle
             ctx.fillRect(x, y, rectWidth, rectHeight);
 
+            // Create texture with proper settings
             const texture = new THREE.CanvasTexture(canvas);
+            texture.center.set(0.5, 0.5);
+            texture.rotation = 0;
             texture.needsUpdate = true;
+
             return texture;
         }
 
@@ -1488,6 +1492,21 @@
                 controls.enabled = !event.value;
             });
             transformControls.addEventListener('objectChange', () => {
+                // Check if we're moving a projector target
+                const obj = transformControls.object;
+                if (obj && obj.userData.type === 'projector_target') {
+                    const projector = obj.userData.parentProjector;
+                    if (projector && projector.userData.target) {
+                        // Update projector's target position
+                        projector.userData.target.position.copy(obj.position);
+                        projector.target.position.copy(obj.position);
+
+                        // Update helper
+                        if (projector.userData.helper) {
+                            projector.userData.helper.update();
+                        }
+                    }
+                }
                 updatePropertiesPanel();
             });
             scene.add(transformControls);
@@ -1713,7 +1732,7 @@
 
             spotlight.position.set(posX, posY, posZ);
             spotlight.angle = Math.PI / 6;
-            spotlight.penumbra = 0.1;
+            spotlight.penumbra = 0.05; // Sharper edges for rectangular projection
             spotlight.decay = 2;
             spotlight.distance = 50;
             spotlight.castShadow = true;
@@ -1738,12 +1757,26 @@
             const helper = new RectangularFrustumHelper(spotlight, selectedProjectorModel.resolution);
             scene.add(helper);
 
-            // Create target point indicator (red sphere)
-            const targetGeometry = new THREE.SphereGeometry(0.2, 16, 16);
-            const targetMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+            // Create target point indicator (yellow sphere - selectable)
+            const targetGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+            const targetMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffff00,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.5
+            });
             const targetIndicator = new THREE.Mesh(targetGeometry, targetMaterial);
             targetIndicator.position.copy(target.position);
+
+            // Make target indicator selectable and transformable
+            targetIndicator.userData = {
+                type: 'projector_target',
+                name: name + ' Target',
+                locked: false,
+                parentProjector: null // Will be set after spotlight is added
+            };
+
             scene.add(targetIndicator);
+            sceneObjects.push(targetIndicator);
 
             // Store complete projector data
             spotlight.userData = {
@@ -1768,6 +1801,9 @@
             scene.add(spotlight);
             sceneObjects.push(spotlight);
             projectors.push(spotlight);
+
+            // Link target indicator to projector
+            targetIndicator.userData.parentProjector = spotlight;
 
             updateSceneObjectsList();
             updateStats();
@@ -2062,11 +2098,18 @@
                 const helperClone = new RectangularFrustumHelper(clone, obj.userData.resolution);
                 scene.add(helperClone);
 
-                // Clone target indicator
+                // Clone target indicator (yellow sphere)
                 let targetIndicatorClone = null;
                 if (obj.userData.targetIndicator) {
                     targetIndicatorClone = obj.userData.targetIndicator.clone();
+                    targetIndicatorClone.userData = {
+                        type: 'projector_target',
+                        name: obj.userData.name + ' Copy Target',
+                        locked: false,
+                        parentProjector: null // Will be set after clone is added
+                    };
                     scene.add(targetIndicatorClone);
+                    sceneObjects.push(targetIndicatorClone);
                 }
 
                 // Clone userData
@@ -2077,6 +2120,11 @@
                     helper: helperClone,
                     targetIndicator: targetIndicatorClone
                 };
+
+                // Link cloned target indicator back to cloned projector
+                if (targetIndicatorClone) {
+                    targetIndicatorClone.userData.parentProjector = clone;
+                }
 
             } else {
                 // Clone mesh
@@ -2583,7 +2631,7 @@
                 Math.random() * 8 - 4
             );
             spotlight.angle = Math.PI / 6;
-            spotlight.penumbra = 0.1;
+            spotlight.penumbra = 0.05; // Sharper edges for rectangular projection
             spotlight.decay = 2;
             spotlight.distance = 50;
             spotlight.castShadow = true;
@@ -2608,12 +2656,34 @@
             const helper = new RectangularFrustumHelper(spotlight, defaultResolution);
             scene.add(helper);
 
+            // Create target point indicator (yellow sphere - selectable)
+            const targetGeometry = new THREE.SphereGeometry(0.25, 32, 32);
+            const targetMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffff00,
+                emissive: 0xffaa00,
+                emissiveIntensity: 0.5
+            });
+            const targetIndicator = new THREE.Mesh(targetGeometry, targetMaterial);
+            targetIndicator.position.copy(target.position);
+
+            // Make target indicator selectable and transformable
+            targetIndicator.userData = {
+                type: 'projector_target',
+                name: 'Projector ' + (projectors.length + 1) + ' Target',
+                locked: false,
+                parentProjector: null // Will be set after spotlight is added
+            };
+
+            scene.add(targetIndicator);
+            sceneObjects.push(targetIndicator);
+
             // Projector data
             spotlight.userData.name = 'Projector ' + (projectors.length + 1);
             spotlight.userData.type = 'projector';
             spotlight.userData.locked = false;
             spotlight.userData.helper = helper;
             spotlight.userData.target = target;
+            spotlight.userData.targetIndicator = targetIndicator;
             spotlight.userData.lumens = 10000;
             spotlight.userData.throwRatio = 1.5;
             spotlight.userData.resolution = defaultResolution;
@@ -2624,6 +2694,9 @@
             scene.add(spotlight);
             sceneObjects.push(spotlight);
             projectors.push(spotlight);
+
+            // Link target indicator to projector
+            targetIndicator.userData.parentProjector = spotlight;
 
             updateSceneObjectsList();
             updateStats();
