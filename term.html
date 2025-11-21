@@ -1877,15 +1877,11 @@
                 const x = (canvas.width - rectWidth) / 2;
                 const y = (canvas.height - rectHeight) / 2;
 
-                // Clear to black
-                ctx.fillStyle = 'black';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Fill ENTIRE canvas with the image (no black borders to avoid circular mask visibility)
+                // The rectangular shape comes from the spotlight angle and frustum
+                ctx.drawImage(userTexture.image, 0, 0, canvas.width, canvas.height);
 
-                // Draw the ENTIRE user image fitted to the rectangle (not cropped/clipped)
-                // This ensures the full image is visible in the projection
-                ctx.drawImage(userTexture.image, x, y, rectWidth, rectHeight);
-
-                // Create texture from composite canvas
+                // Create texture from canvas
                 const compositeTexture = new THREE.CanvasTexture(canvas);
                 compositeTexture.center.set(0.5, 0.5);
                 compositeTexture.needsUpdate = true;
@@ -3137,22 +3133,43 @@
         window.updateProjectorLumens = (value) => {
             if (selectedObject && selectedObject.userData.type === 'projector') {
                 selectedObject.userData.lumens = value;
-                document.querySelector('.property-label:has(+ .property-slider) .value-display').textContent = value;
+                // Convert lumens to intensity (same formula as creation)
+                const baseIntensity = value / 200;
+                selectedObject.intensity = baseIntensity * selectedObject.userData.brightnessFactor;
+
+                // Update UI
+                const labels = document.querySelectorAll('.property-label .value-display');
+                labels[0].textContent = value;
+                labels[2].textContent = selectedObject.intensity.toFixed(0);
             }
         };
 
         window.updateBrightnessFactor = (value) => {
             if (selectedObject && selectedObject.userData.type === 'projector') {
                 selectedObject.userData.brightnessFactor = value;
+                // Apply brightness factor to base intensity from lumens
+                const baseIntensity = selectedObject.userData.lumens / 200;
+                selectedObject.intensity = baseIntensity * value;
+
+                // Update UI
                 const labels = document.querySelectorAll('.property-label .value-display');
                 labels[1].textContent = value.toFixed(2);
+                labels[2].textContent = selectedObject.intensity.toFixed(0);
             }
         };
 
         window.updateProjectorIntensity = (value) => {
             if (selectedObject && selectedObject.userData.type === 'projector') {
                 selectedObject.intensity = value;
+                // Update brightness factor based on new intensity
+                const baseIntensity = selectedObject.userData.lumens / 200;
+                if (baseIntensity > 0) {
+                    selectedObject.userData.brightnessFactor = value / baseIntensity;
+                }
+
+                // Update UI
                 const labels = document.querySelectorAll('.property-label .value-display');
+                labels[1].textContent = selectedObject.userData.brightnessFactor.toFixed(2);
                 labels[2].textContent = value.toFixed(0);
             }
         };
@@ -3428,9 +3445,27 @@
 
             // Update projectors and helpers
             projectors.forEach(proj => {
-                // If target is locked, always aim projector at target
-                if (proj.userData.targetLocked && proj.userData.target) {
-                    proj.lookAt(proj.userData.target.position);
+                if (proj.userData.target) {
+                    if (proj.userData.targetLocked) {
+                        // Locked: Projector aims at target point
+                        proj.lookAt(proj.userData.target.position);
+                    } else {
+                        // Unlocked: Target follows projector's direction
+                        // Calculate where projector is pointing based on its rotation
+                        const direction = new THREE.Vector3(0, 0, -1);
+                        direction.applyQuaternion(proj.quaternion);
+                        direction.normalize();
+
+                        // Place target 10 units in front of projector
+                        const targetPos = proj.position.clone().add(direction.multiplyScalar(10));
+                        proj.target.position.copy(targetPos);
+                        proj.userData.target.position.copy(targetPos);
+
+                        // Update target indicator position if visible
+                        if (proj.userData.targetIndicator) {
+                            proj.userData.targetIndicator.position.copy(targetPos);
+                        }
+                    }
                 }
 
                 // Update frustum helper
