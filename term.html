@@ -1133,6 +1133,43 @@
         import { TransformControls } from 'three/addons/controls/TransformControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
+        // Function to create rectangular projection texture
+        function createRectangularProjectionTexture(aspectRatio) {
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+
+            // Clear to black (transparent)
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw white rectangle based on aspect ratio
+            ctx.fillStyle = 'white';
+
+            let rectWidth, rectHeight;
+            const margin = 0; // No margin for full coverage
+
+            if (aspectRatio >= 1) {
+                // Landscape (16:9, 16:10, etc.)
+                rectWidth = canvas.width - margin * 2;
+                rectHeight = rectWidth / aspectRatio;
+            } else {
+                // Portrait (rare)
+                rectHeight = canvas.height - margin * 2;
+                rectWidth = rectHeight * aspectRatio;
+            }
+
+            const x = (canvas.width - rectWidth) / 2;
+            const y = (canvas.height - rectHeight) / 2;
+
+            ctx.fillRect(x, y, rectWidth, rectHeight);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+            return texture;
+        }
+
         // Custom Rectangular Frustum Helper for Projectors
         class RectangularFrustumHelper extends THREE.LineSegments {
             constructor(light, resolution) {
@@ -1683,6 +1720,11 @@
             spotlight.shadow.mapSize.width = 2048;
             spotlight.shadow.mapSize.height = 2048;
 
+            // Apply rectangular projection texture based on aspect ratio
+            const [resWidth, resHeight] = selectedProjectorModel.resolution.split('x').map(Number);
+            const aspectRatio = resWidth / resHeight;
+            spotlight.map = createRectangularProjectionTexture(aspectRatio);
+
             // Create and position target
             const target = new THREE.Object3D();
             target.position.set(targetX, targetY, targetZ);
@@ -2004,6 +2046,13 @@
                 // Clone spotlight (projector)
                 clone = obj.clone();
 
+                // Clone rectangular projection texture
+                if (obj.userData.resolution) {
+                    const [resWidth, resHeight] = obj.userData.resolution.split('x').map(Number);
+                    const aspectRatio = resWidth / resHeight;
+                    clone.map = createRectangularProjectionTexture(aspectRatio);
+                }
+
                 // Clone target
                 const targetClone = obj.target.clone();
                 scene.add(targetClone);
@@ -2297,54 +2346,63 @@
             canvas.height = 128;
 
             // Background
-            context.fillStyle = 'rgba(255, 200, 50, 0.9)';
+            context.fillStyle = 'rgba(255, 200, 50, 1.0)'; // Fully opaque
             context.fillRect(0, 0, canvas.width, canvas.height);
 
             // Border
             context.strokeStyle = '#ff9800';
-            context.lineWidth = 4;
-            context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+            context.lineWidth = 6;
+            context.strokeRect(3, 3, canvas.width - 6, canvas.height - 6);
 
             // Text
-            context.font = 'Bold 36px Arial';
+            context.font = 'Bold 40px Arial';
             context.fillStyle = '#000000';
             context.textAlign = 'center';
             context.textBaseline = 'middle';
             context.fillText(text, canvas.width / 2, canvas.height / 2);
 
             const texture = new THREE.CanvasTexture(canvas);
+            texture.needsUpdate = true;
+
             const spriteMaterial = new THREE.SpriteMaterial({
                 map: texture,
-                depthTest: false
+                sizeAttenuation: true,
+                transparent: true,
+                depthTest: true,
+                depthWrite: false
             });
             const sprite = new THREE.Sprite(spriteMaterial);
             sprite.position.copy(position);
-            sprite.scale.set(3, 0.75, 1);
-            sprite.renderOrder = 1001;
+            sprite.position.y += 0.5; // Raise above the marker
+            sprite.scale.set(2, 0.5, 1);
 
             // Create marker pin
-            const markerGeometry = new THREE.ConeGeometry(0.1, 0.3, 8);
+            const markerGeometry = new THREE.ConeGeometry(0.08, 0.5, 8);
             const markerMaterial = new THREE.MeshBasicMaterial({
-                color: 0xff9800,
-                depthTest: false
+                color: 0xff9800
             });
             const marker = new THREE.Mesh(markerGeometry, markerMaterial);
             marker.position.copy(position);
-            marker.position.y -= 0.4;
+            marker.position.y -= 0.25;
             marker.rotation.x = Math.PI;
-            marker.renderOrder = 1000;
+
+            // Create small sphere at base of pin
+            const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            const sphere = new THREE.Mesh(sphereGeometry, markerMaterial);
+            sphere.position.copy(position);
 
             // Group
             const annotationGroup = new THREE.Group();
             annotationGroup.add(sprite);
             annotationGroup.add(marker);
+            annotationGroup.add(sphere);
 
             annotationGroup.userData = {
                 type: 'annotation',
                 name: 'Annotation ' + (annotations.length + 1),
                 locked: false,
                 text: text,
-                position: position
+                position: position.clone()
             };
 
             scene.add(annotationGroup);
@@ -2432,26 +2490,26 @@
         }
 
         // Menu handlers for exclusion zones
-        function addExclusionBox() {
+        window.addExclusionBox = function() {
             createExclusionZone('box');
         }
 
-        function addExclusionSphere() {
+        window.addExclusionSphere = function() {
             createExclusionZone('sphere');
         }
 
-        function addExclusionPlane() {
+        window.addExclusionPlane = function() {
             createExclusionZone('plane');
         }
 
-        function addExclusionCylinder() {
+        window.addExclusionCylinder = function() {
             createExclusionZone('cylinder');
         }
 
         // Toggle photometric analysis mode
         let photometricMode = 'normal';
 
-        function togglePhotometric() {
+        window.togglePhotometric = function() {
             const modes = ['normal', 'illuminance', 'luminance'];
             const currentIndex = modes.indexOf(photometricMode);
             photometricMode = modes[(currentIndex + 1) % modes.length];
@@ -2542,6 +2600,9 @@
 
             // Set resolution first for helper creation
             const defaultResolution = '1920x1080'; // 16:9 Full HD
+
+            // Apply rectangular projection texture (16:9 aspect ratio)
+            spotlight.map = createRectangularProjectionTexture(16/9);
 
             // Create rectangular frustum helper with proper aspect ratio
             const helper = new RectangularFrustumHelper(spotlight, defaultResolution);
