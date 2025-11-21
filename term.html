@@ -907,6 +907,90 @@
         </div>
     </div>
 
+    <!-- Array & Symmetry Modal -->
+    <div id="array-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="array-modal-title">Create Array</h2>
+                <button class="modal-close" onclick="closeArrayModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Linear Array Settings -->
+                <div id="linear-array-settings" style="display: none;">
+                    <div class="modal-section">
+                        <div class="modal-section-title">Linear Array Settings</div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Count</label>
+                            <input type="number" id="linear-count" value="5" min="2" max="50" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Direction</label>
+                            <select id="linear-direction" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                                <option value="x">X Axis</option>
+                                <option value="y">Y Axis</option>
+                                <option value="z">Z Axis</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Spacing</label>
+                            <input type="number" id="linear-spacing" value="2" min="0.1" step="0.1" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Polar Array Settings -->
+                <div id="polar-array-settings" style="display: none;">
+                    <div class="modal-section">
+                        <div class="modal-section-title">Polar Array Settings</div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Count</label>
+                            <input type="number" id="polar-count" value="8" min="2" max="50" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Axis</label>
+                            <select id="polar-axis" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                                <option value="y">Y Axis (Vertical)</option>
+                                <option value="x">X Axis</option>
+                                <option value="z">Z Axis</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Radius</label>
+                            <input type="number" id="polar-radius" value="5" min="0.1" step="0.1" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Angle (degrees)</label>
+                            <input type="number" id="polar-angle" value="360" min="1" max="360" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mirror Symmetry Settings -->
+                <div id="mirror-settings" style="display: none;">
+                    <div class="modal-section">
+                        <div class="modal-section-title">Mirror Symmetry Settings</div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Mirror Axis</label>
+                            <select id="mirror-axis" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                                <option value="x">X Axis (Left/Right)</option>
+                                <option value="y">Y Axis (Up/Down)</option>
+                                <option value="z">Z Axis (Front/Back)</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 16px;">
+                            <label style="display: block; margin-bottom: 6px; color: #ccc;">Mirror Position</label>
+                            <input type="number" id="mirror-position" value="0" step="0.1" style="width: 100%; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeArrayModal()">Cancel</button>
+                <button class="btn" id="create-array-btn" onclick="executeArrayOperation()">Create</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Menu Bar -->
     <div id="menubar">
         <div class="menu-item dropdown">
@@ -947,9 +1031,18 @@
         <div class="menu-item dropdown">
             Tools
             <div class="dropdown-content">
-                <div class="dropdown-item" onclick="addAnnotation()">Add Annotation</div>
-                <div class="dropdown-item" onclick="measureDistance()">Measure Distance</div>
+                <div class="dropdown-item" onclick="addAnnotation()">Add Annotation (A)</div>
+                <div class="dropdown-item" onclick="measureDistance()">Measure Distance (T)</div>
                 <div class="dropdown-item" onclick="togglePhotometric()">Photometric Analysis</div>
+            </div>
+        </div>
+        <div class="menu-item dropdown">
+            Masking
+            <div class="dropdown-content">
+                <div class="dropdown-item" onclick="addExclusionBox()">Box Exclusion Zone</div>
+                <div class="dropdown-item" onclick="addExclusionSphere()">Sphere Exclusion Zone</div>
+                <div class="dropdown-item" onclick="addExclusionCylinder()">Cylinder Exclusion Zone</div>
+                <div class="dropdown-item" onclick="addExclusionPlane()">Plane Exclusion Zone</div>
             </div>
         </div>
         <div class="menu-item dropdown">
@@ -1039,6 +1132,112 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { TransformControls } from 'three/addons/controls/TransformControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+        // Custom Rectangular Frustum Helper for Projectors
+        class RectangularFrustumHelper extends THREE.LineSegments {
+            constructor(light, resolution) {
+                // Parse aspect ratio from resolution (e.g., "4096x2160" or "1920x1080")
+                const [width, height] = resolution.split('x').map(Number);
+                const aspectRatio = width / height;
+
+                const geometry = new THREE.BufferGeometry();
+                const material = new THREE.LineBasicMaterial({
+                    color: 0xffffff,
+                    fog: false,
+                    toneMapped: false
+                });
+
+                super(geometry, material);
+
+                this.light = light;
+                this.aspectRatio = aspectRatio;
+                this.matrix = light.matrixWorld;
+                this.matrixAutoUpdate = false;
+                this.color = material.color;
+
+                this.type = 'RectangularFrustumHelper';
+
+                this.update();
+            }
+
+            update() {
+                const light = this.light;
+                const distance = light.distance ? light.distance : 1000;
+                const angle = light.angle;
+                const penumbra = light.penumbra;
+
+                // Calculate frustum dimensions at distance
+                const coneHeight = distance;
+                const coneWidth = Math.tan(angle) * distance;
+
+                // Apply aspect ratio to create rectangular frustum
+                let width, height;
+                if (this.aspectRatio >= 1) {
+                    // Landscape (16:9, etc.)
+                    width = coneWidth * 2;
+                    height = width / this.aspectRatio;
+                } else {
+                    // Portrait (rare, but handled)
+                    height = coneWidth * 2;
+                    width = height * this.aspectRatio;
+                }
+
+                const positions = [];
+
+                // Apex (projector position)
+                const apex = [0, 0, 0];
+
+                // Four corners of rectangle at distance
+                const halfWidth = width / 2;
+                const halfHeight = height / 2;
+
+                const corners = [
+                    [-halfWidth, halfHeight, -coneHeight],   // Top-left
+                    [halfWidth, halfHeight, -coneHeight],    // Top-right
+                    [halfWidth, -halfHeight, -coneHeight],   // Bottom-right
+                    [-halfWidth, -halfHeight, -coneHeight]   // Bottom-left
+                ];
+
+                // Lines from apex to each corner
+                for (let i = 0; i < 4; i++) {
+                    positions.push(...apex);
+                    positions.push(...corners[i]);
+                }
+
+                // Rectangle at the end (connecting corners)
+                for (let i = 0; i < 4; i++) {
+                    positions.push(...corners[i]);
+                    positions.push(...corners[(i + 1) % 4]);
+                }
+
+                // Add penumbra indicator (inner rectangle)
+                if (penumbra > 0) {
+                    const penumbraScale = 1 - penumbra * 0.5;
+                    const penumbraCorners = corners.map(corner => [
+                        corner[0] * penumbraScale,
+                        corner[1] * penumbraScale,
+                        corner[2]
+                    ]);
+
+                    for (let i = 0; i < 4; i++) {
+                        positions.push(...penumbraCorners[i]);
+                        positions.push(...penumbraCorners[(i + 1) % 4]);
+                    }
+                }
+
+                const positionArray = new Float32Array(positions);
+                this.geometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+                this.geometry.computeBoundingSphere();
+
+                // Update color to match light color
+                this.color.copy(this.light.color);
+            }
+
+            dispose() {
+                this.geometry.dispose();
+                this.material.dispose();
+            }
+        }
 
         // Projector Library Database
         const PROJECTOR_LIBRARY = [
@@ -1293,6 +1492,7 @@
             // Event Listeners
             window.addEventListener('resize', onWindowResize);
             window.addEventListener('keydown', onKeyDown);
+            renderer.domElement.addEventListener('click', handleDimensionClick);
 
             // Start animation loop
             animate();
@@ -1492,8 +1692,8 @@
             // Make spotlight look at target
             spotlight.lookAt(targetX, targetY, targetZ);
 
-            // Create helper
-            const helper = new THREE.SpotLightHelper(spotlight);
+            // Create rectangular frustum helper with proper aspect ratio
+            const helper = new RectangularFrustumHelper(spotlight, selectedProjectorModel.resolution);
             scene.add(helper);
 
             // Create target point indicator (red sphere)
@@ -1586,6 +1786,683 @@
         // Add button to properties panel for image import
         window.openImageModal = openImageModal;
 
+        // ===== ARRAY & SYMMETRY FUNCTIONS =====
+
+        let currentArrayType = '';
+
+        function createLinearArray() {
+            if (!selectedObject) {
+                alert('Please select an object first');
+                return;
+            }
+            currentArrayType = 'linear';
+            document.getElementById('array-modal-title').textContent = 'Linear Array';
+            document.getElementById('linear-array-settings').style.display = 'block';
+            document.getElementById('polar-array-settings').style.display = 'none';
+            document.getElementById('mirror-settings').style.display = 'none';
+            document.getElementById('array-modal').classList.add('show');
+        }
+
+        function createPolarArray() {
+            if (!selectedObject) {
+                alert('Please select an object first');
+                return;
+            }
+            currentArrayType = 'polar';
+            document.getElementById('array-modal-title').textContent = 'Polar Array';
+            document.getElementById('linear-array-settings').style.display = 'none';
+            document.getElementById('polar-array-settings').style.display = 'block';
+            document.getElementById('mirror-settings').style.display = 'none';
+            document.getElementById('array-modal').classList.add('show');
+        }
+
+        function createMirrorSymmetry() {
+            if (!selectedObject) {
+                alert('Please select an object first');
+                return;
+            }
+            currentArrayType = 'mirror';
+            document.getElementById('array-modal-title').textContent = 'Mirror Symmetry';
+            document.getElementById('linear-array-settings').style.display = 'none';
+            document.getElementById('polar-array-settings').style.display = 'none';
+            document.getElementById('mirror-settings').style.display = 'block';
+            document.getElementById('array-modal').classList.add('show');
+        }
+
+        function closeArrayModal() {
+            document.getElementById('array-modal').classList.remove('show');
+            currentArrayType = '';
+        }
+
+        function executeArrayOperation() {
+            switch(currentArrayType) {
+                case 'linear':
+                    executeLinearArray();
+                    break;
+                case 'polar':
+                    executePolarArray();
+                    break;
+                case 'mirror':
+                    executeMirrorSymmetry();
+                    break;
+            }
+            closeArrayModal();
+        }
+
+        function executeLinearArray() {
+            const count = parseInt(document.getElementById('linear-count').value);
+            const direction = document.getElementById('linear-direction').value;
+            const spacing = parseFloat(document.getElementById('linear-spacing').value);
+
+            const baseObject = selectedObject;
+            const createdObjects = [];
+
+            for (let i = 1; i < count; i++) {
+                const clone = cloneObject(baseObject);
+
+                // Apply offset based on direction
+                const offset = spacing * i;
+                switch(direction) {
+                    case 'x':
+                        clone.position.x += offset;
+                        break;
+                    case 'y':
+                        clone.position.y += offset;
+                        break;
+                    case 'z':
+                        clone.position.z += offset;
+                        break;
+                }
+
+                scene.add(clone);
+                sceneObjects.push(clone);
+
+                // Handle projector-specific elements
+                if (clone.isSpotLight && clone.userData.type === 'projector') {
+                    projectors.push(clone);
+                    if (clone.userData.target) {
+                        clone.userData.target.position.copy(clone.target.position);
+                        clone.userData.target.position[direction] += offset;
+                    }
+                    if (clone.userData.targetIndicator) {
+                        clone.userData.targetIndicator.position.copy(clone.userData.target.position);
+                    }
+                }
+
+                createdObjects.push(clone);
+            }
+
+            updateSceneObjectsList();
+            updateStats();
+        }
+
+        function executePolarArray() {
+            const count = parseInt(document.getElementById('polar-count').value);
+            const axis = document.getElementById('polar-axis').value;
+            const radius = parseFloat(document.getElementById('polar-radius').value);
+            const totalAngle = parseFloat(document.getElementById('polar-angle').value);
+
+            const baseObject = selectedObject;
+            const centerPos = baseObject.position.clone();
+            const angleStep = (totalAngle * Math.PI / 180) / count;
+
+            for (let i = 1; i < count; i++) {
+                const clone = cloneObject(baseObject);
+                const angle = angleStep * i;
+
+                // Calculate new position based on axis
+                switch(axis) {
+                    case 'y': // Rotate around Y axis (most common)
+                        clone.position.x = centerPos.x + Math.cos(angle) * radius;
+                        clone.position.z = centerPos.z + Math.sin(angle) * radius;
+                        clone.position.y = centerPos.y;
+                        clone.rotation.y = angle;
+                        break;
+                    case 'x': // Rotate around X axis
+                        clone.position.y = centerPos.y + Math.cos(angle) * radius;
+                        clone.position.z = centerPos.z + Math.sin(angle) * radius;
+                        clone.position.x = centerPos.x;
+                        clone.rotation.x = angle;
+                        break;
+                    case 'z': // Rotate around Z axis
+                        clone.position.x = centerPos.x + Math.cos(angle) * radius;
+                        clone.position.y = centerPos.y + Math.sin(angle) * radius;
+                        clone.position.z = centerPos.z;
+                        clone.rotation.z = angle;
+                        break;
+                }
+
+                scene.add(clone);
+                sceneObjects.push(clone);
+
+                // Handle projector-specific elements
+                if (clone.isSpotLight && clone.userData.type === 'projector') {
+                    projectors.push(clone);
+                    if (clone.userData.target) {
+                        // Keep target pointed at center
+                        clone.target.position.copy(centerPos);
+                        clone.userData.target.position.copy(centerPos);
+                    }
+                    if (clone.userData.targetIndicator) {
+                        clone.userData.targetIndicator.position.copy(centerPos);
+                    }
+                }
+            }
+
+            updateSceneObjectsList();
+            updateStats();
+        }
+
+        function executeMirrorSymmetry() {
+            const axis = document.getElementById('mirror-axis').value;
+            const mirrorPos = parseFloat(document.getElementById('mirror-position').value);
+
+            const baseObject = selectedObject;
+            const clone = cloneObject(baseObject);
+
+            // Mirror position
+            const offset = mirrorPos - baseObject.position[axis];
+            clone.position[axis] = mirrorPos + offset;
+
+            // Mirror rotation
+            switch(axis) {
+                case 'x':
+                    clone.rotation.y = -clone.rotation.y;
+                    clone.rotation.z = -clone.rotation.z;
+                    break;
+                case 'y':
+                    clone.rotation.x = -clone.rotation.x;
+                    clone.rotation.z = -clone.rotation.z;
+                    break;
+                case 'z':
+                    clone.rotation.x = -clone.rotation.x;
+                    clone.rotation.y = -clone.rotation.y;
+                    break;
+            }
+
+            scene.add(clone);
+            sceneObjects.push(clone);
+
+            // Handle projector-specific elements
+            if (clone.isSpotLight && clone.userData.type === 'projector') {
+                projectors.push(clone);
+                if (clone.userData.target && clone.userData.targetIndicator) {
+                    const targetOffset = mirrorPos - clone.target.position[axis];
+                    clone.userData.target.position[axis] = mirrorPos + targetOffset;
+                    clone.userData.targetIndicator.position.copy(clone.userData.target.position);
+                }
+            }
+
+            updateSceneObjectsList();
+            updateStats();
+        }
+
+        function cloneObject(obj) {
+            let clone;
+
+            if (obj.isSpotLight) {
+                // Clone spotlight (projector)
+                clone = obj.clone();
+
+                // Clone target
+                const targetClone = obj.target.clone();
+                scene.add(targetClone);
+                clone.target = targetClone;
+
+                // Clone helper
+                const helperClone = new RectangularFrustumHelper(clone, obj.userData.resolution);
+                scene.add(helperClone);
+
+                // Clone target indicator
+                let targetIndicatorClone = null;
+                if (obj.userData.targetIndicator) {
+                    targetIndicatorClone = obj.userData.targetIndicator.clone();
+                    scene.add(targetIndicatorClone);
+                }
+
+                // Clone userData
+                clone.userData = {
+                    ...obj.userData,
+                    name: obj.userData.name + ' Copy',
+                    target: targetClone,
+                    helper: helperClone,
+                    targetIndicator: targetIndicatorClone
+                };
+
+            } else {
+                // Clone mesh
+                clone = obj.clone();
+                clone.userData = {
+                    ...obj.userData,
+                    name: obj.userData.name + ' Copy'
+                };
+            }
+
+            return clone;
+        }
+
+        // ===== DIMENSION TOOL =====
+
+        let dimensionMode = false;
+        let dimensionStartPoint = null;
+        const dimensions = [];
+
+        function measureDistance() {
+            dimensionMode = true;
+            dimensionStartPoint = null;
+            document.body.style.cursor = 'crosshair';
+
+            // Show instruction
+            const instruction = document.createElement('div');
+            instruction.id = 'dimension-instruction';
+            instruction.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); padding: 20px 30px; border-radius: 8px; color: white; font-size: 14px; z-index: 9999; pointer-events: none;';
+            instruction.textContent = 'Click two points to measure distance. Press ESC to cancel.';
+            document.body.appendChild(instruction);
+        }
+
+        function cancelDimensionMode() {
+            dimensionMode = false;
+            dimensionStartPoint = null;
+            document.body.style.cursor = 'default';
+            const instruction = document.getElementById('dimension-instruction');
+            if (instruction) instruction.remove();
+        }
+
+        function createDimensionLine(point1, point2) {
+            // Create line geometry
+            const points = [point1, point2];
+            const geometry = new THREE.BufferGeometry().setFromPoints(points);
+            const material = new THREE.LineBasicMaterial({
+                color: 0x00ffff,
+                linewidth: 2,
+                depthTest: false
+            });
+            const line = new THREE.Line(geometry, material);
+            line.renderOrder = 999;
+
+            // Calculate distance
+            const distance = point1.distanceTo(point2);
+
+            // Create text label
+            const midPoint = new THREE.Vector3().addVectors(point1, point2).multiplyScalar(0.5);
+
+            // Create text sprite
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 64;
+
+            context.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            context.font = 'Bold 32px Arial';
+            context.fillStyle = '#00ffff';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(distance.toFixed(2) + 'm', canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({
+                map: texture,
+                depthTest: false
+            });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(midPoint);
+            sprite.scale.set(2, 0.5, 1);
+            sprite.renderOrder = 1000;
+
+            // Create endpoint markers
+            const markerGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+            const markerMaterial = new THREE.MeshBasicMaterial({
+                color: 0x00ffff,
+                depthTest: false
+            });
+            const marker1 = new THREE.Mesh(markerGeometry, markerMaterial);
+            const marker2 = new THREE.Mesh(markerGeometry, markerMaterial);
+            marker1.position.copy(point1);
+            marker2.position.copy(point2);
+            marker1.renderOrder = 999;
+            marker2.renderOrder = 999;
+
+            // Group everything
+            const dimensionGroup = new THREE.Group();
+            dimensionGroup.add(line);
+            dimensionGroup.add(sprite);
+            dimensionGroup.add(marker1);
+            dimensionGroup.add(marker2);
+
+            dimensionGroup.userData = {
+                type: 'dimension',
+                name: 'Dimension ' + (dimensions.length + 1),
+                locked: false,
+                distance: distance,
+                point1: point1,
+                point2: point2
+            };
+
+            scene.add(dimensionGroup);
+            sceneObjects.push(dimensionGroup);
+            dimensions.push(dimensionGroup);
+
+            updateSceneObjectsList();
+            updateStats();
+
+            return dimensionGroup;
+        }
+
+        // Handle dimension tool clicks
+        function handleDimensionClick(event) {
+            if (dimensionMode) {
+                const rect = renderer.domElement.getBoundingClientRect();
+                const mouse = new THREE.Vector2(
+                    ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                    -((event.clientY - rect.top) / rect.height) * 2 + 1
+                );
+
+                const raycaster = new THREE.Raycaster();
+                raycaster.setFromCamera(mouse, camera);
+
+                // Raycast against all visible objects
+                const intersects = raycaster.intersectObjects(scene.children, true);
+
+                if (intersects.length > 0) {
+                    const point = intersects[0].point;
+
+                    if (!dimensionStartPoint) {
+                        // First point
+                        dimensionStartPoint = point.clone();
+
+                        // Update instruction
+                        const instruction = document.getElementById('dimension-instruction');
+                        if (instruction) {
+                            instruction.textContent = 'Click second point to complete measurement. Press ESC to cancel.';
+                        }
+                    } else {
+                        // Second point - create dimension
+                        createDimensionLine(dimensionStartPoint, point.clone());
+                        cancelDimensionMode();
+                    }
+                }
+            } else if (annotationMode) {
+                handleAnnotationClick(event);
+            }
+        }
+
+        // ===== ANNOTATION TOOL =====
+
+        let annotationMode = false;
+        const annotations = [];
+
+        function addAnnotation() {
+            annotationMode = true;
+            document.body.style.cursor = 'crosshair';
+
+            // Show instruction
+            const instruction = document.createElement('div');
+            instruction.id = 'annotation-instruction';
+            instruction.style.cssText = 'position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0,0,0,0.9); padding: 20px 30px; border-radius: 8px; color: white; font-size: 14px; z-index: 9999; pointer-events: none;';
+            instruction.textContent = 'Click a point to place annotation. Press ESC to cancel.';
+            document.body.appendChild(instruction);
+        }
+
+        function cancelAnnotationMode() {
+            annotationMode = false;
+            document.body.style.cursor = 'default';
+            const instruction = document.getElementById('annotation-instruction');
+            if (instruction) instruction.remove();
+            const input = document.getElementById('annotation-text-input');
+            if (input) input.remove();
+        }
+
+        function handleAnnotationClick(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const mouse = new THREE.Vector2(
+                ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                -((event.clientY - rect.top) / rect.height) * 2 + 1
+            );
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+
+            // Raycast against all visible objects
+            const intersects = raycaster.intersectObjects(scene.children, true);
+
+            if (intersects.length > 0) {
+                const point = intersects[0].point;
+                showAnnotationInput(point, event.clientX, event.clientY);
+            }
+        }
+
+        function showAnnotationInput(point, screenX, screenY) {
+            // Remove instruction
+            const instruction = document.getElementById('annotation-instruction');
+            if (instruction) instruction.remove();
+
+            // Create input dialog
+            const inputDialog = document.createElement('div');
+            inputDialog.id = 'annotation-text-input';
+            inputDialog.style.cssText = `position: fixed; left: ${screenX}px; top: ${screenY}px; background: rgba(0,0,0,0.95); padding: 15px; border-radius: 6px; z-index: 9999; border: 1px solid #444;`;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = 'Enter annotation text...';
+            input.style.cssText = 'width: 250px; padding: 8px; background: #1a1a1a; border: 1px solid #444; color: white; border-radius: 4px; margin-bottom: 10px; display: block;';
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = 'display: flex; gap: 8px;';
+
+            const createBtn = document.createElement('button');
+            createBtn.textContent = 'Create';
+            createBtn.className = 'btn';
+            createBtn.style.cssText = 'flex: 1; padding: 6px 12px; background: #0d9488; color: white; border: none; border-radius: 4px; cursor: pointer;';
+            createBtn.onclick = () => {
+                const text = input.value.trim();
+                if (text) {
+                    createAnnotation(point, text);
+                    cancelAnnotationMode();
+                }
+            };
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.textContent = 'Cancel';
+            cancelBtn.className = 'btn btn-secondary';
+            cancelBtn.style.cssText = 'flex: 1; padding: 6px 12px; background: #444; color: white; border: none; border-radius: 4px; cursor: pointer;';
+            cancelBtn.onclick = () => {
+                cancelAnnotationMode();
+            };
+
+            buttonContainer.appendChild(createBtn);
+            buttonContainer.appendChild(cancelBtn);
+            inputDialog.appendChild(input);
+            inputDialog.appendChild(buttonContainer);
+            document.body.appendChild(inputDialog);
+
+            input.focus();
+
+            // Handle Enter key
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    createBtn.click();
+                } else if (e.key === 'Escape') {
+                    cancelAnnotationMode();
+                }
+            });
+        }
+
+        function createAnnotation(position, text) {
+            // Create text sprite
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 512;
+            canvas.height = 128;
+
+            // Background
+            context.fillStyle = 'rgba(255, 200, 50, 0.9)';
+            context.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Border
+            context.strokeStyle = '#ff9800';
+            context.lineWidth = 4;
+            context.strokeRect(2, 2, canvas.width - 4, canvas.height - 4);
+
+            // Text
+            context.font = 'Bold 36px Arial';
+            context.fillStyle = '#000000';
+            context.textAlign = 'center';
+            context.textBaseline = 'middle';
+            context.fillText(text, canvas.width / 2, canvas.height / 2);
+
+            const texture = new THREE.CanvasTexture(canvas);
+            const spriteMaterial = new THREE.SpriteMaterial({
+                map: texture,
+                depthTest: false
+            });
+            const sprite = new THREE.Sprite(spriteMaterial);
+            sprite.position.copy(position);
+            sprite.scale.set(3, 0.75, 1);
+            sprite.renderOrder = 1001;
+
+            // Create marker pin
+            const markerGeometry = new THREE.ConeGeometry(0.1, 0.3, 8);
+            const markerMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff9800,
+                depthTest: false
+            });
+            const marker = new THREE.Mesh(markerGeometry, markerMaterial);
+            marker.position.copy(position);
+            marker.position.y -= 0.4;
+            marker.rotation.x = Math.PI;
+            marker.renderOrder = 1000;
+
+            // Group
+            const annotationGroup = new THREE.Group();
+            annotationGroup.add(sprite);
+            annotationGroup.add(marker);
+
+            annotationGroup.userData = {
+                type: 'annotation',
+                name: 'Annotation ' + (annotations.length + 1),
+                locked: false,
+                text: text,
+                position: position
+            };
+
+            scene.add(annotationGroup);
+            sceneObjects.push(annotationGroup);
+            annotations.push(annotationGroup);
+
+            updateSceneObjectsList();
+            updateStats();
+
+            return annotationGroup;
+        }
+
+        // ===== EXCLUSION ZONES / MASKING =====
+
+        const exclusionZones = [];
+        let exclusionZoneCount = 0;
+
+        function createExclusionZone(type = 'box') {
+            let geometry, name;
+
+            switch(type) {
+                case 'box':
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    name = 'Exclusion Box';
+                    break;
+                case 'sphere':
+                    geometry = new THREE.SphereGeometry(1, 32, 32);
+                    name = 'Exclusion Sphere';
+                    break;
+                case 'plane':
+                    geometry = new THREE.PlaneGeometry(3, 3);
+                    name = 'Exclusion Plane';
+                    break;
+                case 'cylinder':
+                    geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
+                    name = 'Exclusion Cylinder';
+                    break;
+                default:
+                    geometry = new THREE.BoxGeometry(2, 2, 2);
+                    name = 'Exclusion Box';
+            }
+
+            // Semi-transparent red material to indicate exclusion zone
+            const material = new THREE.MeshBasicMaterial({
+                color: 0xff0000,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.DoubleSide,
+                depthWrite: false
+            });
+
+            const mesh = new THREE.Mesh(geometry, material);
+
+            // Add wireframe for better visibility
+            const wireframe = new THREE.LineSegments(
+                new THREE.EdgesGeometry(geometry),
+                new THREE.LineBasicMaterial({ color: 0xff0000, linewidth: 2 })
+            );
+            mesh.add(wireframe);
+
+            // Position randomly or at origin
+            mesh.position.set(
+                Math.random() * 4 - 2,
+                2 + Math.random() * 2,
+                Math.random() * 4 - 2
+            );
+
+            mesh.userData = {
+                type: 'exclusion_zone',
+                name: name + ' ' + (++exclusionZoneCount),
+                locked: false,
+                zoneType: type,
+                enabled: true,
+                affectedProjectors: [] // List of projector IDs affected by this zone
+            };
+
+            scene.add(mesh);
+            sceneObjects.push(mesh);
+            exclusionZones.push(mesh);
+
+            updateSceneObjectsList();
+            updateStats();
+
+            return mesh;
+        }
+
+        // Menu handlers for exclusion zones
+        function addExclusionBox() {
+            createExclusionZone('box');
+        }
+
+        function addExclusionSphere() {
+            createExclusionZone('sphere');
+        }
+
+        function addExclusionPlane() {
+            createExclusionZone('plane');
+        }
+
+        function addExclusionCylinder() {
+            createExclusionZone('cylinder');
+        }
+
+        // Toggle photometric analysis mode
+        let photometricMode = 'normal';
+
+        function togglePhotometric() {
+            const modes = ['normal', 'illuminance', 'luminance'];
+            const currentIndex = modes.indexOf(photometricMode);
+            photometricMode = modes[(currentIndex + 1) % modes.length];
+
+            // Visual feedback
+            console.log('Photometric mode:', photometricMode);
+
+            // In a real implementation, this would change the rendering mode
+            // For now, we just toggle between modes
+        }
+
         function addPrimitive(type) {
             let geometry;
             let name = '';
@@ -1663,8 +2540,11 @@
             scene.add(target);
             spotlight.target = target;
 
-            // Visualization helper
-            const helper = new THREE.SpotLightHelper(spotlight);
+            // Set resolution first for helper creation
+            const defaultResolution = '1920x1080'; // 16:9 Full HD
+
+            // Create rectangular frustum helper with proper aspect ratio
+            const helper = new RectangularFrustumHelper(spotlight, defaultResolution);
             scene.add(helper);
 
             // Projector data
@@ -1675,7 +2555,7 @@
             spotlight.userData.target = target;
             spotlight.userData.lumens = 10000;
             spotlight.userData.throwRatio = 1.5;
-            spotlight.userData.resolution = '1920x1080';
+            spotlight.userData.resolution = defaultResolution;
             spotlight.userData.lensShiftH = 0;
             spotlight.userData.lensShiftV = 0;
             spotlight.userData.brightnessFactor = 1.0;
@@ -2326,6 +3206,18 @@
                 case 's':
                 case 'S':
                     setGizmoMode('scale');
+                    break;
+                case 't':
+                case 'T':
+                    measureDistance();
+                    break;
+                case 'a':
+                case 'A':
+                    if (!dimensionMode) addAnnotation();
+                    break;
+                case 'Escape':
+                    if (dimensionMode) cancelDimensionMode();
+                    if (annotationMode) cancelAnnotationMode();
                     break;
                 case 'Delete':
                 case 'Backspace':
