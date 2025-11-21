@@ -1783,6 +1783,7 @@
                 name: name,
                 type: 'projector',
                 locked: false,
+                targetLocked: true, // Lock projector aim to target by default
                 helper: helper,
                 target: target,
                 targetIndicator: targetIndicator,
@@ -1880,15 +1881,9 @@
                 ctx.fillStyle = 'black';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Create clipping region for rectangle
-                ctx.save();
-                ctx.beginPath();
-                ctx.rect(x, y, rectWidth, rectHeight);
-                ctx.clip();
-
-                // Draw user's image inside the rectangle
+                // Draw the ENTIRE user image fitted to the rectangle (not cropped/clipped)
+                // This ensures the full image is visible in the projection
                 ctx.drawImage(userTexture.image, x, y, rectWidth, rectHeight);
-                ctx.restore();
 
                 // Create texture from composite canvas
                 const compositeTexture = new THREE.CanvasTexture(canvas);
@@ -2725,6 +2720,7 @@
             spotlight.userData.name = 'Projector ' + (projectors.length + 1);
             spotlight.userData.type = 'projector';
             spotlight.userData.locked = false;
+            spotlight.userData.targetLocked = true; // Lock projector aim to target by default
             spotlight.userData.helper = helper;
             spotlight.userData.target = target;
             spotlight.userData.targetIndicator = targetIndicator;
@@ -3034,6 +3030,13 @@
                                     <span>Show Target Indicator</span>
                                 </label>
                             </div>
+                            <div class="property-row">
+                                <label class="property-checkbox">
+                                    <input type="checkbox" ${obj.userData.targetLocked !== false ? 'checked' : ''}
+                                        onchange="toggleTargetLock(this.checked)">
+                                    <span>Lock Aim to Target</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
                     ` : ''}
@@ -3263,6 +3266,13 @@
             }
         };
 
+        window.toggleTargetLock = (value) => {
+            if (selectedObject && selectedObject.userData.type === 'projector') {
+                selectedObject.userData.targetLocked = value;
+                console.log(`Projector "${selectedObject.userData.name}" ${value ? 'locked to' : 'unlocked from'} target`);
+            }
+        };
+
         window.toggleVisibility = (index) => {
             const obj = sceneObjects[index];
             obj.visible = !obj.visible;
@@ -3416,8 +3426,14 @@
 
             controls.update();
 
-            // Update helpers
+            // Update projectors and helpers
             projectors.forEach(proj => {
+                // If target is locked, always aim projector at target
+                if (proj.userData.targetLocked && proj.userData.target) {
+                    proj.lookAt(proj.userData.target.position);
+                }
+
+                // Update frustum helper
                 if (proj.userData.helper && proj.userData.helper.visible) {
                     proj.userData.helper.update();
                 }
