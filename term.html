@@ -2369,6 +2369,45 @@
                 }
             } else if (annotationMode) {
                 handleAnnotationClick(event);
+            } else {
+                // Normal selection mode - select clicked object
+                handleObjectSelection(event);
+            }
+        }
+
+        function handleObjectSelection(event) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const mouse = new THREE.Vector2(
+                ((event.clientX - rect.left) / rect.width) * 2 - 1,
+                -((event.clientY - rect.top) / rect.height) * 2 + 1
+            );
+
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+
+            // Raycast against selectable objects
+            const intersects = raycaster.intersectObjects(scene.children, true);
+
+            if (intersects.length > 0) {
+                // Find the first selectable object in the hierarchy
+                for (let i = 0; i < intersects.length; i++) {
+                    let obj = intersects[i].object;
+
+                    // Traverse up to find a selectable object in sceneObjects
+                    while (obj) {
+                        if (sceneObjects.includes(obj)) {
+                            selectObject(obj);
+                            return;
+                        }
+                        obj = obj.parent;
+                    }
+                }
+            } else {
+                // Clicked on empty space - deselect
+                selectedObject = null;
+                transformControls.detach();
+                updateSceneObjectsList();
+                updatePropertiesPanel();
             }
         }
 
