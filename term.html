@@ -1851,10 +1851,54 @@
             if (!currentProjectorImage || !selectedObject) return;
 
             const textureLoader = new THREE.TextureLoader();
-            textureLoader.load(currentProjectorImage, (texture) => {
-                // Apply texture to spotlight
-                selectedObject.map = texture;
+            textureLoader.load(currentProjectorImage, (userTexture) => {
+                // Get projector aspect ratio
+                const resolution = selectedObject.userData.resolution || '1920x1080';
+                const [resWidth, resHeight] = resolution.split('x').map(Number);
+                const aspectRatio = resWidth / resHeight;
+
+                // Create composite canvas (user image + rectangular mask)
+                const canvas = document.createElement('canvas');
+                canvas.width = 1024;
+                canvas.height = 1024;
+                const ctx = canvas.getContext('2d');
+
+                // Calculate rectangle dimensions based on aspect ratio
+                let rectWidth, rectHeight;
+                if (aspectRatio >= 1) {
+                    rectWidth = canvas.width;
+                    rectHeight = canvas.width / aspectRatio;
+                } else {
+                    rectHeight = canvas.height;
+                    rectWidth = canvas.height * aspectRatio;
+                }
+
+                const x = (canvas.width - rectWidth) / 2;
+                const y = (canvas.height - rectHeight) / 2;
+
+                // Clear to black
+                ctx.fillStyle = 'black';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Create clipping region for rectangle
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(x, y, rectWidth, rectHeight);
+                ctx.clip();
+
+                // Draw user's image inside the rectangle
+                ctx.drawImage(userTexture.image, x, y, rectWidth, rectHeight);
+                ctx.restore();
+
+                // Create texture from composite canvas
+                const compositeTexture = new THREE.CanvasTexture(canvas);
+                compositeTexture.center.set(0.5, 0.5);
+                compositeTexture.needsUpdate = true;
+
+                // Apply composite texture to spotlight
+                selectedObject.map = compositeTexture;
                 selectedObject.userData.projectorTexture = currentProjectorImage;
+                selectedObject.userData.hasCustomImage = true;
 
                 closeImageModal();
                 updatePropertiesPanel();
