@@ -1,0 +1,112 @@
+================================================================================
+SOLUTION RAPIDE - Python n'est pas reconnu sur Windows
+================================================================================
+
+PROBLÈME:
+Vous avez installé Python avec PATH coché, mais "python n'est pas reconnu"
+
+================================================================================
+SOLUTION #1: REDÉMARRER LE TERMINAL (90% des cas) ⭐
+================================================================================
+
+Le PATH ne se met à jour QUE dans les nouveaux terminaux!
+
+1. Fermez COMPLÈTEMENT votre terminal/invite de commandes
+2. Réouvrez-le (pas besoin d'admin)
+3. Testez: python --version
+
+================================================================================
+SOLUTION #2: REDÉMARRER L'ORDINATEUR (si #1 ne marche pas)
+================================================================================
+
+1. Redémarrez votre PC complètement
+2. Ouvrez un nouveau terminal
+3. Testez: python --version
+
+================================================================================
+SOLUTION #3: UTILISER "py" AU LIEU DE "python"
+================================================================================
+
+Si "py" fonctionne mais pas "python":
+
+Tester:
+   py --version
+
+Si ça affiche Python 3.x → UTILISEZ "py" partout!
+
+Remplacez:
+   python          →  py
+   pip install     →  py -m pip install
+   python script   →  py script
+
+================================================================================
+SOLUTION #4: DIAGNOSTIC COMPLET
+================================================================================
+
+Exécutez dans le terminal:
+
+   cd streamdiffusion-app
+   diagnose_python_windows.bat
+
+Cela va trouver où Python est installé et vous dire quoi faire.
+
+================================================================================
+SOLUTION #5: RÉINSTALLATION COMPLÈTE
+================================================================================
+
+Lisez le guide complet:
+   INSTALLER_PYTHON_WINDOWS_FR.md
+
+Résumé:
+1. Désinstaller Python (Panneau de configuration)
+2. Télécharger depuis python.org
+3. Installer EN ADMINISTRATEUR
+4. COCHER "Add Python to PATH"  ← IMPORTANT!
+5. Redémarrer l'ordinateur
+6. Tester dans nouveau terminal
+
+================================================================================
+SOLUTION #6: MICROSOFT STORE (Plus simple)
+================================================================================
+
+1. Ouvrir Microsoft Store
+2. Chercher "Python 3.11"
+3. Installer
+4. Redémarrer terminal
+5. Tester: python --version
+
+================================================================================
+TEST RAPIDE - Python fonctionne?
+================================================================================
+
+Essayez ces commandes:
+
+   python --version
+   py --version
+   where python
+   where py
+
+Si au moins UNE commande fonctionne → Vous avez Python!
+
+================================================================================
+LANCER L'APPLICATION APRÈS INSTALLATION
+================================================================================
+
+Une fois Python fonctionnel:
+
+   cd streamdiffusion-app
+   test_simple.bat
+
+Ouvrir: http://localhost:5002
+
+================================================================================
+AIDE
+================================================================================
+
+Si rien ne fonctionne, donnez-moi:
+1. Résultat de: python --version
+2. Résultat de: py --version
+3. Résultat de: where python
+4. Résultat de: diagnose_python_windows.bat
+
+================================================================================
