@@ -1122,7 +1122,8 @@
     {
         "imports": {
             "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/",
+            "three-projected-material": "https://unpkg.com/three-projected-material@latest/build/ProjectedMaterial.module.js"
         }
     }
     </script>
@@ -1132,6 +1133,7 @@
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
         import { TransformControls } from 'three/addons/controls/TransformControls.js';
         import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+        import ProjectedMaterial from 'three-projected-material';
 
         // Function to create rectangular projection texture
         function createRectangularProjectionTexture(aspectRatio) {
@@ -1272,6 +1274,97 @@
 
                 // Update color to match light color
                 this.color.copy(this.light.color);
+            }
+
+            dispose() {
+                this.geometry.dispose();
+                this.material.dispose();
+            }
+        }
+
+        // Camera Frustum Helper for projected material visualization
+        class CameraFrustumHelper extends THREE.LineSegments {
+            constructor(camera, resolution, color = 0xffffff) {
+                const geometry = new THREE.BufferGeometry();
+                const material = new THREE.LineBasicMaterial({
+                    color: color,
+                    fog: false,
+                    toneMapped: false
+                });
+
+                super(geometry, material);
+
+                this.camera = camera;
+                this.resolution = resolution;
+                this.matrix = camera.matrixWorld;
+                this.matrixAutoUpdate = false;
+                this.color = material.color;
+
+                this.type = 'CameraFrustumHelper';
+
+                this.update();
+            }
+
+            update() {
+                const camera = this.camera;
+
+                // Get camera projection matrix
+                camera.updateMatrixWorld();
+                camera.updateProjectionMatrix();
+
+                // Calculate frustum corners in camera space
+                const near = camera.near;
+                const far = camera.far;
+                const aspect = camera.aspect;
+                const fov = camera.fov * Math.PI / 180;
+
+                const nearHeight = 2 * Math.tan(fov / 2) * near;
+                const nearWidth = nearHeight * aspect;
+                const farHeight = 2 * Math.tan(fov / 2) * far;
+                const farWidth = farHeight * aspect;
+
+                const positions = [];
+
+                // Apex (camera position)
+                const apex = [0, 0, 0];
+
+                // Near plane corners
+                const nearCorners = [
+                    [-nearWidth/2, nearHeight/2, -near],   // Top-left
+                    [nearWidth/2, nearHeight/2, -near],    // Top-right
+                    [nearWidth/2, -nearHeight/2, -near],   // Bottom-right
+                    [-nearWidth/2, -nearHeight/2, -near]   // Bottom-left
+                ];
+
+                // Far plane corners
+                const farCorners = [
+                    [-farWidth/2, farHeight/2, -far],   // Top-left
+                    [farWidth/2, farHeight/2, -far],    // Top-right
+                    [farWidth/2, -farHeight/2, -far],   // Bottom-right
+                    [-farWidth/2, -farHeight/2, -far]   // Bottom-left
+                ];
+
+                // Lines from apex to far corners
+                for (let i = 0; i < 4; i++) {
+                    positions.push(...apex);
+                    positions.push(...farCorners[i]);
+                }
+
+                // Near plane rectangle
+                for (let i = 0; i < 4; i++) {
+                    positions.push(...nearCorners[i]);
+                    positions.push(...nearCorners[(i + 1) % 4]);
+                }
+
+                // Far plane rectangle
+                for (let i = 0; i < 4; i++) {
+                    positions.push(...farCorners[i]);
+                    positions.push(...farCorners[(i + 1) % 4]);
+                }
+
+                const positionArray = new Float32Array(positions);
+                this.geometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3));
+                this.geometry.computeBoundingSphere();
             }
 
             dispose() {
@@ -1486,6 +1579,8 @@
         let scene, camera, renderer, controls, transformControls;
         let sceneObjects = [];
         let projectors = [];
+        let projectedMaterials = []; // Track projected materials for each projector
+        let receivingObjects = []; // Objects that can receive projections
         let selectedObject = null;
         let gizmoMode = 'translate';
         let renderMode = 'normal';
@@ -1601,8 +1696,10 @@
             floor.userData.name = 'Floor';
             floor.userData.type = 'primitive';
             floor.userData.locked = true;
+            floor.userData.originalMaterial = floorMaterial; // Store original material
             scene.add(floor);
             sceneObjects.push(floor);
+            receivingObjects.push(floor); // Add to receiving objects for projection
 
             // Add initial objects
             addDefaultScene();
@@ -1662,8 +1759,10 @@
             cube.userData.name = 'Cube';
             cube.userData.type = 'primitive';
             cube.userData.locked = false;
+            cube.userData.originalMaterial = material; // Store original material
             scene.add(cube);
             sceneObjects.push(cube);
+            receivingObjects.push(cube); // Add to receiving objects for projection
 
             // Add initial projector
             addProjector();
@@ -1787,39 +1886,39 @@
             const targetY = parseFloat(document.getElementById('new-target-y').value);
             const targetZ = parseFloat(document.getElementById('new-target-z').value);
 
-            // Create spotlight with specs from library
-            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
-            const lumensToIntensity = selectedProjectorModel.lumens / 200; // Scale factor
-            const spotlight = new THREE.SpotLight(color, lumensToIntensity);
-
-            spotlight.position.set(posX, posY, posZ);
-            spotlight.angle = Math.PI / 6;
-            spotlight.penumbra = 0.05; // Sharper edges for rectangular projection
-            spotlight.decay = 2;
-            spotlight.distance = 50;
-            spotlight.castShadow = true;
-            spotlight.shadow.mapSize.width = 2048;
-            spotlight.shadow.mapSize.height = 2048;
-
-            // Apply rectangular projection texture based on aspect ratio
+            // Calculate aspect ratio from resolution
             const [resWidth, resHeight] = selectedProjectorModel.resolution.split('x').map(Number);
             const aspectRatio = resWidth / resHeight;
-            spotlight.map = createRectangularProjectionTexture(aspectRatio);
+
+            // Calculate FOV from throw ratio
+            // Throw ratio = distance / image width
+            // For a standard projection distance, we'll use FOV calculation
+            // FOV (degrees) = 2 * atan(0.5 / throwRatio) * (180 / PI)
+            const fov = 2 * Math.atan(0.5 / selectedLens.throwRatio) * (180 / Math.PI);
+
+            // Create perspective camera (acts as projector)
+            const projectorCamera = new THREE.PerspectiveCamera(fov, aspectRatio, 0.1, 50);
+            projectorCamera.position.set(posX, posY, posZ);
 
             // Create and position target
             const target = new THREE.Object3D();
             target.position.set(targetX, targetY, targetZ);
             scene.add(target);
-            spotlight.target = target;
 
-            // Make spotlight look at target
-            spotlight.lookAt(targetX, targetY, targetZ);
+            // Make camera look at target
+            projectorCamera.lookAt(targetX, targetY, targetZ);
 
-            // Create rectangular frustum helper with proper aspect ratio
-            const helper = new RectangularFrustumHelper(spotlight, selectedProjectorModel.resolution);
+            // Create default white texture for projection
+            const projectionTexture = createRectangularProjectionTexture(aspectRatio);
+
+            // Generate projector color for visualization
+            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
+
+            // Create camera frustum helper for visualization
+            const helper = new CameraFrustumHelper(projectorCamera, selectedProjectorModel.resolution, color);
 
             // Store reference to projector in helper so it can be found when clicked
-            helper.userData.projector = spotlight;
+            helper.userData.projector = projectorCamera;
             helper.userData.type = 'projector_helper';
 
             scene.add(helper);
@@ -1839,14 +1938,43 @@
                 type: 'projector_target',
                 name: name + ' Target',
                 locked: false,
-                parentProjector: null // Will be set after spotlight is added
+                parentProjector: null // Will be set after camera is added
             };
 
             scene.add(targetIndicator);
             sceneObjects.push(targetIndicator);
 
+            // Create ProjectedMaterial for each receiving object
+            const projectorMaterials = [];
+            for (const obj of receivingObjects) {
+                if (!obj.userData.originalMaterial) continue;
+
+                // Create projected material based on original material properties
+                const originalMat = obj.userData.originalMaterial;
+                const projectedMat = new ProjectedMaterial({
+                    camera: projectorCamera,
+                    texture: projectionTexture,
+                    color: originalMat.color || 0xffffff,
+                    roughness: originalMat.roughness || 0.5,
+                    metalness: originalMat.metalness || 0.0,
+                    textureScale: 1.0,
+                    cover: true, // Use cover mode for rectangular projection
+                });
+
+                // Apply the projected material to the object
+                obj.material = projectedMat;
+
+                // Project the texture onto the object
+                projectedMat.project(obj);
+
+                projectorMaterials.push({
+                    object: obj,
+                    material: projectedMat
+                });
+            }
+
             // Store complete projector data
-            spotlight.userData = {
+            projectorCamera.userData = {
                 name: name,
                 type: 'projector',
                 locked: false,
@@ -1863,15 +1991,19 @@
                 projectorModel: selectedProjectorModel,
                 lensModel: selectedLens,
                 brand: selectedProjectorModel.brand,
-                model: selectedProjectorModel.model
+                model: selectedProjectorModel.model,
+                color: color,
+                texture: projectionTexture,
+                projectorMaterials: projectorMaterials
             };
 
-            scene.add(spotlight);
-            sceneObjects.push(spotlight);
-            projectors.push(spotlight);
+            scene.add(projectorCamera);
+            sceneObjects.push(projectorCamera);
+            projectors.push(projectorCamera);
+            projectedMaterials.push(projectorMaterials);
 
             // Link target indicator to projector
-            targetIndicator.userData.parentProjector = spotlight;
+            targetIndicator.userData.parentProjector = projectorCamera;
 
             updateSceneObjectsList();
             updateStats();
@@ -2772,40 +2904,40 @@
         function addProjector() {
             const color = new THREE.Color().setHSL(Math.random(), 1, 0.6);
 
-            // Create spotlight
-            const spotlight = new THREE.SpotLight(color, 150);
-            spotlight.position.set(
+            // Set resolution and calculate aspect ratio
+            const defaultResolution = '1920x1080'; // 16:9 Full HD
+            const aspectRatio = 16 / 9;
+
+            // Default throw ratio for standard lens
+            const throwRatio = 1.5;
+
+            // Calculate FOV from throw ratio
+            const fov = 2 * Math.atan(0.5 / throwRatio) * (180 / Math.PI);
+
+            // Create perspective camera (acts as projector)
+            const projectorCamera = new THREE.PerspectiveCamera(fov, aspectRatio, 0.1, 50);
+            projectorCamera.position.set(
                 Math.random() * 8 - 4,
                 6 + Math.random() * 4,
                 Math.random() * 8 - 4
             );
-            spotlight.angle = Math.PI / 6;
-            spotlight.penumbra = 0.05; // Sharper edges for rectangular projection
-            spotlight.decay = 2;
-            spotlight.distance = 50;
-            spotlight.castShadow = true;
-            spotlight.shadow.mapSize.width = 2048;
-            spotlight.shadow.mapSize.height = 2048;
-            spotlight.shadow.camera.near = 0.5;
-            spotlight.shadow.camera.far = 50;
 
             // Target helper
             const target = new THREE.Object3D();
             target.position.set(0, 0, 0);
             scene.add(target);
-            spotlight.target = target;
 
-            // Set resolution first for helper creation
-            const defaultResolution = '1920x1080'; // 16:9 Full HD
+            // Make camera look at target
+            projectorCamera.lookAt(0, 0, 0);
 
             // Apply rectangular projection texture (16:9 aspect ratio)
-            spotlight.map = createRectangularProjectionTexture(16/9);
+            const projectionTexture = createRectangularProjectionTexture(aspectRatio);
 
-            // Create rectangular frustum helper with proper aspect ratio
-            const helper = new RectangularFrustumHelper(spotlight, defaultResolution);
+            // Create camera frustum helper for visualization
+            const helper = new CameraFrustumHelper(projectorCamera, defaultResolution, color);
 
             // Store reference to projector in helper so it can be found when clicked
-            helper.userData.projector = spotlight;
+            helper.userData.projector = projectorCamera;
             helper.userData.type = 'projector_helper';
 
             scene.add(helper);
@@ -2825,33 +2957,66 @@
                 type: 'projector_target',
                 name: 'Projector ' + (projectors.length + 1) + ' Target',
                 locked: false,
-                parentProjector: null // Will be set after spotlight is added
+                parentProjector: null // Will be set after camera is added
             };
 
             scene.add(targetIndicator);
             sceneObjects.push(targetIndicator);
 
-            // Projector data
-            spotlight.userData.name = 'Projector ' + (projectors.length + 1);
-            spotlight.userData.type = 'projector';
-            spotlight.userData.locked = false;
-            spotlight.userData.targetLocked = true; // Lock projector aim to target by default
-            spotlight.userData.helper = helper;
-            spotlight.userData.target = target;
-            spotlight.userData.targetIndicator = targetIndicator;
-            spotlight.userData.lumens = 10000;
-            spotlight.userData.throwRatio = 1.5;
-            spotlight.userData.resolution = defaultResolution;
-            spotlight.userData.lensShiftH = 0;
-            spotlight.userData.lensShiftV = 0;
-            spotlight.userData.brightnessFactor = 1.0;
+            // Create ProjectedMaterial for each receiving object
+            const projectorMaterials = [];
+            for (const obj of receivingObjects) {
+                if (!obj.userData.originalMaterial) continue;
 
-            scene.add(spotlight);
-            sceneObjects.push(spotlight);
-            projectors.push(spotlight);
+                // Create projected material based on original material properties
+                const originalMat = obj.userData.originalMaterial;
+                const projectedMat = new ProjectedMaterial({
+                    camera: projectorCamera,
+                    texture: projectionTexture,
+                    color: originalMat.color || 0xffffff,
+                    roughness: originalMat.roughness || 0.5,
+                    metalness: originalMat.metalness || 0.0,
+                    textureScale: 1.0,
+                    cover: true, // Use cover mode for rectangular projection
+                });
+
+                // Apply the projected material to the object
+                obj.material = projectedMat;
+
+                // Project the texture onto the object
+                projectedMat.project(obj);
+
+                projectorMaterials.push({
+                    object: obj,
+                    material: projectedMat
+                });
+            }
+
+            // Projector data
+            projectorCamera.userData.name = 'Projector ' + (projectors.length + 1);
+            projectorCamera.userData.type = 'projector';
+            projectorCamera.userData.locked = false;
+            projectorCamera.userData.targetLocked = true; // Lock projector aim to target by default
+            projectorCamera.userData.helper = helper;
+            projectorCamera.userData.target = target;
+            projectorCamera.userData.targetIndicator = targetIndicator;
+            projectorCamera.userData.lumens = 10000;
+            projectorCamera.userData.throwRatio = throwRatio;
+            projectorCamera.userData.resolution = defaultResolution;
+            projectorCamera.userData.lensShiftH = 0;
+            projectorCamera.userData.lensShiftV = 0;
+            projectorCamera.userData.brightnessFactor = 1.0;
+            projectorCamera.userData.color = color;
+            projectorCamera.userData.texture = projectionTexture;
+            projectorCamera.userData.projectorMaterials = projectorMaterials;
+
+            scene.add(projectorCamera);
+            sceneObjects.push(projectorCamera);
+            projectors.push(projectorCamera);
+            projectedMaterials.push(projectorMaterials);
 
             // Link target indicator to projector
-            targetIndicator.userData.parentProjector = spotlight;
+            targetIndicator.userData.parentProjector = projectorCamera;
 
             updateSceneObjectsList();
             updateStats();
