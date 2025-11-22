@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Scene Replica - Fabazzz</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            display: block;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 250px;
+        }
+        #controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .control-group {
+            margin-bottom: 10px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        input[type="range"] {
+            width: 100px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <strong>3D Scene Replica</strong><br>
+        <small>Scene Objects:</small><br>
+        - Main creature model<br>
+        - Projector light (top)<br>
+        - Green spotlight (head)<br>
+        - Purple spotlight (body)<br>
+        - Ground plane<br><br>
+        <small>Controls: Mouse to rotate<br>Scroll to zoom</small>
+    </div>
+
+    <div id="controls">
+        <strong>Lighting Controls</strong>
+        <div class="control-group">
+            <label>Green Light:</label>
+            <input type="range" id="greenIntensity" min="0" max="3" step="0.1" value="1.5">
+        </div>
+        <div class="control-group">
+            <label>Purple Light:</label>
+            <input type="range" id="purpleIntensity" min="0" max="3" step="0.1" value="1.2">
+        </div>
+        <div class="control-group">
+            <label>Projector Light:</label>
+            <input type="range" id="projectorIntensity" min="0" max="2" step="0.1" value="0.8">
+        </div>
+        <button id="resetCamera">Reset Camera</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a1a1a);
+        scene.fog = new THREE.Fog(0x1a1a1a, 5, 25);
+
+        // Camera
+        const camera = new THREE.PerspectiveCamera(
+            50,
+            window.innerWidth / window.innerHeight,
+            0.1,
+            1000
+        );
+        camera.position.set(8, 5, 8);
+        camera.lookAt(0, 1, 0);
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        // Basic orbit controls (manual implementation)
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let cameraRotation = { x: 0.5, y: 0.8 };
+        let cameraDistance = 12;
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.3);
+        scene.add(ambientLight);
+
+        // Projector light (top left, white beam)
+        const projectorLight = new THREE.SpotLight(0xffffff, 0.8, 20, Math.PI / 6, 0.5, 2);
+        projectorLight.position.set(-4, 8, 2);
+        projectorLight.target.position.set(0, 0, 0);
+        projectorLight.castShadow = true;
+        projectorLight.shadow.camera.near = 1;
+        projectorLight.shadow.camera.far = 20;
+        projectorLight.shadow.mapSize.width = 2048;
+        projectorLight.shadow.mapSize.height = 2048;
+        scene.add(projectorLight);
+        scene.add(projectorLight.target);
+
+        // Projector visual representation
+        const projectorGeometry = new THREE.BoxGeometry(0.8, 0.5, 1);
+        const projectorMaterial = new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            metalness: 0.8,
+            roughness: 0.2
+        });
+        const projectorMesh = new THREE.Mesh(projectorGeometry, projectorMaterial);
+        projectorMesh.position.copy(projectorLight.position);
+        projectorMesh.rotation.x = -Math.PI / 4;
+        scene.add(projectorMesh);
+
+        // Green spotlight (for head)
+        const greenLight = new THREE.SpotLight(0x00ff66, 1.5, 15, Math.PI / 4, 0.3, 2);
+        greenLight.position.set(2, 4, 3);
+        greenLight.target.position.set(0, 2, 0);
+        greenLight.castShadow = true;
+        scene.add(greenLight);
+        scene.add(greenLight.target);
+
+        // Purple/magenta spotlight (for body)
+        const purpleLight = new THREE.SpotLight(0xff00ff, 1.2, 12, Math.PI / 3, 0.4, 2);
+        purpleLight.position.set(-3, 3, -2);
+        purpleLight.target.position.set(0, 0.5, 0);
+        purpleLight.castShadow = true;
+        scene.add(purpleLight);
+        scene.add(purpleLight.target);
+
+        // Additional accent lights
+        const pinkLight = new THREE.PointLight(0xff66ff, 0.6, 10);
+        pinkLight.position.set(-2, 2, 2);
+        scene.add(pinkLight);
+
+        // Create creature-like model (rhino-inspired)
+        const creatureGroup = new THREE.Group();
+
+        // Body
+        const bodyGeometry = new THREE.BoxGeometry(2, 1.2, 3.5);
+        const bodyMaterial = new THREE.MeshStandardMaterial({
+            color: 0x666666,
+            metalness: 0.4,
+            roughness: 0.7,
+            flatShading: true
+        });
+        const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+        body.position.set(0, 1.2, 0);
+        body.castShadow = true;
+        body.receiveShadow = true;
+        creatureGroup.add(body);
+
+        // Head
+        const headGeometry = new THREE.BoxGeometry(1.2, 1, 1.8);
+        const headMaterial = new THREE.MeshStandardMaterial({
+            color: 0x555555,
+            metalness: 0.5,
+            roughness: 0.6,
+            flatShading: true
+        });
+        const head = new THREE.Mesh(headGeometry, headMaterial);
+        head.position.set(0, 1.8, 2);
+        head.rotation.x = -0.2;
+        head.castShadow = true;
+        head.receiveShadow = true;
+        creatureGroup.add(head);
+
+        // Horn
+        const hornGeometry = new THREE.ConeGeometry(0.25, 1.2, 6);
+        const hornMaterial = new THREE.MeshStandardMaterial({
+            color: 0x333333,
+            metalness: 0.7,
+            roughness: 0.3
+        });
+        const horn = new THREE.Mesh(hornGeometry, hornMaterial);
+        horn.position.set(0, 2.2, 2.8);
+        horn.rotation.x = Math.PI / 2;
+        horn.castShadow = true;
+        creatureGroup.add(horn);
+
+        // Legs (4)
+        const legGeometry = new THREE.CylinderGeometry(0.25, 0.3, 1.5, 8);
+        const legMaterial = new THREE.MeshStandardMaterial({
+            color: 0x444444,
+            metalness: 0.3,
+            roughness: 0.8,
+            flatShading: true
+        });
+
+        const legPositions = [
+            [-0.7, 0.5, 1.2],   // front left
+            [0.7, 0.5, 1.2],    // front right
+            [-0.7, 0.5, -1.2],  // back left
+            [0.7, 0.5, -1.2]    // back right
+        ];
+
+        legPositions.forEach(pos => {
+            const leg = new THREE.Mesh(legGeometry, legMaterial);
+            leg.position.set(pos[0], pos[1], pos[2]);
+            leg.castShadow = true;
+            leg.receiveShadow = true;
+            creatureGroup.add(leg);
+        });
+
+        // Ears
+        const earGeometry = new THREE.BoxGeometry(0.3, 0.6, 0.15);
+        const earMaterial = new THREE.MeshStandardMaterial({
+            color: 0x555555,
+            metalness: 0.4,
+            roughness: 0.7
+        });
+
+        const leftEar = new THREE.Mesh(earGeometry, earMaterial);
+        leftEar.position.set(-0.6, 2.4, 1.8);
+        leftEar.rotation.z = 0.4;
+        leftEar.castShadow = true;
+        creatureGroup.add(leftEar);
+
+        const rightEar = new THREE.Mesh(earGeometry, earMaterial);
+        rightEar.position.set(0.6, 2.4, 1.8);
+        rightEar.rotation.z = -0.4;
+        rightEar.castShadow = true;
+        creatureGroup.add(rightEar);
+
+        // Add some geometric detail to body
+        const armorGeometry = new THREE.BoxGeometry(2.2, 0.4, 1.5);
+        const armorMaterial = new THREE.MeshStandardMaterial({
+            color: 0x555555,
+            metalness: 0.6,
+            roughness: 0.5,
+            flatShading: true
+        });
+        const armor1 = new THREE.Mesh(armorGeometry, armorMaterial);
+        armor1.position.set(0, 1.5, 0.5);
+        armor1.castShadow = true;
+        creatureGroup.add(armor1);
+
+        const armor2 = new THREE.Mesh(armorGeometry, armorMaterial);
+        armor2.position.set(0, 1.5, -0.8);
+        armor2.castShadow = true;
+        creatureGroup.add(armor2);
+
+        scene.add(creatureGroup);
+
+        // Ground plane
+        const groundGeometry = new THREE.PlaneGeometry(30, 30);
+        const groundMaterial = new THREE.MeshStandardMaterial({
+            color: 0x1a1a1a,
+            metalness: 0.1,
+            roughness: 0.9
+        });
+        const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+        ground.rotation.x = -Math.PI / 2;
+        ground.receiveShadow = true;
+        scene.add(ground);
+
+        // Add grid helper
+        const gridHelper = new THREE.GridHelper(20, 20, 0x333333, 0x222222);
+        gridHelper.position.y = 0.01;
+        scene.add(gridHelper);
+
+        // Add some rocks/debris on ground
+        const rockGeometry = new THREE.DodecahedronGeometry(0.5, 0);
+        const rockMaterial = new THREE.MeshStandardMaterial({
+            color: 0x3a3a3a,
+            metalness: 0.2,
+            roughness: 0.9,
+            flatShading: true
+        });
+
+        for (let i = 0; i < 8; i++) {
+            const rock = new THREE.Mesh(rockGeometry, rockMaterial);
+            const angle = (i / 8) * Math.PI * 2;
+            const radius = 2 + Math.random() * 2;
+            rock.position.set(
+                Math.cos(angle) * radius,
+                Math.random() * 0.3,
+                Math.sin(angle) * radius
+            );
+            rock.scale.set(
+                0.5 + Math.random(),
+                0.5 + Math.random(),
+                0.5 + Math.random()
+            );
+            rock.rotation.set(
+                Math.random() * Math.PI,
+                Math.random() * Math.PI,
+                Math.random() * Math.PI
+            );
+            rock.castShadow = true;
+            rock.receiveShadow = true;
+            scene.add(rock);
+        }
+
+        // Light helpers (optional, for visualization)
+        const projectorHelper = new THREE.SpotLightHelper(projectorLight);
+        scene.add(projectorHelper);
+
+        // Controls
+        document.getElementById('greenIntensity').addEventListener('input', (e) => {
+            greenLight.intensity = parseFloat(e.target.value);
+        });
+
+        document.getElementById('purpleIntensity').addEventListener('input', (e) => {
+            purpleLight.intensity = parseFloat(e.target.value);
+        });
+
+        document.getElementById('projectorIntensity').addEventListener('input', (e) => {
+            projectorLight.intensity = parseFloat(e.target.value);
+        });
+
+        document.getElementById('resetCamera').addEventListener('click', () => {
+            cameraRotation = { x: 0.5, y: 0.8 };
+            cameraDistance = 12;
+        });
+
+        // Mouse controls
+        renderer.domElement.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            previousMousePosition = { x: e.clientX, y: e.clientY };
+        });
+
+        renderer.domElement.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const deltaX = e.clientX - previousMousePosition.x;
+                const deltaY = e.clientY - previousMousePosition.y;
+
+                cameraRotation.y += deltaX * 0.01;
+                cameraRotation.x += deltaY * 0.01;
+
+                cameraRotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, cameraRotation.x));
+
+                previousMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        });
+
+        renderer.domElement.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        renderer.domElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            cameraDistance += e.deltaY * 0.01;
+            cameraDistance = Math.max(4, Math.min(30, cameraDistance));
+        });
+
+        // Animation loop
+        function updateCamera() {
+            camera.position.x = Math.cos(cameraRotation.y) * Math.cos(cameraRotation.x) * cameraDistance;
+            camera.position.y = Math.sin(cameraRotation.x) * cameraDistance;
+            camera.position.z = Math.sin(cameraRotation.y) * Math.cos(cameraRotation.x) * cameraDistance;
+            camera.lookAt(0, 1, 0);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            updateCamera();
+
+            // Subtle animation for creature
+            creatureGroup.position.y = Math.sin(Date.now() * 0.0005) * 0.05;
+
+            // Update light helpers
+            projectorHelper.update();
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
