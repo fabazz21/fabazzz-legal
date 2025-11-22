@@ -1,0 +1,30 @@
+# StreamDiffusion App Requirements
+# Python 3.10+ required
+
+# Core dependencies
+torch==2.1.0
+torchvision==0.16.0
+diffusers>=0.25.0
+transformers>=4.36.0
+accelerate>=0.25.0
+streamdiffusion
+
+# For LCM-LoRA support
+peft>=0.7.0
+
+# Additional utilities
+pillow>=10.0.0
+numpy>=1.24.0
+opencv-python>=4.8.0
+
+# Web server
+flask>=3.0.0
+flask-cors>=4.0.0
+python-socketio>=5.10.0
+
+# Optional: TensorRT acceleration (requires NVIDIA GPU and TensorRT installation)
+# tensorrt>=8.6.0
+# torch-tensorrt>=1.4.0
+
+# Optional: For xformers (memory-efficient attention)
+# xformers>=0.0.22

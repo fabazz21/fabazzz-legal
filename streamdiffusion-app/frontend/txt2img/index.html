@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamDiffusion - Real-Time Text-to-Image</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎨 StreamDiffusion</h1>
+            <p class="subtitle">Real-Time Text-to-Image Generation</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="prompt-section">
+                    <label for="prompt">Enter your prompt:</label>
+                    <textarea
+                        id="prompt"
+                        placeholder="a beautiful landscape, mountains, sunset, vibrant colors..."
+                        rows="4"
+                    >a beautiful landscape</textarea>
+                    <button id="updateBtn" class="btn-primary">Generate</button>
+                </div>
+
+                <div class="quick-prompts">
+                    <h3>Quick Prompts:</h3>
+                    <div class="prompt-grid">
+                        <button class="quick-btn" data-prompt="a beautiful landscape with mountains and sunset">Landscape</button>
+                        <button class="quick-btn" data-prompt="a cute cat wearing sunglasses, digital art">Cool Cat</button>
+                        <button class="quick-btn" data-prompt="futuristic cityscape, neon lights, cyberpunk">Cyberpunk City</button>
+                        <button class="quick-btn" data-prompt="fantasy castle on a floating island, magical atmosphere">Fantasy Castle</button>
+                        <button class="quick-btn" data-prompt="astronaut floating in space, Earth in background">Space Scene</button>
+                        <button class="quick-btn" data-prompt="underwater scene with colorful fish and coral reef">Underwater</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Status</h3>
+                    <div class="status-item">
+                        <span class="label">Server:</span>
+                        <span id="serverStatus" class="value">Connecting...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Device:</span>
+                        <span id="deviceStatus" class="value">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Model:</span>
+                        <span id="modelStatus" class="value">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Current Prompt:</span>
+                        <span id="currentPrompt" class="value">-</span>
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <h3>Tips:</h3>
+                    <ul>
+                        <li>Be descriptive with your prompts</li>
+                        <li>Include style keywords (e.g., "digital art", "photorealistic")</li>
+                        <li>Generation updates in real-time</li>
+                        <li>First run may take time to download models</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Display Area -->
+            <div class="display-area">
+                <div class="video-container">
+                    <img id="streamImage" src="" alt="Generated Image Stream">
+                    <div id="loadingOverlay" class="loading-overlay">
+                        <div class="spinner"></div>
+                        <p>Initializing StreamDiffusion...</p>
+                    </div>
+                </div>
+
+                <div class="grid-container" id="gridContainer">
+                    <div class="grid-note">
+                        💡 Images will appear here as they are generated
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by StreamDiffusion | Real-time AI Image Generation</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

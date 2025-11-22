@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StreamDiffusion - Real-Time Image-to-Image</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📸 StreamDiffusion</h1>
+            <p class="subtitle">Real-Time Image-to-Image with Webcam</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <div class="webcam-controls">
+                    <h3>Webcam Controls</h3>
+                    <button id="startWebcamBtn" class="btn-primary">Start Webcam</button>
+                    <button id="stopWebcamBtn" class="btn-secondary" disabled>Stop Webcam</button>
+                </div>
+
+                <div class="prompt-section">
+                    <label for="prompt">Style Prompt:</label>
+                    <textarea
+                        id="prompt"
+                        placeholder="anime style, vibrant colors..."
+                        rows="3"
+                    >anime style</textarea>
+                    <button id="updateBtn" class="btn-primary">Apply Style</button>
+                </div>
+
+                <div class="quick-styles">
+                    <h3>Quick Styles:</h3>
+                    <div class="style-grid">
+                        <button class="style-btn" data-prompt="anime style, vibrant colors">Anime</button>
+                        <button class="style-btn" data-prompt="oil painting, artistic, brushstrokes">Oil Painting</button>
+                        <button class="style-btn" data-prompt="cyberpunk, neon, futuristic">Cyberpunk</button>
+                        <button class="style-btn" data-prompt="watercolor painting, soft, dreamy">Watercolor</button>
+                        <button class="style-btn" data-prompt="pencil sketch, black and white, detailed">Sketch</button>
+                        <button class="style-btn" data-prompt="pixel art, 8-bit, retro">Pixel Art</button>
+                        <button class="style-btn" data-prompt="fantasy art, magical, ethereal">Fantasy</button>
+                        <button class="style-btn" data-prompt="comic book style, bold lines, colorful">Comic</button>
+                    </div>
+                </div>
+
+                <div class="info-section">
+                    <h3>Status</h3>
+                    <div class="status-item">
+                        <span class="label">Server:</span>
+                        <span id="serverStatus" class="value">Connecting...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Webcam:</span>
+                        <span id="webcamStatus" class="value">Stopped</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Device:</span>
+                        <span id="deviceStatus" class="value">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">Current Style:</span>
+                        <span id="currentPrompt" class="value">-</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="label">FPS:</span>
+                        <span id="fpsStatus" class="value">0</span>
+                    </div>
+                </div>
+
+                <div class="help-section">
+                    <h3>How to Use:</h3>
+                    <ul>
+                        <li>Click "Start Webcam" to begin</li>
+                        <li>Allow camera access when prompted</li>
+                        <li>Choose a style or enter custom prompt</li>
+                        <li>Watch real-time transformation!</li>
+                        <li>Works best with good lighting</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Display Area -->
+            <div class="display-area">
+                <!-- Input (Webcam) -->
+                <div class="stream-section">
+                    <h3>Input (Your Webcam)</h3>
+                    <div class="video-container">
+                        <video id="webcam" autoplay playsinline></video>
+                        <canvas id="canvas" style="display:none;"></canvas>
+                        <div id="webcamOverlay" class="overlay-message">
+                            <p>📷 Click "Start Webcam" to begin</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output (Generated) -->
+                <div class="stream-section">
+                    <h3>Output (AI Generated)</h3>
+                    <div class="video-container">
+                        <img id="outputStream" src="" alt="Generated Output Stream">
+                        <div id="loadingOverlay" class="loading-overlay">
+                            <div class="spinner"></div>
+                            <p>Initializing AI...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Powered by StreamDiffusion | Real-time AI Image Transformation</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
