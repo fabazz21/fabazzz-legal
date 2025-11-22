@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projecteur Rectangulaire - Prototype</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        #container {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group h3 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #0d9488;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-row {
+            margin-bottom: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 4px;
+            color: #ccc;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: #333;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: #0d9488;
+            cursor: pointer;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+        }
+
+        input[type="color"] {
+            width: 100%;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #0d9488;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 8px;
+        }
+
+        button:hover {
+            background: #0f766e;
+        }
+
+        button.active {
+            background: #f59e0b;
+        }
+
+        button.active:hover {
+            background: #d97706;
+        }
+
+        .value-display {
+            color: #0d9488;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .info-title {
+            font-size: 16px;
+            color: #0d9488;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .info-item {
+            margin: 4px 0;
+        }
+
+        .info-label {
+            color: #888;
+        }
+
+        .info-value {
+            color: #0d9488;
+            font-weight: 600;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status {
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            margin-top: 8px;
+        }
+
+        .status.success {
+            background: rgba(13, 148, 136, 0.2);
+            color: #0d9488;
+        }
+
+        .status.info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <div id="info">
+        <div class="info-title">🎥 Projecteur Rectangulaire PRO v4</div>
+        <div class="info-item">
+            <span class="info-label">Rectangle:</span>
+            <span class="info-value">100% Parfait ✓</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Visibilité Angle:</span>
+            <span class="info-value">Très Permissive ✓</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Sélection:</span>
+            <span class="info-value">Cliquer sur objet ✓</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Transform:</span>
+            <span class="info-value">G/R/S ✓</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Nouveau:</span>
+            <span class="info-value">TransformControls sur Projecteur ✓</span>
+        </div>
+        <div class="status success" style="font-size: 10px;">
+            ✓ Rectangle parfait | ✓ Visible sur les côtés | ✓ Sélection/Transform | ✓ Projecteur manipulable
+        </div>
+    </div>
+
+    <div id="controls">
+        <div class="control-group">
+            <h3>🎥 Contrôle Projecteur</h3>
+            <button id="select-projector-btn" onclick="toggleProjectorSelection()">
+                📍 Sélectionner Projecteur
+            </button>
+            <div class="status info" style="font-size: 11px; line-height: 1.4; margin-top: 8px;">
+                Cliquez pour sélectionner le projecteur et le manipuler avec G/R/S
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>📦 Scène de Test</h3>
+            <button onclick="addCube()">Ajouter Cube</button>
+            <button onclick="addPlane()">Ajouter Plan</button>
+            <button onclick="clearScene()">Effacer Objets</button>
+        </div>
+
+        <div class="control-group">
+            <h3>📍 Position Projecteur</h3>
+            <div class="control-row">
+                <label>X: <span class="value-display" id="pos-x-val">0</span></label>
+                <input type="range" id="pos-x" min="-10" max="10" step="0.5" value="0" oninput="updateProjectorFromSliders()">
+            </div>
+            <div class="control-row">
+                <label>Y: <span class="value-display" id="pos-y-val">5</span></label>
+                <input type="range" id="pos-y" min="0" max="15" step="0.5" value="5" oninput="updateProjectorFromSliders()">
+            </div>
+            <div class="control-row">
+                <label>Z: <span class="value-display" id="pos-z-val">8</span></label>
+                <input type="range" id="pos-z" min="-10" max="10" step="0.5" value="8" oninput="updateProjectorFromSliders()">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🔄 Rotation Projecteur</h3>
+            <div class="control-row">
+                <label>Rotation X: <span class="value-display" id="rot-x-val">-30°</span></label>
+                <input type="range" id="rot-x" min="-180" max="180" step="5" value="-30" oninput="updateProjectorFromSliders()">
+            </div>
+            <div class="control-row">
+                <label>Rotation Y: <span class="value-display" id="rot-y-val">0°</span></label>
+                <input type="range" id="rot-y" min="-180" max="180" step="5" value="0" oninput="updateProjectorFromSliders()">
+            </div>
+            <div class="control-row">
+                <label>Rotation Z: <span class="value-display" id="rot-z-val">0°</span></label>
+                <input type="range" id="rot-z" min="-180" max="180" step="5" value="0" oninput="updateProjectorFromSliders()">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>📐 Paramètres Projection</h3>
+            <div class="control-row">
+                <label>FOV (Field of View): <span class="value-display" id="fov-val">45°</span></label>
+                <input type="range" id="fov" min="10" max="120" step="1" value="45" oninput="updateProjectorFromSliders()">
+            </div>
+            <div class="control-row">
+                <label>Aspect Ratio: <span class="value-display" id="aspect-val">1.78</span></label>
+                <select id="aspect" onchange="updateProjectorFromSliders()" style="width: 100%; padding: 8px; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 4px;">
+                    <option value="1.778">16:9 (1.778)</option>
+                    <option value="1.6">16:10 (1.6)</option>
+                    <option value="1.333">4:3 (1.333)</option>
+                    <option value="2.35">Cinéma (2.35)</option>
+                    <option value="1">Carré (1:1)</option>
+                </select>
+            </div>
+            <div class="control-row">
+                <label>Intensité: <span class="value-display" id="intensity-val">1.0</span></label>
+                <input type="range" id="intensity" min="0" max="3" step="0.1" value="1" oninput="updateProjectorFromSliders()">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🎨 Apparence</h3>
+            <div class="control-row">
+                <label>Couleur Projection:</label>
+                <input type="color" id="color" value="#ffffff" onchange="updateProjectorFromSliders()">
+            </div>
+            <div class="control-row">
+                <label>
+                    <input type="checkbox" id="show-frustum" checked onchange="updateProjectorFromSliders()">
+                    Afficher Frustum
+                </label>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>✋ Manipulation</h3>
+            <div class="status info" style="font-size: 11px; line-height: 1.4;">
+                <strong>Cliquer</strong> sur un objet pour le sélectionner<br>
+                <strong>Bouton</strong> ci-dessus pour le projecteur<br>
+                <strong>G</strong> = Déplacer | <strong>R</strong> = Rotation | <strong>S</strong> = Scale<br>
+                <strong>Suppr</strong> = Effacer objet
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>⚠️ Limitations Prototype</h3>
+            <div class="status info" style="font-size: 10px; line-height: 1.4;">
+                <strong>Occlusion:</strong> L'image traverse les objets.
+                Sera ajouté dans la version finale avec shadow mapping.
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🖼️ Image / Texture</h3>
+            <input type="file" id="image-upload" accept="image/*" onchange="loadProjectorImage()">
+            <button onclick="removeImage()">Enlever Image</button>
+            <div id="image-status"></div>
+        </div>
+    </div>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { TransformControls } from 'three/addons/controls/TransformControls.js';
+
+        // Scene setup
+        let scene, camera, renderer, controls;
+        let projectorCamera, projectorHelper, projectorMesh;
+        let projectedObjects = [];
+        let projectionTexture = null;
+        let transformControls, selectedObject = null;
+        let raycaster, mouse;
+        let isProjectorSelected = false;
+        let updatingFromTransform = false;
+
+        function init() {
+            // Scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x1a1a1a);
+            scene.fog = new THREE.Fog(0x1a1a1a, 20, 50);
+
+            // Main camera
+            camera = new THREE.PerspectiveCamera(
+                60,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                1000
+            );
+            camera.position.set(12, 8, 12);
+            camera.lookAt(0, 0, 0);
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            // Controls
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Transform Controls
+            transformControls = new TransformControls(camera, renderer.domElement);
+            transformControls.addEventListener('dragging-changed', (event) => {
+                controls.enabled = !event.value;
+            });
+            transformControls.addEventListener('objectChange', onTransformChange);
+            scene.add(transformControls);
+
+            // Raycaster for selection
+            raycaster = new THREE.Raycaster();
+            mouse = new THREE.Vector2();
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.6);
+            directionalLight.position.set(5, 10, 5);
+            scene.add(directionalLight);
+
+            // Grid
+            const gridHelper = new THREE.GridHelper(20, 20, 0x444444, 0x222222);
+            scene.add(gridHelper);
+
+            // Axes
+            const axesHelper = new THREE.AxesHelper(5);
+            scene.add(axesHelper);
+
+            // Create projector camera
+            createProjector();
+
+            // Add initial test objects
+            addCube();
+            addPlane();
+
+            // Event listeners
+            window.addEventListener('resize', onWindowResize);
+            renderer.domElement.addEventListener('click', onMouseClick);
+            window.addEventListener('keydown', onKeyDown);
+
+            // Start animation
+            animate();
+        }
+
+        function createProjector() {
+            // Create projector camera (this is our projector!)
+            const fov = parseFloat(document.getElementById('fov').value);
+            const aspect = parseFloat(document.getElementById('aspect').value);
+
+            projectorCamera = new THREE.PerspectiveCamera(fov, aspect, 0.5, 50);
+            projectorCamera.position.set(0, 5, 8);
+            projectorCamera.lookAt(0, 0, 0);
+
+            // Create a visible mesh for the projector
+            const projectorGeometry = new THREE.ConeGeometry(0.3, 0.8, 4);
+            const projectorMaterial = new THREE.MeshStandardMaterial({
+                color: 0x0d9488,
+                emissive: 0x0d9488,
+                emissiveIntensity: 0.5,
+                metalness: 0.8,
+                roughness: 0.2
+            });
+            projectorMesh = new THREE.Mesh(projectorGeometry, projectorMaterial);
+            projectorMesh.rotation.x = Math.PI / 2; // Point cone forward
+
+            projectorMesh.userData = {
+                name: 'Projecteur',
+                type: 'projector',
+                isProjector: true
+            };
+
+            // Add camera as child of mesh so they move together
+            projectorMesh.add(projectorCamera);
+            projectorCamera.position.set(0, 0, 0);
+
+            scene.add(projectorMesh);
+
+            // Create frustum helper (shows projection area)
+            projectorHelper = new THREE.CameraHelper(projectorCamera);
+            projectorHelper.visible = document.getElementById('show-frustum').checked;
+            scene.add(projectorHelper);
+
+            updateProjector();
+        }
+
+        function onTransformChange() {
+            if (!projectorMesh || updatingFromTransform) return;
+
+            updatingFromTransform = true;
+
+            if (isProjectorSelected && transformControls.object === projectorMesh) {
+                // Update sliders to reflect the new position/rotation
+                updateSlidersFromProjector();
+                updateProjector();
+            }
+
+            updatingFromTransform = false;
+        }
+
+        function updateSlidersFromProjector() {
+            if (!projectorMesh) return;
+
+            // Update position sliders
+            document.getElementById('pos-x').value = projectorMesh.position.x.toFixed(1);
+            document.getElementById('pos-y').value = projectorMesh.position.y.toFixed(1);
+            document.getElementById('pos-z').value = projectorMesh.position.z.toFixed(1);
+
+            // Update rotation sliders
+            document.getElementById('rot-x').value = Math.round(THREE.MathUtils.radToDeg(projectorMesh.rotation.x));
+            document.getElementById('rot-y').value = Math.round(THREE.MathUtils.radToDeg(projectorMesh.rotation.y));
+            document.getElementById('rot-z').value = Math.round(THREE.MathUtils.radToDeg(projectorMesh.rotation.z));
+
+            // Update displays
+            updateValueDisplays();
+        }
+
+        function updateValueDisplays() {
+            const x = parseFloat(document.getElementById('pos-x').value);
+            const y = parseFloat(document.getElementById('pos-y').value);
+            const z = parseFloat(document.getElementById('pos-z').value);
+            const rotX = parseFloat(document.getElementById('rot-x').value);
+            const rotY = parseFloat(document.getElementById('rot-y').value);
+            const rotZ = parseFloat(document.getElementById('rot-z').value);
+            const fov = parseFloat(document.getElementById('fov').value);
+            const aspect = parseFloat(document.getElementById('aspect').value);
+            const intensity = parseFloat(document.getElementById('intensity').value);
+
+            document.getElementById('pos-x-val').textContent = x.toFixed(1);
+            document.getElementById('pos-y-val').textContent = y.toFixed(1);
+            document.getElementById('pos-z-val').textContent = z.toFixed(1);
+            document.getElementById('rot-x-val').textContent = Math.round(rotX) + '°';
+            document.getElementById('rot-y-val').textContent = Math.round(rotY) + '°';
+            document.getElementById('rot-z-val').textContent = Math.round(rotZ) + '°';
+            document.getElementById('fov-val').textContent = fov + '°';
+            document.getElementById('aspect-val').textContent = aspect;
+            document.getElementById('intensity-val').textContent = intensity.toFixed(1);
+        }
+
+        function createProjectedMaterial(originalMaterial) {
+            // Create shader material that receives projection
+            const projectedMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    projectorTexture: { value: projectionTexture },
+                    projectorMatrix: { value: new THREE.Matrix4() },
+                    projectorPosition: { value: new THREE.Vector3() },
+                    baseColor: { value: new THREE.Color(0xcccccc) },
+                    projectorColor: { value: new THREE.Color(0xffffff) },
+                    intensity: { value: 1.0 },
+                    hasTexture: { value: projectionTexture !== null }
+                },
+                vertexShader: `
+                    varying vec4 vProjectedCoords;
+                    varying vec3 vNormal;
+                    varying vec3 vWorldPosition;
+
+                    uniform mat4 projectorMatrix;
+
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        vWorldPosition = (modelMatrix * vec4(position, 1.0)).xyz;
+
+                        // Calculate projected coordinates
+                        vProjectedCoords = projectorMatrix * modelMatrix * vec4(position, 1.0);
+
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform sampler2D projectorTexture;
+                    uniform vec3 baseColor;
+                    uniform vec3 projectorColor;
+                    uniform vec3 projectorPosition;
+                    uniform float intensity;
+                    uniform bool hasTexture;
+
+                    varying vec4 vProjectedCoords;
+                    varying vec3 vNormal;
+                    varying vec3 vWorldPosition;
+
+                    void main() {
+                        // Base color
+                        vec3 color = baseColor;
+
+                        // Calculate projected texture coordinates
+                        vec3 projected = vProjectedCoords.xyz / vProjectedCoords.w;
+                        vec2 uv = projected.xy * 0.5 + 0.5;
+
+                        // Check if point is within projection frustum
+                        bool inFrustum = (
+                            uv.x >= 0.0 && uv.x <= 1.0 &&
+                            uv.y >= 0.0 && uv.y <= 1.0 &&
+                            projected.z >= 0.0 && projected.z <= 1.0
+                        );
+
+                        if (inFrustum) {
+                            // Calculate direction from surface to projector
+                            vec3 projectionDir = normalize(projectorPosition - vWorldPosition);
+
+                            // VERY permissive facing - always show projection if in frustum
+                            // Use absolute value to make it work even from behind
+                            float facing = abs(dot(normalize(vNormal), projectionDir));
+
+                            // Apply smooth curve to make it more visible at all angles
+                            facing = pow(facing, 0.3); // Make it more permissive
+                            facing = max(facing, 0.5); // Always at least 50% visible in frustum
+
+                            if (hasTexture) {
+                                // Sample texture
+                                vec4 projectedColor = texture2D(projectorTexture, uv);
+                                color = mix(color, projectedColor.rgb * projectorColor, projectedColor.a * intensity * facing);
+                            } else {
+                                // Use solid color projection
+                                color = mix(color, projectorColor, intensity * facing);
+                            }
+                        }
+
+                        gl_FragColor = vec4(color, 1.0);
+                    }
+                `,
+                side: THREE.DoubleSide
+            });
+
+            return projectedMaterial;
+        }
+
+        function updateProjector() {
+            if (!projectorCamera || !projectorMesh) return;
+
+            if (!updatingFromTransform) {
+                // Update position from sliders
+                const x = parseFloat(document.getElementById('pos-x').value);
+                const y = parseFloat(document.getElementById('pos-y').value);
+                const z = parseFloat(document.getElementById('pos-z').value);
+                projectorMesh.position.set(x, y, z);
+
+                // Update rotation from sliders
+                const rotX = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rot-x').value));
+                const rotY = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rot-y').value));
+                const rotZ = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rot-z').value));
+                projectorMesh.rotation.set(rotX, rotY, rotZ);
+            }
+
+            // Update FOV and aspect
+            const fov = parseFloat(document.getElementById('fov').value);
+            const aspect = parseFloat(document.getElementById('aspect').value);
+            projectorCamera.fov = fov;
+            projectorCamera.aspect = aspect;
+            projectorCamera.updateProjectionMatrix();
+
+            // Update helper
+            if (projectorHelper) {
+                projectorHelper.visible = document.getElementById('show-frustum').checked;
+                projectorHelper.update();
+            }
+
+            // Update color and intensity
+            const color = new THREE.Color(document.getElementById('color').value);
+            const intensity = parseFloat(document.getElementById('intensity').value);
+
+            // Update projector mesh color
+            projectorMesh.material.color.copy(color);
+            projectorMesh.material.emissive.copy(color);
+
+            // Get world position of projector camera
+            const projectorWorldPos = new THREE.Vector3();
+            projectorCamera.getWorldPosition(projectorWorldPos);
+
+            // Update projection matrix for all objects
+            const projectionMatrix = new THREE.Matrix4();
+            projectionMatrix.multiplyMatrices(
+                projectorCamera.projectionMatrix,
+                projectorCamera.matrixWorldInverse
+            );
+
+            projectedObjects.forEach(obj => {
+                if (obj.material.uniforms) {
+                    obj.material.uniforms.projectorMatrix.value.copy(projectionMatrix);
+                    obj.material.uniforms.projectorPosition.value.copy(projectorWorldPos);
+                    obj.material.uniforms.projectorColor.value.copy(color);
+                    obj.material.uniforms.intensity.value = intensity;
+                    obj.material.uniforms.hasTexture.value = (projectionTexture !== null);
+                    if (projectionTexture) {
+                        obj.material.uniforms.projectorTexture.value = projectionTexture;
+                    }
+                }
+            });
+
+            // Update value displays
+            updateValueDisplays();
+        }
+
+        window.updateProjectorFromSliders = function() {
+            updatingFromTransform = false;
+            updateProjector();
+        }
+
+        window.toggleProjectorSelection = function() {
+            if (isProjectorSelected) {
+                // Deselect projector
+                selectObject(null);
+                isProjectorSelected = false;
+                document.getElementById('select-projector-btn').classList.remove('active');
+                document.getElementById('select-projector-btn').textContent = '📍 Sélectionner Projecteur';
+            } else {
+                // Select projector
+                selectObject(projectorMesh);
+                isProjectorSelected = true;
+                document.getElementById('select-projector-btn').classList.add('active');
+                document.getElementById('select-projector-btn').textContent = '✓ Projecteur Sélectionné';
+            }
+        }
+
+        window.addCube = function() {
+            const geometry = new THREE.BoxGeometry(2, 2, 2);
+            const material = createProjectedMaterial();
+            const cube = new THREE.Mesh(geometry, material);
+
+            cube.position.set(
+                Math.random() * 6 - 3,
+                1,
+                Math.random() * 6 - 3
+            );
+
+            cube.userData = {
+                name: 'Cube ' + (projectedObjects.length + 1),
+                type: 'cube'
+            };
+
+            scene.add(cube);
+            projectedObjects.push(cube);
+            updateProjector();
+            console.log('Added:', cube.userData.name);
+        }
+
+        window.addPlane = function() {
+            const geometry = new THREE.PlaneGeometry(5, 5);
+            const material = createProjectedMaterial();
+            const plane = new THREE.Mesh(geometry, material);
+
+            plane.position.set(0, 0, -3);
+            plane.rotation.y = 0;
+
+            plane.userData = {
+                name: 'Plane ' + (projectedObjects.length + 1),
+                type: 'plane'
+            };
+
+            scene.add(plane);
+            projectedObjects.push(plane);
+            updateProjector();
+            console.log('Added:', plane.userData.name);
+        }
+
+        window.clearScene = function() {
+            projectedObjects.forEach(obj => {
+                scene.remove(obj);
+                obj.geometry.dispose();
+                obj.material.dispose();
+            });
+            projectedObjects = [];
+        }
+
+        window.loadProjectorImage = function() {
+            const file = document.getElementById('image-upload').files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const loader = new THREE.TextureLoader();
+                loader.load(e.target.result, (texture) => {
+                    projectionTexture = texture;
+                    projectionTexture.minFilter = THREE.LinearFilter;
+                    projectionTexture.magFilter = THREE.LinearFilter;
+
+                    updateProjector();
+
+                    document.getElementById('image-status').innerHTML =
+                        '<div class="status success">✓ Image chargée avec succès</div>';
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        window.removeImage = function() {
+            projectionTexture = null;
+            updateProjector();
+            document.getElementById('image-upload').value = '';
+            document.getElementById('image-status').innerHTML =
+                '<div class="status info">Image retirée - projection couleur unie</div>';
+        }
+
+        function onMouseClick(event) {
+            // Don't handle clicks if projector is selected (let user use transform controls)
+            if (isProjectorSelected) return;
+
+            // Calculate mouse position in normalized device coordinates
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            // Raycast
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(projectedObjects, false);
+
+            if (intersects.length > 0) {
+                const object = intersects[0].object;
+                selectObject(object);
+            } else {
+                // Deselect
+                selectObject(null);
+            }
+        }
+
+        function selectObject(object) {
+            selectedObject = object;
+
+            if (object) {
+                transformControls.attach(object);
+                console.log('Selected:', object.userData ? object.userData.name : 'Object');
+            } else {
+                transformControls.detach();
+                console.log('Deselected');
+            }
+        }
+
+        function onKeyDown(event) {
+            if (!selectedObject) return;
+
+            switch(event.key.toLowerCase()) {
+                case 'g':
+                    transformControls.setMode('translate');
+                    console.log('Mode: Translate (Move)');
+                    break;
+                case 'r':
+                    transformControls.setMode('rotate');
+                    console.log('Mode: Rotate');
+                    break;
+                case 's':
+                    transformControls.setMode('scale');
+                    console.log('Mode: Scale');
+                    break;
+                case 'delete':
+                case 'backspace':
+                    // Don't delete the projector
+                    if (selectedObject.userData && selectedObject.userData.isProjector) {
+                        console.log('Cannot delete projector');
+                        return;
+                    }
+                    deleteSelected();
+                    break;
+                case 'escape':
+                    if (isProjectorSelected) {
+                        window.toggleProjectorSelection();
+                    } else {
+                        selectObject(null);
+                    }
+                    break;
+            }
+        }
+
+        function deleteSelected() {
+            if (!selectedObject) return;
+
+            // Remove from scene
+            scene.remove(selectedObject);
+
+            // Remove from array
+            const index = projectedObjects.indexOf(selectedObject);
+            if (index > -1) {
+                projectedObjects.splice(index, 1);
+            }
+
+            // Dispose geometry and material
+            if (selectedObject.geometry) selectedObject.geometry.dispose();
+            if (selectedObject.material) selectedObject.material.dispose();
+
+            // Deselect
+            selectObject(null);
+
+            console.log('Object deleted');
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
