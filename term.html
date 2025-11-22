@@ -1544,8 +1544,9 @@
                 controls.enabled = !event.value;
             });
             transformControls.addEventListener('objectChange', () => {
-                // Check if we're moving a projector target
                 const obj = transformControls.object;
+
+                // Check if we're moving a projector target
                 if (obj && obj.userData.type === 'projector_target') {
                     const projector = obj.userData.parentProjector;
                     if (projector && projector.userData.target) {
@@ -1559,6 +1560,15 @@
                         }
                     }
                 }
+
+                // Check if we're moving a projector itself
+                if (obj && obj.userData.type === 'projector') {
+                    // Update helper to follow projector
+                    if (obj.userData.helper) {
+                        obj.userData.helper.update();
+                    }
+                }
+
                 updatePropertiesPanel();
             });
             scene.add(transformControls);
@@ -1807,6 +1817,11 @@
 
             // Create rectangular frustum helper with proper aspect ratio
             const helper = new RectangularFrustumHelper(spotlight, selectedProjectorModel.resolution);
+
+            // Store reference to projector in helper so it can be found when clicked
+            helper.userData.projector = spotlight;
+            helper.userData.type = 'projector_helper';
+
             scene.add(helper);
 
             // Create target point indicator (yellow sphere - selectable)
@@ -2183,6 +2198,8 @@
 
                 // Clone helper
                 const helperClone = new RectangularFrustumHelper(clone, obj.userData.resolution);
+                helperClone.userData.projector = clone;
+                helperClone.userData.type = 'projector_helper';
                 scene.add(helperClone);
 
                 // Clone target indicator (yellow sphere)
@@ -2392,6 +2409,12 @@
                 // Find the first selectable object in the hierarchy
                 for (let i = 0; i < intersects.length; i++) {
                     let obj = intersects[i].object;
+
+                    // Check if this is a projector helper - select its projector instead
+                    if (obj.userData && obj.userData.type === 'projector_helper' && obj.userData.projector) {
+                        selectObject(obj.userData.projector);
+                        return;
+                    }
 
                     // Traverse up to find a selectable object in sceneObjects
                     while (obj) {
@@ -2780,6 +2803,11 @@
 
             // Create rectangular frustum helper with proper aspect ratio
             const helper = new RectangularFrustumHelper(spotlight, defaultResolution);
+
+            // Store reference to projector in helper so it can be found when clicked
+            helper.userData.projector = spotlight;
+            helper.userData.type = 'projector_helper';
+
             scene.add(helper);
 
             // Create target point indicator (yellow sphere - selectable)
@@ -3443,7 +3471,11 @@
             document.querySelectorAll('.gizmo-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+
+            // Highlight active button (if called from UI, not keyboard)
+            if (typeof event !== 'undefined' && event.target) {
+                event.target.classList.add('active');
+            }
         };
 
         window.setViewMode = (mode) => {
