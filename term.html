@@ -1647,20 +1647,49 @@
                     if (projector && projector.userData.target) {
                         // Update projector's target position
                         projector.userData.target.position.copy(obj.position);
-                        projector.target.position.copy(obj.position);
+
+                        // Update spotlight target if it exists
+                        if (projector.userData.spotlight && projector.userData.spotlight.target) {
+                            projector.userData.spotlight.target.position.copy(obj.position);
+                        }
+
+                        // Make both camera and spotlight look at target
+                        projector.lookAt(obj.position);
+                        if (projector.userData.spotlight) {
+                            projector.userData.spotlight.lookAt(obj.position);
+                        }
 
                         // Update helper
                         if (projector.userData.helper) {
                             projector.userData.helper.update();
+                        }
+
+                        // Re-project materials when target moves
+                        if (projector.userData.projectorMaterials) {
+                            for (const matData of projector.userData.projectorMaterials) {
+                                matData.material.project(matData.object);
+                            }
                         }
                     }
                 }
 
                 // Check if we're moving a projector itself
                 if (obj && obj.userData.type === 'projector') {
+                    // Sync spotlight position with camera
+                    if (obj.userData.spotlight) {
+                        obj.userData.spotlight.position.copy(obj.position);
+                    }
+
                     // Update helper to follow projector
                     if (obj.userData.helper) {
                         obj.userData.helper.update();
+                    }
+
+                    // Re-project materials when projector moves
+                    if (obj.userData.projectorMaterials) {
+                        for (const matData of obj.userData.projectorMaterials) {
+                            matData.material.project(matData.object);
+                        }
                     }
                 }
 
@@ -1896,23 +1925,40 @@
             // FOV (degrees) = 2 * atan(0.5 / throwRatio) * (180 / PI)
             const fov = 2 * Math.atan(0.5 / selectedLens.throwRatio) * (180 / Math.PI);
 
-            // Create perspective camera (acts as projector)
-            const projectorCamera = new THREE.PerspectiveCamera(fov, aspectRatio, 0.1, 50);
-            projectorCamera.position.set(posX, posY, posZ);
+            // Generate projector color for visualization
+            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
+
+            // Create SpotLight for actual scene lighting and shadows
+            const lumensToIntensity = selectedProjectorModel.lumens / 200;
+            const spotlight = new THREE.SpotLight(color, lumensToIntensity);
+            spotlight.position.set(posX, posY, posZ);
+            spotlight.angle = Math.PI / 6;
+            spotlight.penumbra = 0.05;
+            spotlight.decay = 2;
+            spotlight.distance = 50;
+            spotlight.castShadow = true;
+            spotlight.shadow.mapSize.width = 2048;
+            spotlight.shadow.mapSize.height = 2048;
+
+            // Apply rectangular projection texture to spotlight
+            spotlight.map = createRectangularProjectionTexture(aspectRatio);
 
             // Create and position target
             const target = new THREE.Object3D();
             target.position.set(targetX, targetY, targetZ);
             scene.add(target);
+            spotlight.target = target;
 
-            // Make camera look at target
+            // Make spotlight look at target
+            spotlight.lookAt(targetX, targetY, targetZ);
+
+            // Create perspective camera for ProjectedMaterial (accurate rectangular projection)
+            const projectorCamera = new THREE.PerspectiveCamera(fov, aspectRatio, 0.1, 50);
+            projectorCamera.position.set(posX, posY, posZ);
             projectorCamera.lookAt(targetX, targetY, targetZ);
 
             // Create default white texture for projection
             const projectionTexture = createRectangularProjectionTexture(aspectRatio);
-
-            // Generate projector color for visualization
-            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.6);
 
             // Create camera frustum helper for visualization
             const helper = new CameraFrustumHelper(projectorCamera, selectedProjectorModel.resolution, color);
@@ -1978,7 +2024,7 @@
                 name: name,
                 type: 'projector',
                 locked: false,
-                targetLocked: true, // Lock projector aim to target by default
+                targetLocked: true,
                 helper: helper,
                 target: target,
                 targetIndicator: targetIndicator,
@@ -1994,9 +2040,15 @@
                 model: selectedProjectorModel.model,
                 color: color,
                 texture: projectionTexture,
-                projectorMaterials: projectorMaterials
+                projectorMaterials: projectorMaterials,
+                spotlight: spotlight, // Reference to the lighting spotlight
+                projectorCamera: projectorCamera // Self-reference for clarity
             };
 
+            // Add spotlight to scene (for lighting)
+            scene.add(spotlight);
+
+            // Add camera to scene (for ProjectedMaterial)
             scene.add(projectorCamera);
             sceneObjects.push(projectorCamera);
             projectors.push(projectorCamera);
@@ -2085,10 +2137,22 @@
                 compositeTexture.center.set(0.5, 0.5);
                 compositeTexture.needsUpdate = true;
 
-                // Apply composite texture to spotlight
-                selectedObject.map = compositeTexture;
+                // Apply composite texture to spotlight (for lighting)
+                if (selectedObject.userData.spotlight) {
+                    selectedObject.userData.spotlight.map = compositeTexture;
+                }
+
+                // Update ProjectedMaterial textures
+                if (selectedObject.userData.projectorMaterials) {
+                    for (const matData of selectedObject.userData.projectorMaterials) {
+                        matData.material.texture = compositeTexture;
+                        matData.material.project(matData.object); // Re-project with new texture
+                    }
+                }
+
                 selectedObject.userData.projectorTexture = currentProjectorImage;
                 selectedObject.userData.hasCustomImage = true;
+                selectedObject.userData.texture = compositeTexture;
 
                 closeImageModal();
                 updatePropertiesPanel();
@@ -2914,20 +2978,35 @@
             // Calculate FOV from throw ratio
             const fov = 2 * Math.atan(0.5 / throwRatio) * (180 / Math.PI);
 
-            // Create perspective camera (acts as projector)
-            const projectorCamera = new THREE.PerspectiveCamera(fov, aspectRatio, 0.1, 50);
-            projectorCamera.position.set(
-                Math.random() * 8 - 4,
-                6 + Math.random() * 4,
-                Math.random() * 8 - 4
-            );
+            const posX = Math.random() * 8 - 4;
+            const posY = 6 + Math.random() * 4;
+            const posZ = Math.random() * 8 - 4;
+
+            // Create SpotLight for actual scene lighting and shadows
+            const spotlight = new THREE.SpotLight(color, 150);
+            spotlight.position.set(posX, posY, posZ);
+            spotlight.angle = Math.PI / 6;
+            spotlight.penumbra = 0.05;
+            spotlight.decay = 2;
+            spotlight.distance = 50;
+            spotlight.castShadow = true;
+            spotlight.shadow.mapSize.width = 2048;
+            spotlight.shadow.mapSize.height = 2048;
+            spotlight.shadow.camera.near = 0.5;
+            spotlight.shadow.camera.far = 50;
+
+            // Apply rectangular projection texture to spotlight
+            spotlight.map = createRectangularProjectionTexture(aspectRatio);
 
             // Target helper
             const target = new THREE.Object3D();
             target.position.set(0, 0, 0);
             scene.add(target);
+            spotlight.target = target;
 
-            // Make camera look at target
+            // Create perspective camera for ProjectedMaterial (accurate rectangular projection)
+            const projectorCamera = new THREE.PerspectiveCamera(fov, aspectRatio, 0.1, 50);
+            projectorCamera.position.set(posX, posY, posZ);
             projectorCamera.lookAt(0, 0, 0);
 
             // Apply rectangular projection texture (16:9 aspect ratio)
@@ -2996,7 +3075,7 @@
             projectorCamera.userData.name = 'Projector ' + (projectors.length + 1);
             projectorCamera.userData.type = 'projector';
             projectorCamera.userData.locked = false;
-            projectorCamera.userData.targetLocked = true; // Lock projector aim to target by default
+            projectorCamera.userData.targetLocked = true;
             projectorCamera.userData.helper = helper;
             projectorCamera.userData.target = target;
             projectorCamera.userData.targetIndicator = targetIndicator;
@@ -3009,7 +3088,13 @@
             projectorCamera.userData.color = color;
             projectorCamera.userData.texture = projectionTexture;
             projectorCamera.userData.projectorMaterials = projectorMaterials;
+            projectorCamera.userData.spotlight = spotlight;
+            projectorCamera.userData.projectorCamera = projectorCamera;
 
+            // Add spotlight to scene (for lighting)
+            scene.add(spotlight);
+
+            // Add camera to scene (for ProjectedMaterial)
             scene.add(projectorCamera);
             sceneObjects.push(projectorCamera);
             projectors.push(projectorCamera);
@@ -3596,6 +3681,17 @@
                 }
                 if (selectedObject.userData.target) {
                     scene.remove(selectedObject.userData.target);
+                }
+                if (selectedObject.userData.targetIndicator) {
+                    scene.remove(selectedObject.userData.targetIndicator);
+                    const targetIndex = sceneObjects.indexOf(selectedObject.userData.targetIndicator);
+                    if (targetIndex > -1) {
+                        sceneObjects.splice(targetIndex, 1);
+                    }
+                }
+                // Remove spotlight if this is a projector
+                if (selectedObject.userData.spotlight) {
+                    scene.remove(selectedObject.userData.spotlight);
                 }
 
                 const index = sceneObjects.indexOf(selectedObject);
