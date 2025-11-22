@@ -1,6 +1,6 @@
 # 🎨 StreamDiffusion App
 
-A real-time AI image generation application powered by [StreamDiffusion](https://github.com/cumulo-autumn/StreamDiffusion), featuring both text-to-image and image-to-image (webcam) capabilities.
+A real-time AI image generation application powered by [StreamDiffusion](https://github.com/cumulo-autumn/StreamDiffusion), featuring text-to-image, image-to-image (webcam), and **drawing-to-image** capabilities.
 
 ## ✨ Features
 
@@ -15,6 +15,15 @@ A real-time AI image generation application powered by [StreamDiffusion](https:/
 - **Style transfer** - Apply artistic styles to live video
 - **Multiple presets** - Anime, oil painting, cyberpunk, and more
 - **Interactive controls** - Adjust styles on-the-fly
+
+### Drawing-to-Image Generation ⭐ NEW!
+- **Interactive canvas** - Draw with mouse or touch
+- **Real-time AI transformation** - Watch your sketches become art
+- **Color palette** - 8 preset colors + custom picker
+- **Brush controls** - Adjustable size and color
+- **Style presets** - Photorealistic, anime, watercolor, and more
+- **Undo/Clear** - Refine your drawings easily
+- **Save output** - Download generated images
 
 ## 🚀 Quick Start
 
@@ -104,6 +113,30 @@ python server_img2img.py
 - See your webcam transformed in real-time
 - Switch styles on-the-fly
 
+### Drawing-to-Image Server ⭐ NEW!
+
+```bash
+# Activate virtual environment
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Start server
+cd backend
+python server_draw2img.py
+
+# Open in browser
+# http://localhost:5002
+```
+
+**Features:**
+- Draw on interactive canvas with mouse/touch
+- Choose colors and brush sizes
+- Real-time AI transformation of your drawings
+- 8 style presets (photorealistic, anime, watercolor, etc.)
+- Undo/clear tools for easy editing
+- Save generated images
+
+**📖 Complete Tutorial:** See [TUTORIAL_DRAW2IMG.md](TUTORIAL_DRAW2IMG.md) for detailed guide!
+
 ## 📁 Project Structure
 
 ```
@@ -112,20 +145,29 @@ streamdiffusion-app/
 │   ├── stream_engine.py      # Core StreamDiffusion engine
 │   ├── server_txt2img.py     # Text-to-image Flask server
 │   ├── server_img2img.py     # Image-to-image Flask server
+│   ├── server_draw2img.py    # Drawing-to-image Flask server
 │   └── requirements.txt      # Python dependencies
 ├── frontend/
 │   ├── txt2img/
 │   │   ├── index.html        # Text-to-image UI
 │   │   ├── style.css         # Styles
 │   │   └── app.js            # Frontend logic
-│   └── img2img/
-│       ├── index.html        # Image-to-image UI
+│   ├── img2img/
+│   │   ├── index.html        # Image-to-image UI
+│   │   ├── style.css         # Styles
+│   │   └── app.js            # Webcam & streaming logic
+│   └── draw2img/             # ⭐ NEW!
+│       ├── index.html        # Drawing-to-image UI
 │       ├── style.css         # Styles
-│       └── app.js            # Webcam & streaming logic
+│       └── app.js            # Canvas & drawing logic
 ├── assets/                   # Generated images/assets
 ├── setup.sh                  # Linux/Mac setup script
 ├── setup.bat                 # Windows setup script
-└── README.md                 # This file
+├── run_txt2img.sh/.bat       # Quick-start scripts
+├── run_img2img.sh/.bat
+├── run_draw2img.sh/.bat      # ⭐ NEW!
+├── README.md                 # This file
+└── TUTORIAL_DRAW2IMG.md      # ⭐ Drawing tutorial
 ```
 
 ## ⚙️ Configuration
