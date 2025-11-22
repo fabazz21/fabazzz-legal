@@ -73,8 +73,9 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
             self.send_error_response(500, str(e))
 
     def call_huggingface(self, api_key, prompt, image_data):
-        """Call Hugging Face API"""
-        url = 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0'
+        """Call Hugging Face API (new router endpoint)"""
+        # Updated to use the new router endpoint
+        url = 'https://router.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0'
 
         # For text-to-image with prompt based on sketch
         payload = {
