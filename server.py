@@ -85,6 +85,8 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
             'parameters': {
                 'num_inference_steps': 30,
                 'guidance_scale': 7.5,
+                'width': 512,
+                'height': 512,
             }
         }
 
