@@ -73,13 +73,19 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
             self.send_error_response(500, str(e))
 
     def call_huggingface(self, api_key, prompt, image_data):
-        """Call Hugging Face API (new router endpoint)"""
-        # Updated to use the new router endpoint
-        url = 'https://router.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0'
+        """Call Hugging Face API using Stable Diffusion"""
+        # Using a reliable model endpoint
+        url = 'https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5'
 
-        # For text-to-image with prompt based on sketch
+        # Create a descriptive prompt from user's input
+        full_prompt = prompt or 'beautiful artwork, vibrant colors, artistic style, detailed, high quality'
+
         payload = {
-            'inputs': prompt or 'transform this sketch into a beautiful artwork with vibrant colors and artistic style',
+            'inputs': full_prompt,
+            'parameters': {
+                'num_inference_steps': 30,
+                'guidance_scale': 7.5,
+            }
         }
 
         headers = {
@@ -95,13 +101,37 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         )
 
         try:
-            with urllib.request.urlopen(req, timeout=60) as response:
+            with urllib.request.urlopen(req, timeout=90) as response:
                 image_bytes = response.read()
-                # Return base64 encoded image
-                image_b64 = base64.b64encode(image_bytes).decode('utf-8')
-                return {'success': True, 'image': image_b64}
+
+                # Check if the response is JSON (error or loading message)
+                try:
+                    response_text = image_bytes.decode('utf-8')
+                    response_json = json.loads(response_text)
+
+                    # Check if model is loading
+                    if 'error' in response_json:
+                        if 'loading' in response_json['error'].lower():
+                            raise Exception('Model is loading. Please wait 20 seconds and try again.')
+                        else:
+                            raise Exception(f"API Error: {response_json['error']}")
+
+                    # If we get here, it's an unexpected JSON response
+                    raise Exception(f"Unexpected response: {response_text[:200]}")
+
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    # Response is binary (image), which is what we want
+                    image_b64 = base64.b64encode(image_bytes).decode('utf-8')
+                    return {'success': True, 'image': image_b64}
+
         except urllib.error.HTTPError as e:
             error_body = e.read().decode('utf-8')
+            try:
+                error_json = json.loads(error_body)
+                if 'error' in error_json:
+                    raise Exception(f"Hugging Face Error: {error_json['error']}")
+            except json.JSONDecodeError:
+                pass
             raise Exception(f'Hugging Face API Error ({e.code}): {error_body}')
 
     def call_openai(self, api_key, prompt, image_data):
