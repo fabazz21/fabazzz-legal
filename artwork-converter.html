@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur de Dessins en Œuvres d'Art</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-group label {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: 600;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-success {
+            background: #2ecc71;
+            color: white;
+        }
+
+        select, input[type="range"], input[type="color"], input[type="number"] {
+            padding: 8px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+            min-width: 150px;
+        }
+
+        input[type="range"] {
+            cursor: pointer;
+        }
+
+        .canvas-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .canvas-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .canvas-wrapper h3 {
+            color: #333;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        canvas {
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            cursor: crosshair;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .info {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .info ul {
+            margin-left: 20px;
+        }
+
+        .info li {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        @media (max-width: 1024px) {
+            .canvas-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .value-display {
+            display: inline-block;
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Convertisseur de Dessins en Œuvres d'Art</h1>
+        <p>Dessinez et transformez vos créations en temps réel</p>
+    </div>
+
+    <div class="container">
+        <div class="controls">
+            <div class="control-group">
+                <label for="artStyle">Style Artistique</label>
+                <select id="artStyle">
+                    <option value="watercolor">Aquarelle</option>
+                    <option value="oilPainting">Peinture à l'huile</option>
+                    <option value="sketch">Esquisse/Crayon</option>
+                    <option value="impressionist">Impressionniste</option>
+                    <option value="cartoon">Cartoon</option>
+                    <option value="vintage">Vintage/Sépia</option>
+                    <option value="neon">Néon</option>
+                    <option value="mosaic">Mosaïque</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label for="brushSize">Taille du pinceau: <span class="value-display" id="brushSizeValue">5</span></label>
+                <input type="range" id="brushSize" min="1" max="50" value="5">
+            </div>
+
+            <div class="control-group">
+                <label for="brushColor">Couleur</label>
+                <input type="color" id="brushColor" value="#000000">
+            </div>
+
+            <div class="control-group">
+                <label for="intensity">Intensité effet: <span class="value-display" id="intensityValue">50</span>%</label>
+                <input type="range" id="intensity" min="0" max="100" value="50">
+            </div>
+
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button class="btn-danger" id="clearBtn">🗑️ Effacer</button>
+            </div>
+
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button class="btn-success" id="saveBtn">💾 Sauvegarder</button>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <div class="canvas-wrapper">
+                <h3>📝 Votre Dessin</h3>
+                <canvas id="drawingCanvas" width="600" height="600"></canvas>
+            </div>
+            <div class="canvas-wrapper">
+                <h3>🎨 Œuvre d'Art (Temps Réel)</h3>
+                <canvas id="artworkCanvas" width="600" height="600"></canvas>
+            </div>
+        </div>
+
+        <div class="info">
+            <h4>ℹ️ Instructions</h4>
+            <ul>
+                <li>Dessinez sur le canvas de gauche avec votre souris</li>
+                <li>La conversion en œuvre d'art s'affiche en temps réel à droite</li>
+                <li>Choisissez différents styles artistiques pour varier les effets</li>
+                <li>Ajustez l'intensité pour contrôler la force de l'effet</li>
+                <li>Cliquez sur "Sauvegarder" pour télécharger votre œuvre d'art</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Configuration des canvas
+        const drawingCanvas = document.getElementById('drawingCanvas');
+        const artworkCanvas = document.getElementById('artworkCanvas');
+        const drawingCtx = drawingCanvas.getContext('2d');
+        const artworkCtx = artworkCanvas.getContext('2d');
+
+        // Variables de dessin
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Éléments de contrôle
+        const artStyleSelect = document.getElementById('artStyle');
+        const brushSizeInput = document.getElementById('brushSize');
+        const brushColorInput = document.getElementById('brushColor');
+        const intensityInput = document.getElementById('intensity');
+        const clearBtn = document.getElementById('clearBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const brushSizeValue = document.getElementById('brushSizeValue');
+        const intensityValue = document.getElementById('intensityValue');
+
+        // Initialisation
+        drawingCtx.lineCap = 'round';
+        drawingCtx.lineJoin = 'round';
+
+        // Mise à jour des valeurs affichées
+        brushSizeInput.addEventListener('input', (e) => {
+            brushSizeValue.textContent = e.target.value;
+        });
+
+        intensityInput.addEventListener('input', (e) => {
+            intensityValue.textContent = e.target.value;
+            applyArtStyle();
+        });
+
+        // Événements de dessin
+        drawingCanvas.addEventListener('mousedown', startDrawing);
+        drawingCanvas.addEventListener('mousemove', draw);
+        drawingCanvas.addEventListener('mouseup', stopDrawing);
+        drawingCanvas.addEventListener('mouseout', stopDrawing);
+
+        // Support tactile
+        drawingCanvas.addEventListener('touchstart', handleTouch);
+        drawingCanvas.addEventListener('touchmove', handleTouch);
+        drawingCanvas.addEventListener('touchend', stopDrawing);
+
+        function startDrawing(e) {
+            isDrawing = true;
+            const rect = drawingCanvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = drawingCanvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            drawingCtx.strokeStyle = brushColorInput.value;
+            drawingCtx.lineWidth = brushSizeInput.value;
+
+            drawingCtx.beginPath();
+            drawingCtx.moveTo(lastX, lastY);
+            drawingCtx.lineTo(x, y);
+            drawingCtx.stroke();
+
+            lastX = x;
+            lastY = y;
+
+            // Conversion en temps réel
+            requestAnimationFrame(() => applyArtStyle());
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+        }
+
+        function handleTouch(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent(e.type === 'touchstart' ? 'mousedown' : 'mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            drawingCanvas.dispatchEvent(mouseEvent);
+        }
+
+        // Application des styles artistiques
+        function applyArtStyle() {
+            const style = artStyleSelect.value;
+            const intensity = intensityInput.value / 100;
+
+            // Copier l'image de base
+            artworkCtx.clearRect(0, 0, artworkCanvas.width, artworkCanvas.height);
+            artworkCtx.drawImage(drawingCanvas, 0, 0);
+
+            const imageData = artworkCtx.getImageData(0, 0, artworkCanvas.width, artworkCanvas.height);
+            const data = imageData.data;
+
+            switch(style) {
+                case 'watercolor':
+                    applyWatercolor(data, intensity);
+                    break;
+                case 'oilPainting':
+                    applyOilPainting(data, intensity);
+                    break;
+                case 'sketch':
+                    applySketch(data, intensity);
+                    break;
+                case 'impressionist':
+                    applyImpressionist(data, intensity);
+                    break;
+                case 'cartoon':
+                    applyCartoon(data, intensity);
+                    break;
+                case 'vintage':
+                    applyVintage(data, intensity);
+                    break;
+                case 'neon':
+                    applyNeon(data, intensity);
+                    break;
+                case 'mosaic':
+                    applyMosaic(data, intensity);
+                    break;
+            }
+
+            artworkCtx.putImageData(imageData, 0, 0);
+        }
+
+        // Effet Aquarelle
+        function applyWatercolor(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const rand = Math.random() * 30 * intensity;
+                    data[i] = Math.min(255, data[i] + rand);
+                    data[i + 1] = Math.min(255, data[i + 1] + rand);
+                    data[i + 2] = Math.min(255, data[i + 2] + rand);
+                    data[i + 3] = Math.max(100, data[i + 3] - 50 * intensity);
+                }
+            }
+        }
+
+        // Effet Peinture à l'huile
+        function applyOilPainting(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const factor = 1.2 + (intensity * 0.3);
+                    data[i] = Math.min(255, data[i] * factor);
+                    data[i + 1] = Math.min(255, data[i + 1] * factor);
+                    data[i + 2] = Math.min(255, data[i + 2] * factor);
+                }
+            }
+        }
+
+        // Effet Esquisse/Crayon
+        function applySketch(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const gray = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    const noise = (Math.random() - 0.5) * 50 * intensity;
+                    const value = Math.max(0, Math.min(255, gray + noise));
+                    data[i] = value;
+                    data[i + 1] = value;
+                    data[i + 2] = value;
+                }
+            }
+        }
+
+        // Effet Impressionniste
+        function applyImpressionist(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const variation = (Math.random() - 0.5) * 100 * intensity;
+                    data[i] = Math.max(0, Math.min(255, data[i] + variation));
+                    data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + variation * 0.8));
+                    data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + variation * 0.6));
+                }
+            }
+        }
+
+        // Effet Cartoon
+        function applyCartoon(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const levels = 3 + Math.floor(intensity * 5);
+                    data[i] = Math.round(data[i] / levels) * levels;
+                    data[i + 1] = Math.round(data[i + 1] / levels) * levels;
+                    data[i + 2] = Math.round(data[i + 2] / levels) * levels;
+                }
+            }
+        }
+
+        // Effet Vintage/Sépia
+        function applyVintage(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+
+                    const tr = 0.393 * r + 0.769 * g + 0.189 * b;
+                    const tg = 0.349 * r + 0.686 * g + 0.168 * b;
+                    const tb = 0.272 * r + 0.534 * g + 0.131 * b;
+
+                    data[i] = r + (tr - r) * intensity;
+                    data[i + 1] = g + (tg - g) * intensity;
+                    data[i + 2] = b + (tb - b) * intensity;
+                }
+            }
+        }
+
+        // Effet Néon
+        function applyNeon(data, intensity) {
+            for (let i = 0; i < data.length; i += 4) {
+                if (data[i + 3] > 0) {
+                    const boost = 1.5 + intensity;
+                    data[i] = Math.min(255, data[i] * boost);
+                    data[i + 1] = Math.min(255, data[i + 1] * boost);
+                    data[i + 2] = Math.min(255, data[i + 2] * boost);
+
+                    // Ajouter de la saturation
+                    const max = Math.max(data[i], data[i + 1], data[i + 2]);
+                    const min = Math.min(data[i], data[i + 1], data[i + 2]);
+                    const delta = max - min;
+
+                    if (delta > 0) {
+                        const satBoost = 1 + intensity * 0.5;
+                        if (data[i] === max) data[i] = Math.min(255, data[i] * satBoost);
+                        if (data[i + 1] === max) data[i + 1] = Math.min(255, data[i + 1] * satBoost);
+                        if (data[i + 2] === max) data[i + 2] = Math.min(255, data[i + 2] * satBoost);
+                    }
+                }
+            }
+        }
+
+        // Effet Mosaïque
+        function applyMosaic(data, intensity) {
+            const blockSize = Math.max(2, Math.floor(10 * intensity));
+            const width = artworkCanvas.width;
+            const height = artworkCanvas.height;
+
+            for (let y = 0; y < height; y += blockSize) {
+                for (let x = 0; x < width; x += blockSize) {
+                    let r = 0, g = 0, b = 0, a = 0, count = 0;
+
+                    for (let by = 0; by < blockSize && y + by < height; by++) {
+                        for (let bx = 0; bx < blockSize && x + bx < width; bx++) {
+                            const i = ((y + by) * width + (x + bx)) * 4;
+                            if (data[i + 3] > 0) {
+                                r += data[i];
+                                g += data[i + 1];
+                                b += data[i + 2];
+                                a += data[i + 3];
+                                count++;
+                            }
+                        }
+                    }
+
+                    if (count > 0) {
+                        r /= count;
+                        g /= count;
+                        b /= count;
+                        a /= count;
+
+                        for (let by = 0; by < blockSize && y + by < height; by++) {
+                            for (let bx = 0; bx < blockSize && x + bx < width; bx++) {
+                                const i = ((y + by) * width + (x + bx)) * 4;
+                                if (data[i + 3] > 0) {
+                                    data[i] = r;
+                                    data[i + 1] = g;
+                                    data[i + 2] = b;
+                                    data[i + 3] = a;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // Changement de style
+        artStyleSelect.addEventListener('change', applyArtStyle);
+
+        // Effacer les canvas
+        clearBtn.addEventListener('click', () => {
+            drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+            artworkCtx.clearRect(0, 0, artworkCanvas.width, artworkCanvas.height);
+        });
+
+        // Sauvegarder l'œuvre d'art
+        saveBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+            link.download = `oeuvre-art-${artStyleSelect.value}-${timestamp}.png`;
+            link.href = artworkCanvas.toDataURL();
+            link.click();
+        });
+    </script>
+</body>
+</html>
