@@ -73,21 +73,15 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
             self.send_error_response(500, str(e))
 
     def call_huggingface(self, api_key, prompt, image_data):
-        """Call Hugging Face API using Stable Diffusion"""
-        # Using a reliable model endpoint
-        url = 'https://api-inference.huggingface.co/models/runwayml/stable-diffusion-v1-5'
+        """Call Hugging Face API using new router endpoint"""
+        # Using the new router endpoint (required as of 2024)
+        url = 'https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell'
 
         # Create a descriptive prompt from user's input
         full_prompt = prompt or 'beautiful artwork, vibrant colors, artistic style, detailed, high quality'
 
         payload = {
             'inputs': full_prompt,
-            'parameters': {
-                'num_inference_steps': 30,
-                'guidance_scale': 7.5,
-                'width': 512,
-                'height': 512,
-            }
         }
 
         headers = {
