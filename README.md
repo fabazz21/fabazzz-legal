@@ -2,13 +2,15 @@
 
 Transform your sketches into beautiful AI-generated artwork in real-time!
 
-## ⚠️ IMPORTANT: Run as Web Server
+## ⚠️ IMPORTANT: Run the Proxy Server
 
-**You cannot open `index.html` directly in your browser!** You must run it through a web server to avoid CORS errors.
+**This app needs a backend proxy server to handle AI API calls and avoid CORS restrictions.**
 
-### Quick Start (Choose ONE method):
+AI providers like Hugging Face don't allow direct browser requests for security reasons. The included `server.py` handles this by acting as a secure proxy between your browser and the AI APIs.
 
-**🚀 Easiest: Use the Helper Script**
+### Quick Start:
+
+**🚀 Easiest Method - Use the Helper Script:**
 
 For Mac/Linux:
 ```bash
@@ -16,37 +18,23 @@ For Mac/Linux:
 ```
 
 For Windows:
-```
+```bash
 start-server.bat
 ```
 
-The script will automatically detect and use Python, Node.js, or PHP!
-
----
-
 **Manual Start:**
 
-**Python** (Works on Mac/Linux/Windows):
 ```bash
-# Navigate to the project folder, then run:
-python -m http.server 8000
-# Open browser to: http://localhost:8000
+python3 server.py
+# Or on Windows:
+python server.py
 ```
 
-**Node.js**:
-```bash
-npx http-server -p 8000
-# Open browser to: http://localhost:8000
-```
+Then open your browser to: **http://localhost:8000**
 
-**VS Code**:
-- Install "Live Server" extension
-- Right-click `index.html` → "Open with Live Server"
-
-**PHP**:
-```bash
-php -S localhost:8000
-```
+### Requirements:
+- Python 3.6 or higher (the proxy server is written in Python)
+- No additional packages needed - uses only standard library!
 
 ---
 
@@ -169,10 +157,13 @@ php -S localhost:8000
 ### ⚠️ CORS Error / "Failed to fetch" (MOST COMMON!)
 **Problem**: Browser shows CORS policy error or "Failed to fetch"
 
-**Solution**: You're opening the file directly instead of through a web server!
+**Solution**: You need to run the proxy server!
 - **DO NOT** double-click `index.html` to open it
-- **DO** run a local server (see "Run as Web Server" section above)
-- Quick fix: `python -m http.server 8000` then open `http://localhost:8000`
+- **DO NOT** use a basic HTTP server (like `python -m http.server`)
+- **DO** run the proxy server: `python3 server.py`
+- Then open: `http://localhost:8000`
+
+**Why?** AI providers block direct browser requests for security. Our proxy server handles the API calls for you.
 
 ### "Please enter your API key" error
 - Make sure you've entered a valid API key in the configuration section
