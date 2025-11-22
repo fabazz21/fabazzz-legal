@@ -303,7 +303,10 @@
         <p class="subtitle">Draw your sketch and let AI transform it into beautiful artwork!</p>
 
         <div class="info-box">
-            <p><strong>How to use:</strong></p>
+            <p><strong>⚠️ Important: Run as Web Server</strong></p>
+            <p>This app needs to run on a local web server (not by opening the file directly).</p>
+            <p><strong>Quick Start:</strong> Run <code>python -m http.server 8000</code> then open <code>http://localhost:8000</code></p>
+            <p style="margin-top: 10px;"><strong>How to use:</strong></p>
             <p>1. Choose a color and brush size</p>
             <p>2. Draw your sketch on the canvas</p>
             <p>3. Enter an API key and optional prompt</p>
@@ -537,7 +540,19 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Error generating art: ' + error.message);
+
+                // Check if it's a CORS error
+                if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+                    alert('⚠️ CORS Error Detected!\n\n' +
+                          'You need to run a local web server to use this app.\n\n' +
+                          'Quick Fix:\n' +
+                          '1. Open terminal/command prompt in the app folder\n' +
+                          '2. Run: python -m http.server 8000\n' +
+                          '3. Open: http://localhost:8000\n\n' +
+                          'See README.md for more options.');
+                } else {
+                    alert('Error generating art: ' + error.message);
+                }
             } finally {
                 document.getElementById('loading').classList.remove('active');
                 document.getElementById('generateBtn').disabled = false;

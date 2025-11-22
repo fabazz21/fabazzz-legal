@@ -2,6 +2,54 @@
 
 Transform your sketches into beautiful AI-generated artwork in real-time!
 
+## ⚠️ IMPORTANT: Run as Web Server
+
+**You cannot open `index.html` directly in your browser!** You must run it through a web server to avoid CORS errors.
+
+### Quick Start (Choose ONE method):
+
+**🚀 Easiest: Use the Helper Script**
+
+For Mac/Linux:
+```bash
+./start-server.sh
+```
+
+For Windows:
+```
+start-server.bat
+```
+
+The script will automatically detect and use Python, Node.js, or PHP!
+
+---
+
+**Manual Start:**
+
+**Python** (Works on Mac/Linux/Windows):
+```bash
+# Navigate to the project folder, then run:
+python -m http.server 8000
+# Open browser to: http://localhost:8000
+```
+
+**Node.js**:
+```bash
+npx http-server -p 8000
+# Open browser to: http://localhost:8000
+```
+
+**VS Code**:
+- Install "Live Server" extension
+- Right-click `index.html` → "Open with Live Server"
+
+**PHP**:
+```bash
+php -S localhost:8000
+```
+
+---
+
 ## ✨ Features
 
 - **Intuitive Drawing Canvas**: Draw with your mouse, stylus, or touch screen
@@ -12,13 +60,12 @@ Transform your sketches into beautiful AI-generated artwork in real-time!
 - **Real-time Preview**: See your drawing and AI-generated art side by side
 - **Download Results**: Save your AI-generated artwork
 
-## 🚀 Quick Start
+## 🚀 How to Use (After Starting Server)
 
-1. **Open the App**: Simply open `index.html` in your web browser
-2. **Get an API Key**: Choose an AI provider and get your API key (see below)
-3. **Start Drawing**: Use the color palette and brush tools to create your sketch
-4. **Generate Art**: Enter your API key and click "Generate AI Art"
-5. **Download**: Save your beautiful AI-generated artwork!
+1. **Get an API Key**: Choose an AI provider and get your API key (see below)
+2. **Start Drawing**: Use the color palette and brush tools to create your sketch
+3. **Generate Art**: Enter your API key and click "Generate AI Art"
+4. **Download**: Save your beautiful AI-generated artwork!
 
 ## 🔑 Getting API Keys
 
@@ -118,6 +165,14 @@ Transform your sketches into beautiful AI-generated artwork in real-time!
 - No tracking or analytics
 
 ## 🐛 Troubleshooting
+
+### ⚠️ CORS Error / "Failed to fetch" (MOST COMMON!)
+**Problem**: Browser shows CORS policy error or "Failed to fetch"
+
+**Solution**: You're opening the file directly instead of through a web server!
+- **DO NOT** double-click `index.html` to open it
+- **DO** run a local server (see "Run as Web Server" section above)
+- Quick fix: `python -m http.server 8000` then open `http://localhost:8000`
 
 ### "Please enter your API key" error
 - Make sure you've entered a valid API key in the configuration section
