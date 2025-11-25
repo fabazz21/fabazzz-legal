@@ -481,6 +481,7 @@
             </div>
 
             <button class="danger" onclick="clearObjects()" style="margin-top:8px;">Effacer Tout</button>
+            <button class="secondary" onclick="refreshObjectColors()" style="margin-top:8px;">🔄 Rafraîchir Couleurs (Debug)</button>
         </div>
 
         <div class="control-group">
@@ -625,6 +626,8 @@
         const lens = new THREE.Mesh(lensGeo, lensMat);
         lens.rotation.x = Math.PI/2;
         lens.position.z = -570*s/2 - 0.02;
+        lens.castShadow = false;  // Ensure lens doesn't cast shadows
+        lens.receiveShadow = false;
         projectorMesh.add(lens);
 
         projectorCamera = new THREE.PerspectiveCamera(throwToFOV(throwRatio), ASPECT, 0.1, frustumFar);
@@ -1246,10 +1249,29 @@
 
     // Update base color for all existing projected objects
     function updateAllBaseColors() {
-        projectedObjects.forEach(obj => {
-            if (obj.material && obj.material.uniforms && obj.material.uniforms.baseColor) {
+        console.log('=== Scanning scene for objects to update ===');
+        let updateCount = 0;
+
+        // Scan the entire scene recursively
+        scene.traverse((obj) => {
+            if (obj.isMesh && obj.material && obj.material.uniforms && obj.material.uniforms.baseColor) {
+                const oldColor = obj.material.uniforms.baseColor.value.getHex();
                 obj.material.uniforms.baseColor.value.setHex(0xdddddd);
-                console.log('Updated base color for:', obj.userData.name);
+                console.log(`Updated "${obj.userData.name || 'unnamed'}" from #${oldColor.toString(16)} to #dddddd`);
+                console.log('  Position:', obj.position);
+                console.log('  CastShadow:', obj.castShadow, 'ReceiveShadow:', obj.receiveShadow);
+                updateCount++;
+            }
+        });
+
+        console.log(`Total objects updated: ${updateCount}`);
+
+        // Also list all meshes in the scene for debugging
+        console.log('=== All meshes in scene ===');
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                console.log(`- "${obj.userData.name || obj.type}" at`, obj.position,
+                           `castShadow: ${obj.castShadow}, material:`, obj.material.type);
             }
         });
     }
