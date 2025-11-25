@@ -731,8 +731,8 @@
                 projTexture: { value: projectionTexture },
                 projMatrix: { value: new THREE.Matrix4() },
                 projPosition: { value: new THREE.Vector3() },
-                baseColor: { value: new THREE.Color(0xdddddd) }, // Visible base color - bright
-                projColor: { value: new THREE.Color(0xffffff) },
+                baseColor: { value: new THREE.Color(0x555555) }, // Base color - dark gray for good projection contrast
+                projColor: { value: new THREE.Color(0x00ffff) }, // Cyan projection for visibility (white when texture loaded)
                 intensity: { value: projectionIntensity },
                 hasTexture: { value: false },
                 shiftV: { value: 0 },
@@ -1260,8 +1260,8 @@
         scene.traverse((obj) => {
             if (obj.isMesh && obj.material && obj.material.uniforms && obj.material.uniforms.baseColor) {
                 const oldColor = obj.material.uniforms.baseColor.value.getHex();
-                obj.material.uniforms.baseColor.value.setHex(0xdddddd);
-                console.log(`Updated "${obj.userData.name || 'unnamed'}" from #${oldColor.toString(16)} to #dddddd`);
+                obj.material.uniforms.baseColor.value.setHex(0x555555);
+                console.log(`Updated "${obj.userData.name || 'unnamed'}" from #${oldColor.toString(16)} to #555555`);
                 console.log('  Position:', obj.position);
                 console.log('  CastShadow:', obj.castShadow, 'ReceiveShadow:', obj.receiveShadow);
                 updateCount++;
@@ -1437,6 +1437,7 @@
                     if (obj.material?.uniforms) {
                         obj.material.uniforms.projTexture.value = projectionTexture;
                         obj.material.uniforms.hasTexture.value = true;
+                        obj.material.uniforms.projColor.value.setHex(0xffffff); // White for texture display
                         obj.material.needsUpdate = true;
                     }
                 });
@@ -1453,6 +1454,7 @@
             if (obj.material?.uniforms) {
                 obj.material.uniforms.projTexture.value = null;
                 obj.material.uniforms.hasTexture.value = false;
+                obj.material.uniforms.projColor.value.setHex(0x00ffff); // Back to cyan for visibility
                 obj.material.needsUpdate = true;
             }
         });
