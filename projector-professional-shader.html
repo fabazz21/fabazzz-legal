@@ -588,8 +588,8 @@
         createProjector();
         createMeasurementSprites();
 
-        // DON'T add wall automatically - let user add primitives manually
-        // addWall();
+        // Add a default wall for projection testing
+        addWall();
 
         window.addEventListener('resize', onResize);
         renderer.domElement.addEventListener('click', onClick);
@@ -599,7 +599,7 @@
         changeLens();
         updateAll();
 
-        // Ensure all objects have bright base color
+        // Ensure all objects have correct base color
         setTimeout(() => updateAllBaseColors(), 100);
 
         animate();
@@ -1427,23 +1427,51 @@
 
     window.loadImage = function() {
         const file = document.getElementById('image-upload').files[0];
-        if (!file) return;
+        if (!file) {
+            console.warn('No file selected');
+            return;
+        }
+
+        console.log('Loading image:', file.name, 'size:', file.size, 'bytes');
+
+        if (projectedObjects.length === 0) {
+            console.warn('⚠️ No objects in scene! Add a primitive or wall first to see the projection.');
+            document.getElementById('image-status').innerHTML = '<div class="status info">⚠️ Ajoutez un objet d\'abord</div>';
+            // Still load the image for when objects are added later
+        }
+
         const reader = new FileReader();
         reader.onload = e => {
-            new THREE.TextureLoader().load(e.target.result, tex => {
-                projectionTexture = tex;
-                tex.minFilter = THREE.LinearFilter;
-                projectedObjects.forEach(obj => {
-                    if (obj.material?.uniforms) {
-                        obj.material.uniforms.projTexture.value = projectionTexture;
-                        obj.material.uniforms.hasTexture.value = true;
-                        obj.material.uniforms.projColor.value.setHex(0xffffff); // White for texture display
-                        obj.material.needsUpdate = true;
-                    }
-                });
-                updateProjectionMatrix();
-                document.getElementById('image-status').innerHTML = '<div class="status success">✓ Chargé</div>';
-            });
+            console.log('File read complete, loading as texture...');
+            new THREE.TextureLoader().load(e.target.result,
+                // Success callback
+                tex => {
+                    projectionTexture = tex;
+                    tex.minFilter = THREE.LinearFilter;
+                    console.log('✓ Texture loaded successfully:', tex.image.width, 'x', tex.image.height);
+
+                    let updatedCount = 0;
+                    projectedObjects.forEach(obj => {
+                        if (obj.material?.uniforms) {
+                            obj.material.uniforms.projTexture.value = projectionTexture;
+                            obj.material.uniforms.hasTexture.value = true;
+                            obj.material.uniforms.projColor.value.setHex(0xffffff); // White for texture display
+                            obj.material.needsUpdate = true;
+                            updatedCount++;
+                        }
+                    });
+                    console.log(`Updated ${updatedCount} objects with texture`);
+                    updateProjectionMatrix();
+                    document.getElementById('image-status').innerHTML = '<div class="status success">✓ Chargé (' + updatedCount + ' objets)</div>';
+                },
+                // Progress callback
+                undefined,
+                // Error callback
+                err => {
+                    console.error('✗ Error loading texture:', err);
+                    document.getElementById('image-status').innerHTML = '<div class="status info">✗ Erreur chargement</div>';
+                }
+            );
         };
         reader.readAsDataURL(file);
     };
