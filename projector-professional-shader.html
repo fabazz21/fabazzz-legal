@@ -439,7 +439,7 @@
                 <span>Lock Aim to Target</span>
             </div>
             <div class="checkbox-row">
-                <input type="checkbox" id="show-frustum" onchange="toggleFrustum()">
+                <input type="checkbox" id="show-frustum" checked onchange="toggleFrustum()">
                 <span>Frustum Helper</span>
             </div>
             <div class="checkbox-row">
@@ -635,7 +635,9 @@
 
         // INVISIBLE SPOTLIGHT - Shadow maps only
         shadowLight = new THREE.SpotLight(0x000000, 0);
-        shadowLight.angle = THREE.MathUtils.degToRad(throwToFOV(throwRatio));
+        // IMPORTANT: spotlight angle is HALF-angle (axis to edge), so divide FOV by 2
+        // Three.js will compute shadowCamera.fov = 2 * angle
+        shadowLight.angle = THREE.MathUtils.degToRad(throwToFOV(throwRatio) / 2);
         shadowLight.penumbra = 0;
         shadowLight.decay = 0;
         shadowLight.distance = frustumFar;
@@ -657,7 +659,7 @@
         projectorMesh.userData.shadowTarget = shadowTarget;
 
         projectorHelper = new THREE.CameraHelper(shadowLight.shadow.camera);
-        projectorHelper.visible = false;
+        projectorHelper.visible = true;  // Visible by default to verify frustum alignment
         scene.add(projectorHelper);
 
         const tGeo = new THREE.SphereGeometry(0.15, 32, 32);
@@ -1040,7 +1042,9 @@
         projectorCamera.getWorldPosition(worldPos);
 
         const fov = throwToFOV(throwRatio);
-        shadowLight.angle = THREE.MathUtils.degToRad(fov);
+        // IMPORTANT: spotlight angle is HALF-angle, Three.js computes shadowCamera.fov = 2 * angle
+        shadowLight.angle = THREE.MathUtils.degToRad(fov / 2);
+        // Manually set shadow camera FOV to match projector camera exactly
         shadowLight.shadow.camera.fov = fov;
         shadowLight.shadow.camera.aspect = ASPECT;
         shadowLight.shadow.camera.near = projectorCamera.near;
