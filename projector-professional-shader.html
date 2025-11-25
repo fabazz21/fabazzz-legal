@@ -61,7 +61,7 @@
             background: rgba(0,0,0,0.95);
             padding: 15px;
             border-radius: 8px;
-            width: 280px;
+            width: 320px;
             border: 1px solid #0d9488;
             display: none;
         }
@@ -107,22 +107,64 @@
             font-size: 10px;
         }
 
-        /* Gizmo Mode Indicator */
-        #gizmo-mode {
+        /* Gizmo Mode Controls */
+        #gizmo-controls {
             position: absolute;
             top: 20px;
             left: 20px;
-            background: rgba(0,0,0,0.9);
-            padding: 8px 12px;
+            background: rgba(0,0,0,0.95);
+            padding: 10px;
             border-radius: 6px;
-            font-size: 11px;
             border: 1px solid #0d9488;
             display: none;
         }
-        #gizmo-mode.visible { display: block; }
-        #gizmo-mode .mode {
-            color: #0d9488;
-            font-weight: bold;
+        #gizmo-controls.visible { display: block; }
+        #gizmo-controls .title {
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .gizmo-mode-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .gizmo-mode-btn {
+            flex: 1;
+            padding: 8px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: #aaa;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            text-align: center;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .gizmo-mode-btn:hover {
+            background: #333;
+            border-color: #0d9488;
+        }
+        .gizmo-mode-btn.active {
+            background: #0d9488;
+            border-color: #0d9488;
+            color: white;
+        }
+        .gizmo-mode-btn .icon {
+            font-size: 16px;
+        }
+        .gizmo-mode-btn .label {
+            font-size: 8px;
+            text-transform: uppercase;
+        }
+        .gizmo-mode-btn .key {
+            font-size: 7px;
+            opacity: 0.6;
         }
 
         /* Popup Menu for Primitives */
@@ -183,9 +225,26 @@
 <body>
     <div id="container"></div>
 
-    <!-- Gizmo Mode Indicator -->
-    <div id="gizmo-mode">
-        Mode: <span class="mode" id="gizmo-mode-text">Move</span>
+    <!-- Gizmo Mode Controls -->
+    <div id="gizmo-controls">
+        <div class="title">🎛️ Gizmo Mode</div>
+        <div class="gizmo-mode-buttons">
+            <div class="gizmo-mode-btn active" data-mode="translate" onclick="setGizmoMode('translate')">
+                <div class="icon">↔️</div>
+                <div class="label">Move</div>
+                <div class="key">[G]</div>
+            </div>
+            <div class="gizmo-mode-btn" data-mode="rotate" onclick="setGizmoMode('rotate')">
+                <div class="icon">🔄</div>
+                <div class="label">Rotate</div>
+                <div class="key">[R]</div>
+            </div>
+            <div class="gizmo-mode-btn" data-mode="scale" onclick="setGizmoMode('scale')">
+                <div class="icon">⤡</div>
+                <div class="label">Scale</div>
+                <div class="key">[S]</div>
+            </div>
+        </div>
     </div>
 
     <!-- Transform Parameters Panel -->
@@ -501,6 +560,7 @@
 
         transformControls = new THREE.TransformControls(camera, renderer.domElement);
         transformControls.setSize(0.75);
+        transformControls.setMode('translate'); // Initialize with translate mode
         transformControls.addEventListener('dragging-changed', e => {
             controls.enabled = !e.value;
         });
@@ -526,7 +586,9 @@
 
         createProjector();
         createMeasurementSprites();
-        addWall();
+
+        // DON'T add wall automatically - let user add primitives manually
+        // addWall();
 
         window.addEventListener('resize', onResize);
         renderer.domElement.addEventListener('click', onClick);
@@ -661,7 +723,7 @@
                 projTexture: { value: projectionTexture },
                 projMatrix: { value: new THREE.Matrix4() },
                 projPosition: { value: new THREE.Vector3() },
-                baseColor: { value: new THREE.Color(0x333333) },
+                baseColor: { value: new THREE.Color(0x666666) }, // Lighter base color
                 projColor: { value: new THREE.Color(0xffffff) },
                 intensity: { value: projectionIntensity },
                 hasTexture: { value: false },
@@ -712,6 +774,7 @@
                 uniform float shadowBias;
                 uniform float shadowSoftness;
                 uniform bool useHighQualityPCF;
+                uniform float shadowCameraFar;
 
                 varying vec4 vProjCoords;
                 varying vec4 vShadowCoord;
@@ -799,6 +862,8 @@
                 void main() {
                     vec3 color = baseColor;
                     float distToProj = distance(projPosition, vWorldPos);
+
+                    // Don't project on objects too close to projector
                     if (distToProj < 0.15) {
                         gl_FragColor = vec4(color, 1.0);
                         return;
@@ -834,7 +899,7 @@
                             vec3 projDir = normalize(lightDir);
                             float facing = clamp(dot(normalize(vNormal), projDir), 0.0, 1.0);
                             facing = max(facing, 0.25);
-                            float distAttenuation = 1.0 - smoothstep(frustumFar * 0.7, frustumFar, distToProj);
+                            float distAttenuation = 1.0 - smoothstep(shadowCameraFar * 0.7, shadowCameraFar, distToProj);
                             float edgeSoft = getEdgeSoftness(uv, 0.05);
                             float projMix = intensity * facing * visibility * distAttenuation * edgeSoft;
 
@@ -853,6 +918,19 @@
             side: THREE.DoubleSide
         });
     }
+
+    // ===== GIZMO MODE CONTROLS =====
+
+    window.setGizmoMode = function(mode) {
+        if (!transformControls) return;
+        transformControls.setMode(mode);
+
+        // Update UI buttons
+        document.querySelectorAll('.gizmo-mode-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+    };
 
     // ===== TRANSFORM CONTROLS =====
 
@@ -993,6 +1071,7 @@
                 obj.material.uniforms.shadowSoftness.value = shadowSoftness;
                 obj.material.uniforms.shadowBias.value = shadowBias;
                 obj.material.uniforms.useHighQualityPCF.value = useHighQualityPCF;
+                obj.material.uniforms.shadowCameraFar.value = frustumFar;
 
                 if (projectionTexture) obj.material.uniforms.projTexture.value = projectionTexture;
 
@@ -1098,7 +1177,7 @@
                 name = 'Tore';
                 break;
             case 'plane':
-                geometry = new THREE.PlaneGeometry(sizeX, sizeY);
+                geometry = new THREE.PlaneGeometry(sizeX * 3, sizeY * 3);
                 name = 'Plan';
                 break;
             default:
@@ -1106,13 +1185,13 @@
         }
 
         const mat = createProjectedMaterial();
-        mat.side = THREE.DoubleSide;
         const mesh = new THREE.Mesh(geometry, mat);
 
+        // Position primitives in front of projector
         mesh.position.set(
-            Math.random() * 4 - 2,
-            sizeY / 2 + 0.1,
-            -6 - Math.random() * 3
+            Math.random() * 2 - 1,
+            sizeY / 2 + 0.5,
+            -5 - Math.random() * 2
         );
 
         mesh.castShadow = true;
@@ -1123,11 +1202,7 @@
         projectedObjects.push(mesh);
         selectableObjects.push(mesh);
 
-        if (projectionTexture) {
-            mesh.material.uniforms.projTexture.value = projectionTexture;
-            mesh.material.uniforms.hasTexture.value = true;
-        }
-        mesh.material.needsUpdate = true;
+        console.log('Added primitive:', type, 'at position:', mesh.position);
 
         updateProjectionMatrix();
         selectObject(mesh);
@@ -1138,7 +1213,6 @@
     window.addWall = function() {
         const geo = new THREE.BoxGeometry(8, 5, 0.2);
         const mat = createProjectedMaterial();
-        mat.side = THREE.DoubleSide;
         const wall = new THREE.Mesh(geo, mat);
         wall.position.set(0, 2.5, -8);
         wall.castShadow = true;
@@ -1148,11 +1222,8 @@
         projectedObjects.push(wall);
         selectableObjects.push(wall);
 
-        if (projectionTexture) {
-            wall.material.uniforms.projTexture.value = projectionTexture;
-            wall.material.uniforms.hasTexture.value = true;
-        }
-        wall.material.needsUpdate = true;
+        console.log('Added wall at position:', wall.position);
+
         updateProjectionMatrix();
 
         document.getElementById('primitive-popup').classList.remove('visible');
@@ -1364,7 +1435,7 @@
     function selectObject(obj) {
         selectedObject = obj;
         const transformPanel = document.getElementById('transform-params');
-        const gizmoMode = document.getElementById('gizmo-mode');
+        const gizmoControls = document.getElementById('gizmo-controls');
 
         if (obj) {
             if (obj.userData.isProjector) {
@@ -1374,29 +1445,31 @@
             }
             document.getElementById('selected-name').textContent = obj.userData.name;
             transformPanel.classList.add('visible');
-            gizmoMode.classList.add('visible');
+            gizmoControls.classList.add('visible');
             updateTransformInputs();
         } else {
             transformControls.detach();
             document.getElementById('selected-name').textContent = 'Aucun';
             transformPanel.classList.remove('visible');
-            gizmoMode.classList.remove('visible');
+            gizmoControls.classList.remove('visible');
         }
     }
 
     function onKeyDown(e) {
+        if (!selectedObject) return;
+
         switch(e.key.toLowerCase()) {
             case 'g':
-                transformControls.setMode('translate');
-                document.getElementById('gizmo-mode-text').textContent = 'Move';
+                setGizmoMode('translate');
                 break;
             case 'r':
-                transformControls.setMode('rotate');
-                document.getElementById('gizmo-mode-text').textContent = 'Rotate';
+                setGizmoMode('rotate');
                 break;
             case 's':
-                transformControls.setMode('scale');
-                document.getElementById('gizmo-mode-text').textContent = 'Scale';
+                if (!e.ctrlKey && !e.metaKey) { // Avoid conflict with browser save
+                    setGizmoMode('scale');
+                    e.preventDefault();
+                }
                 break;
             case 'delete':
             case 'backspace':
