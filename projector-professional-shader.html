@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panasonic PT-RQ25K - Professional Shadow-Mapped Projection Shader</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            overflow: hidden;
+        }
+        #container { width: 100vw; height: 100vh; }
+
+        #controls { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.95); padding:15px; border-radius:8px; width:300px; max-height:90vh; overflow-y:auto; font-size:11px; }
+        .control-group { margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #333; }
+        .control-group h3 { font-size:10px; margin-bottom:8px; color:#0d9488; text-transform:uppercase; }
+        .control-row { margin-bottom:8px; } label { display:block; font-size:10px; margin-bottom:3px; color:#aaa; }
+        input[type="range"] { width:100%; height:3px; background:#333; border-radius:2px; outline:none; }
+        input[type="range"]::-webkit-slider-thumb { appearance:none; width:10px; height:10px; border-radius:50%; background:#0d9488; cursor:pointer; }
+        input[type="number"], select, input[type="file"] { width:100%; padding:5px; background:#2a2a2a; border:1px solid #444; color:white; border-radius:3px; font-size:11px; }
+        button { width:100%; padding:6px; background:#0d9488; color:white; border:none; border-radius:3px; cursor:pointer; font-size:10px; margin-top:4px; }
+        button.secondary { background:#444; }
+        button.danger { background:#dc2626; }
+        .value-display { color:#0d9488; font-weight:600; margin-left:5px; }
+        .checkbox-row { display:flex; align-items:center; gap:6px; margin:5px 0; }
+        .throw-display { background: linear-gradient(135deg,#0d9488 0%,#065f46 100%); padding:8px; border-radius:5px; text-align:center; margin-bottom:10px; }
+        .throw-display .label { font-size:8px; color:rgba(255,255,255,0.7); } .throw-display .value { font-size:18px; font-weight:700; } .throw-display .sub { font-size:9px; color:rgba(255,255,255,0.6); }
+        .measurement-group { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+        .measurement-input { background:#1a1a1a; padding:6px; border-radius:3px; text-align:center; }
+        .lens-specs { background:#1a1a1a; padding:5px; border-radius:3px; margin-top:5px; font-size:9px; }
+        .projector-model { background: linear-gradient(135deg,#1e3a5f 0%,#0d1b2a 100%); padding:8px; border-radius:5px; margin-bottom:10px; border:1px solid #2a4a6f; }
+        .snap-selector { width:50px; height:50px; background:#1a1a1a; border:1px solid #444; border-radius:4px; display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); padding:4px; gap:2px; }
+        .snap-btn { width:100%; height:100%; border-radius:50%; border:none; cursor:pointer; background:#444; }
+        .snap-btn.active { background:#0d9488; }
+        .status { padding:4px; border-radius:3px; font-size:9px; margin-top:4px; }
+        .status.success { background:rgba(13,148,136,0.2); color:#0d9488; }
+        .status.info { background:rgba(59,130,246,0.2); color:#3b82f6; }
+
+        .primitive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
+        .primitive-btn {
+            padding: 8px 4px;
+            background: #2a2a2a;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 9px;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .primitive-btn:hover {
+            background: #0d9488;
+            border-color: #0d9488;
+        }
+        .primitive-icon { font-size: 16px; }
+        .primitive-label { font-size: 8px; text-transform: uppercase; }
+        .size-controls { margin-top: 8px; background: #1a1a1a; padding: 8px; border-radius: 4px; }
+        .size-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
+        .size-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .size-input label { font-size: 8px; margin-bottom: 2px; }
+        .size-input input { width: 100%; text-align: center; padding: 4px; }
+        .keyboard-hint { background:#2a2a2a; padding:4px; border-radius:3px; font-size:8px; color:#888; margin-top:5px; }
+        .shader-quality-badge {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 8px;
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="container"></div>
+
+    <div id="controls">
+        <div class="projector-model">
+            <div class="brand">Panasonic</div>
+            <div class="model-name">PT-RQ25K</div>
+            <div class="specs-summary">20,000 lm • 4K • 16:10</div>
+        </div>
+
+        <div class="shader-quality-badge">
+            ✨ PROFESSIONAL SHADOW-MAPPED SHADER ✨
+        </div>
+
+        <div id="selection-info">Sélection: <span class="selected-name" id="selected-name">Aucun</span></div>
+
+        <div class="throw-display">
+            <div class="label">THROW RATIO</div>
+            <div class="value" id="throw-ratio-display">1.36:1</div>
+            <div class="sub">Distance: <span id="distance-display">10.00</span> m</div>
+        </div>
+
+        <div class="control-group">
+            <h3>📐 Dimensions Image</h3>
+            <div class="measurement-group">
+                <div class="measurement-input">
+                    <label>Largeur</label>
+                    <input type="number" id="image-width" value="7.35" step="0.1" min="1" max="50" onchange="updateFromWidth()">
+                    <div class="unit">mètres</div>
+                </div>
+                <div class="measurement-input">
+                    <label>Hauteur</label>
+                    <input type="number" id="image-height" value="4.59" step="0.1" min="0.5" max="30" onchange="updateFromHeight()">
+                    <div class="unit">mètres</div>
+                </div>
+            </div>
+            <div class="control-row" style="margin-top:8px;">
+                <label>Frustum Far: <span class="value-display" id="frustum-far-val">15.0 m</span></label>
+                <input type="range" id="frustum-far" min="0.5" max="50" step="0.1" value="15" oninput="updateFrustumFar()">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🔭 Optique</h3>
+            <select id="lens-select" onchange="changeLens()">
+                <option value="ET-D3LEU100">ET-D3LEU100 (0.36:1)</option>
+                <option value="ET-D3LEW200">ET-D3LEW200 (0.48-0.55:1)</option>
+                <option value="ET-D3LEW60">ET-D3LEW60 (0.68-0.80:1)</option>
+                <option value="ET-D75LE6">ET-D75LE6 (0.90-1.10:1)</option>
+                <option value="ET-D3LEW10">ET-D3LEW10 (1.01-1.30:1)</option>
+                <option value="ET-D3LES20" selected>ET-D3LES20 (1.36-1.78:1)</option>
+                <option value="ET-D3LET80">ET-D3LET80 (1.81-2.56:1)</option>
+                <option value="ET-D75LE95">ET-D75LE95 (0.80:1)</option>
+            </select>
+            <div class="lens-specs">
+                <div class="spec-row"><span>Throw:</span><span class="spec-value" id="spec-throw">1.36-1.78:1</span></div>
+                <div class="spec-row"><span>Shift V:</span><span class="spec-value" id="spec-shift-v">±66%</span></div>
+                <div class="spec-row"><span>Shift H:</span><span class="spec-value" id="spec-shift-h">±24%</span></div>
+            </div>
+            <div class="control-row" style="margin-top:6px;">
+                <label>Zoom: <span class="value-display" id="zoom-val">1.36:1</span></label>
+                <input type="range" id="zoom" min="1.36" max="1.78" step="0.01" value="1.36" oninput="updateZoom()">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>📐 Lens Shift</h3>
+            <div class="control-row">
+                <label>Vertical: <span class="value-display" id="shift-v-val">0%</span></label>
+                <input type="range" id="shift-v" min="-66" max="66" step="1" value="0" oninput="updateLensShift()">
+            </div>
+            <div class="control-row">
+                <label>Horizontal: <span class="value-display" id="shift-h-val">0%</span></label>
+                <input type="range" id="shift-h" min="-24" max="24" step="1" value="0" oninput="updateLensShift()">
+            </div>
+            <button class="secondary" onclick="resetLensShift()">Reset</button>
+        </div>
+
+        <div class="control-group">
+            <h3>🌓 Shadow Quality</h3>
+            <div class="control-row">
+                <label>Shadow Softness: <span class="value-display" id="shadow-softness-val">1.0</span></label>
+                <input type="range" id="shadow-softness" min="0" max="3" step="0.1" value="1.0" oninput="updateShadowQuality()">
+            </div>
+            <div class="control-row">
+                <label>Shadow Bias: <span class="value-display" id="shadow-bias-val">0.003</span></label>
+                <input type="range" id="shadow-bias" min="0.0001" max="0.01" step="0.0001" value="0.003" oninput="updateShadowQuality()">
+            </div>
+            <div class="control-row">
+                <label>Projection Intensity: <span class="value-display" id="proj-intensity-val">1.0</span></label>
+                <input type="range" id="proj-intensity" min="0" max="2" step="0.1" value="1.0" oninput="updateProjectionIntensity()">
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🎯 Options</h3>
+            <div class="checkbox-row">
+                <input type="checkbox" id="target-locked" checked onchange="toggleTargetLock()">
+                <span>Lock Aim to Target</span>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="show-frustum" onchange="toggleFrustum()">
+                <span>Frustum Helper</span>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="show-measurements" checked onchange="toggleMeasurements()">
+                <span>Mesures Viewport</span>
+            </div>
+            <div class="checkbox-row">
+                <input type="checkbox" id="high-quality-pcf" checked onchange="togglePCFQuality()">
+                <span>High Quality PCF (Poisson)</span>
+            </div>
+
+            <div style="margin-top:8px;">
+                <label style="margin-bottom:4px;">Snap Target:</label>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="snap-selector">
+                        <button class="snap-btn corner" data-snap="tl" onclick="setSnapPoint('tl')"></button>
+                        <button class="snap-btn corner" data-snap="tr" onclick="setSnapPoint('tr')"></button>
+                        <button class="snap-btn center active" data-snap="c" onclick="setSnapPoint('c')"></button>
+                        <button class="snap-btn corner" data-snap="bl" onclick="setSnapPoint('bl')"></button>
+                        <button class="snap-btn corner" data-snap="br" onclick="setSnapPoint('br')"></button>
+                    </div>
+                    <button class="secondary" style="flex:1; margin-top:0;" onclick="setSelectedAsTarget()">Appliquer</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <h3>🖼️ Contenu</h3>
+            <input type="file" id="image-upload" accept="image/*" onchange="loadImage()">
+            <button class="secondary" onclick="removeImage()">Enlever</button>
+            <div id="image-status"></div>
+        </div>
+
+        <div class="control-group">
+            <h3>📦 Primitives 3D</h3>
+            <div class="primitive-grid">
+                <button class="primitive-btn" onclick="addPrimitive('cube')">
+                    <span class="primitive-icon">⬛</span>
+                    <span class="primitive-label">Cube</span>
+                </button>
+                <button class="primitive-btn" onclick="addPrimitive('sphere')">
+                    <span class="primitive-icon">⚫</span>
+                    <span class="primitive-label">Sphère</span>
+                </button>
+                <button class="primitive-btn" onclick="addPrimitive('cylinder')">
+                    <span class="primitive-icon">⬜</span>
+                    <span class="primitive-label">Cylindre</span>
+                </button>
+                <button class="primitive-btn" onclick="addPrimitive('cone')">
+                    <span class="primitive-icon">🔺</span>
+                    <span class="primitive-label">Cône</span>
+                </button>
+                <button class="primitive-btn" onclick="addPrimitive('torus')">
+                    <span class="primitive-icon">⭕</span>
+                    <span class="primitive-label">Tore</span>
+                </button>
+                <button class="primitive-btn" onclick="addPrimitive('plane')">
+                    <span class="primitive-icon">▭</span>
+                    <span class="primitive-label">Plan</span>
+                </button>
+            </div>
+
+            <div class="size-controls">
+                <label style="font-size:9px; margin-bottom:4px; display:block;">Taille par défaut:</label>
+                <div class="size-row">
+                    <div class="size-input">
+                        <label>X</label>
+                        <input type="number" id="prim-size-x" value="1.5" step="0.1" min="0.1">
+                    </div>
+                    <div class="size-input">
+                        <label>Y</label>
+                        <input type="number" id="prim-size-y" value="1.5" step="0.1" min="0.1">
+                    </div>
+                    <div class="size-input">
+                        <label>Z</label>
+                        <input type="number" id="prim-size-z" value="1.5" step="0.1" min="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="addWall()" style="margin-top:8px;">+ Mur Standard</button>
+            <button class="danger" onclick="clearObjects()">Effacer Tout</button>
+        </div>
+
+        <div class="control-group">
+            <h3>⌨️ Raccourcis</h3>
+            <div class="keyboard-hint">G: Move • R: Rotate • S: Scale<br>Del: Supprimer • Esc: Désélectionner</div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+
+    <script>
+    // ========== CONSTANTS ==========
+    const ASPECT = 16/10;
+    const LUMENS = 20000;
+
+    const LENSES = {
+        'ET-D3LEU100': { throwMin: 0.36, throwMax: 0.36, fixed: true, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D3LEW200': { throwMin: 0.48, throwMax: 0.55, fixed: false, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D3LEW60': { throwMin: 0.68, throwMax: 0.80, fixed: false, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D75LE6': { throwMin: 0.90, throwMax: 1.10, fixed: false, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D3LEW10': { throwMin: 1.01, throwMax: 1.30, fixed: false, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D3LES20': { throwMin: 1.36, throwMax: 1.78, fixed: false, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D3LET80': { throwMin: 1.81, throwMax: 2.56, fixed: false, shiftV: [-66, 66], shiftH: [-24, 24] },
+        'ET-D75LE95': { throwMin: 0.80, throwMax: 0.80, fixed: true, shiftV: [-66, 66], shiftH: [-24, 24] }
+    };
+
+    // ========== STATE ==========
+    let currentLens = LENSES['ET-D3LES20'];
+    let throwRatio = 1.36;
+    let frustumFar = 15.0;
+    let projDistance = 10;
+    let lensShiftV = 0, lensShiftH = 0;
+    let targetLocked = true;
+    let showMeasurements = true;
+    let userMovedTarget = true;
+    let snapPoint = 'c';
+    let shadowSoftness = 1.0;
+    let shadowBias = 0.003;
+    let projectionIntensity = 1.0;
+    let useHighQualityPCF = true;
+
+    // Core
+    let scene, camera, renderer, controls, transformControls;
+    let raycaster, mouse, selectedObject = null;
+
+    // Projector pieces
+    let projectorGroup, projectorMesh, projectorCamera, projectorHelper, shadowLight;
+    let targetMesh;
+    let projectionTexture = null;
+
+    let spriteWidth, spriteHeight, spriteTR, spriteInfo;
+    let projectedObjects = [];
+    let selectableObjects = [];
+
+    function init() {
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1a1a1a);
+
+        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(6,4,12);
+        camera.lookAt(0,0,-5);
+
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        transformControls = new THREE.TransformControls(camera, renderer.domElement);
+        transformControls.setSize(0.25);
+        transformControls.addEventListener('dragging-changed', e => controls.enabled = !e.value);
+        transformControls.addEventListener('objectChange', onTransformChange);
+        scene.add(transformControls);
+
+        raycaster = new THREE.Raycaster();
+        mouse = new THREE.Vector2();
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+        const dir = new THREE.DirectionalLight(0xffffff, 0.6);
+        dir.position.set(5,10,5);
+        scene.add(dir);
+
+        const grid = new THREE.GridHelper(30,30,0x444444,0x222222);
+        grid.userData.noProjection = true;
+        scene.add(grid);
+
+        const axes = new THREE.AxesHelper(2);
+        axes.userData.noProjection = true;
+        scene.add(axes);
+
+        createProjector();
+        createMeasurementSprites();
+        addWall();
+
+        window.addEventListener('resize', onResize);
+        renderer.domElement.addEventListener('click', onClick);
+        window.addEventListener('keydown', onKeyDown);
+
+        changeLens();
+        updateAll();
+
+        animate();
+    }
+
+    function createProjector() {
+        projectorGroup = new THREE.Group();
+        projectorGroup.position.set(0,0,0);
+        scene.add(projectorGroup);
+
+        const s = 0.0015;
+        const geo = new THREE.BoxGeometry(550*s, 220*s, 570*s);
+        const mat = new THREE.MeshStandardMaterial({ color:0x1a1a1a, metalness:0.8, roughness:0.2 });
+        projectorMesh = new THREE.Mesh(geo, mat);
+        projectorMesh.position.z = 570*s/2;
+        projectorMesh.userData = { type:'projector', name:'PT-RQ25K', isProjector:true, noProjection:true };
+        projectorMesh.castShadow = false;
+        projectorMesh.receiveShadow = false;
+        projectorGroup.add(projectorMesh);
+        selectableObjects.push(projectorMesh);
+
+        const lensGeo = new THREE.CylinderGeometry(0.08,0.10,0.04,32);
+        const lensMat = new THREE.MeshBasicMaterial({ color:0x00ffff });
+        const lens = new THREE.Mesh(lensGeo, lensMat);
+        lens.rotation.x = Math.PI/2;
+        lens.position.z = -570*s/2 - 0.02;
+        projectorMesh.add(lens);
+
+        // Projector camera for rectangular projection
+        projectorCamera = new THREE.PerspectiveCamera(throwToFOV(throwRatio), ASPECT, 0.1, frustumFar);
+        projectorGroup.add(projectorCamera);
+
+        // INVISIBLE SPOTLIGHT - Used ONLY for shadow map generation
+        // Intensity = 0, Color = Black → No lighting contribution
+        shadowLight = new THREE.SpotLight(0x000000, 0);
+        shadowLight.angle = THREE.MathUtils.degToRad(throwToFOV(throwRatio));
+        shadowLight.penumbra = 0;
+        shadowLight.decay = 0;
+        shadowLight.distance = frustumFar;
+        shadowLight.castShadow = true;
+        shadowLight.shadow.mapSize.width = 4096;
+        shadowLight.shadow.mapSize.height = 4096;
+        shadowLight.shadow.camera.near = 0.1;
+        shadowLight.shadow.camera.far = frustumFar;
+        shadowLight.shadow.camera.aspect = ASPECT;
+        shadowLight.shadow.radius = 2;
+        shadowLight.shadow.bias = shadowBias;
+        shadowLight.position.set(0,0,0);
+        projectorGroup.add(shadowLight);
+
+        // Shadow target (local space)
+        const shadowTarget = new THREE.Object3D();
+        shadowTarget.position.set(0,0,-projDistance);
+        projectorGroup.add(shadowTarget);
+        shadowLight.target = shadowTarget;
+        projectorMesh.userData.shadowTarget = shadowTarget;
+
+        // Camera helper
+        projectorHelper = new THREE.CameraHelper(shadowLight.shadow.camera);
+        projectorHelper.visible = false;
+        scene.add(projectorHelper);
+
+        // Visual target (world space)
+        const tGeo = new THREE.SphereGeometry(0.15, 32, 32);
+        const tMat = new THREE.MeshBasicMaterial({ color:0xffff00 });
+        targetMesh = new THREE.Mesh(tGeo, tMat);
+        targetMesh.position.set(0,0,-projDistance);
+        targetMesh.castShadow = false;
+        targetMesh.receiveShadow = false;
+        targetMesh.userData = { type:'target', name:'Target', isTarget:true };
+        scene.add(targetMesh);
+        selectableObjects.push(targetMesh);
+
+        projectorMesh.userData.target = targetMesh;
+    }
+
+    function createMeasurementSprites() {
+        spriteWidth = createTextSprite('0.00 m');
+        spriteHeight = createTextSprite('0.00 m');
+        spriteTR = createTextSprite('tr: 0.00');
+        spriteInfo = createTextSprite('P1\n0 lx');
+        scene.add(spriteWidth);
+        scene.add(spriteHeight);
+        scene.add(spriteTR);
+        scene.add(spriteInfo);
+    }
+
+    function createTextSprite(text) {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256; canvas.height = 64;
+        const ctx = canvas.getContext('2d');
+        const texture = new THREE.CanvasTexture(canvas);
+        texture.minFilter = THREE.LinearFilter;
+        const material = new THREE.MeshBasicMaterial({ map: texture, transparent:true, side:THREE.DoubleSide, depthTest:false });
+        const geometry = new THREE.PlaneGeometry(1.5, 0.375);
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.userData.canvas = canvas; mesh.userData.ctx = ctx; mesh.userData.texture = texture;
+        mesh.userData.isLabel = true;
+        updateSpriteText(mesh, text);
+        return mesh;
+    }
+
+    function updateSpriteText(sprite, text) {
+        const ctx = sprite.userData.ctx; const canvas = sprite.userData.canvas;
+        ctx.clearRect(0,0,canvas.width, canvas.height);
+        ctx.fillStyle = '#c0c0c0'; ctx.font = 'bold 22px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(text, canvas.width/2, canvas.height/2);
+        sprite.userData.texture.needsUpdate = true;
+    }
+
+    function throwToFOV(tr) {
+        const hFov = 2 * Math.atan(1 / (2 * tr));
+        const vFov = 2 * Math.atan(Math.tan(hFov/2) / ASPECT);
+        return THREE.MathUtils.radToDeg(vFov);
+    }
+
+    // Apply off-center projection for lens shift
+    function applyLensShiftToCamera(camera, shiftH_frac, shiftV_frac) {
+        camera.updateProjectionMatrix();
+        const pm = camera.projectionMatrix.elements;
+        pm[8] = - shiftH_frac;
+        pm[9] =   shiftV_frac;
+    }
+
+    /**
+     * PROFESSIONAL SHADOW-MAPPED PROJECTION SHADER
+     *
+     * Features:
+     * - Reads shadow maps from invisible spotlight for accurate occlusion
+     * - Maintains rectangular projection with lens shift (no circular distortion)
+     * - High-quality PCF with Poisson disk sampling for smooth shadows
+     * - Adaptive normal bias to prevent shadow acne
+     * - Distance-based attenuation
+     * - Smooth falloff at projection edges
+     */
+    function createProjectedMaterial() {
+        return new THREE.ShaderMaterial({
+            uniforms: {
+                // Projection uniforms
+                projTexture: { value: projectionTexture },
+                projMatrix: { value: new THREE.Matrix4() },
+                projPosition: { value: new THREE.Vector3() },
+                baseColor: { value: new THREE.Color(0x333333) },
+                projColor: { value: new THREE.Color(0xffffff) },
+                intensity: { value: projectionIntensity },
+                hasTexture: { value: false },
+                shiftV: { value: 0 },
+                shiftH: { value: 0 },
+
+                // Shadow map uniforms
+                shadowMap: { value: null },
+                shadowMatrix: { value: new THREE.Matrix4() },
+                shadowMapSize: { value: new THREE.Vector2(4096,4096) },
+                shadowCameraNear: { value: 0.1 },
+                shadowCameraFar: { value: frustumFar },
+                shadowBias: { value: shadowBias },
+                shadowSoftness: { value: shadowSoftness },
+                useHighQualityPCF: { value: useHighQualityPCF }
+            },
+            vertexShader: `
+                varying vec4 vProjCoords;
+                varying vec3 vNormal;
+                varying vec3 vWorldPos;
+                varying vec4 vShadowCoord;
+                varying vec3 vViewPos;
+
+                uniform mat4 projMatrix;
+                uniform mat4 shadowMatrix;
+
+                void main() {
+                    // Transform normal to world space
+                    vNormal = normalize(normalMatrix * normal);
+
+                    // World position
+                    vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                    vWorldPos = worldPosition.xyz;
+
+                    // Projection coordinates for rectangular projection
+                    vProjCoords = projMatrix * worldPosition;
+
+                    // Shadow coordinates for occlusion testing
+                    vShadowCoord = shadowMatrix * worldPosition;
+
+                    // View position for distance attenuation
+                    vViewPos = (modelViewMatrix * vec4(position, 1.0)).xyz;
+
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                precision highp float;
+
+                // Textures
+                uniform sampler2D projTexture;
+                uniform sampler2D shadowMap;
+
+                // Colors
+                uniform vec3 baseColor;
+                uniform vec3 projColor;
+
+                // Projection
+                uniform vec3 projPosition;
+                uniform float intensity;
+                uniform float shiftV;
+                uniform float shiftH;
+                uniform bool hasTexture;
+
+                // Shadow
+                uniform vec2 shadowMapSize;
+                uniform float shadowBias;
+                uniform float shadowSoftness;
+                uniform bool useHighQualityPCF;
+
+                // Varyings
+                varying vec4 vProjCoords;
+                varying vec4 vShadowCoord;
+                varying vec3 vNormal;
+                varying vec3 vWorldPos;
+                varying vec3 vViewPos;
+
+                // Poisson disk samples for high-quality PCF
+                const vec2 poissonDisk[16] = vec2[](
+                    vec2(-0.94201624, -0.39906216),
+                    vec2(0.94558609, -0.76890725),
+                    vec2(-0.094184101, -0.92938870),
+                    vec2(0.34495938, 0.29387760),
+                    vec2(-0.91588581, 0.45771432),
+                    vec2(-0.81544232, -0.87912464),
+                    vec2(-0.38277543, 0.27676845),
+                    vec2(0.97484398, 0.75648379),
+                    vec2(0.44323325, -0.97511554),
+                    vec2(0.53742981, -0.47373420),
+                    vec2(-0.26496911, -0.41893023),
+                    vec2(0.79197514, 0.19090188),
+                    vec2(-0.24188840, 0.99706507),
+                    vec2(-0.81409955, 0.91437590),
+                    vec2(0.19984126, 0.78641367),
+                    vec2(0.14383161, -0.14100790)
+                );
+
+                // Read shadow map depth
+                float readShadowMapDepth(vec2 uv) {
+                    return texture2D(shadowMap, uv).r;
+                }
+
+                // High-quality PCF with Poisson disk sampling
+                float getShadowPCF_Poisson(vec3 shadowCoord, vec3 normal, vec3 lightDir, float softness) {
+                    float currentDepth = shadowCoord.z;
+                    vec2 texelSize = 1.0 / shadowMapSize;
+
+                    // Adaptive normal bias based on surface angle
+                    float nDotL = clamp(dot(normalize(normal), normalize(lightDir)), 0.0, 1.0);
+                    float normalBias = mix(0.005, 0.0005, nDotL);
+                    float bias = max(normalBias, shadowBias);
+
+                    // Poisson disk sampling
+                    float shadow = 0.0;
+                    float radius = softness * 2.0;
+                    int samples = 16;
+
+                    for (int i = 0; i < 16; i++) {
+                        vec2 offset = poissonDisk[i] * texelSize * radius;
+                        vec2 uv = shadowCoord.xy + offset;
+
+                        // Clamp to shadow map bounds
+                        if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+                            shadow += 1.0;
+                            continue;
+                        }
+
+                        float shadowDepth = readShadowMapDepth(uv);
+                        shadow += (currentDepth - bias) > shadowDepth ? 0.0 : 1.0;
+                    }
+
+                    return shadow / float(samples);
+                }
+
+                // Standard PCF (3x3 grid)
+                float getShadowPCF_Standard(vec3 shadowCoord, vec3 normal, vec3 lightDir, float softness) {
+                    float currentDepth = shadowCoord.z;
+                    vec2 texelSize = 1.0 / shadowMapSize;
+
+                    float nDotL = clamp(dot(normalize(normal), normalize(lightDir)), 0.0, 1.0);
+                    float normalBias = mix(0.005, 0.0005, nDotL);
+                    float bias = max(normalBias, shadowBias);
+
+                    float shadow = 0.0;
+                    float samples = 0.0;
+                    int range = int(softness) + 1;
+
+                    for (int y = -range; y <= range; y++) {
+                        for (int x = -range; x <= range; x++) {
+                            vec2 offset = vec2(float(x), float(y)) * texelSize;
+                            vec2 uv = shadowCoord.xy + offset;
+
+                            if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
+                                samples += 1.0;
+                                continue;
+                            }
+
+                            float shadowDepth = readShadowMapDepth(uv);
+                            shadow += (currentDepth - bias) > shadowDepth ? 0.0 : 1.0;
+                            samples += 1.0;
+                        }
+                    }
+
+                    return samples > 0.0 ? shadow / samples : 0.0;
+                }
+
+                // Edge softness for smooth projection boundaries
+                float getEdgeSoftness(vec2 uv, float margin) {
+                    vec2 edgeDist = min(uv, 1.0 - uv);
+                    float minDist = min(edgeDist.x, edgeDist.y);
+                    return smoothstep(0.0, margin, minDist);
+                }
+
+                void main() {
+                    vec3 color = baseColor;
+
+                    // Skip projection for geometry very close to projector (prevents self-projection)
+                    float distToProj = distance(projPosition, vWorldPos);
+                    if (distToProj < 0.15) {
+                        gl_FragColor = vec4(color, 1.0);
+                        return;
+                    }
+
+                    // ============ SHADOW MAP OCCLUSION TEST ============
+                    // Convert shadow coordinates to NDC [0,1]
+                    vec3 shadowCoord = vShadowCoord.xyz / vShadowCoord.w;
+                    shadowCoord = shadowCoord * 0.5 + 0.5;
+
+                    // Check if in shadow map bounds
+                    bool shadowOutside = (shadowCoord.x < 0.0 || shadowCoord.x > 1.0 ||
+                                         shadowCoord.y < 0.0 || shadowCoord.y > 1.0 ||
+                                         shadowCoord.z < 0.0 || shadowCoord.z > 1.0);
+
+                    // Calculate visibility using shadow map
+                    vec3 lightDir = projPosition - vWorldPos;
+                    float visibility = 1.0;
+
+                    if (!shadowOutside) {
+                        if (useHighQualityPCF) {
+                            visibility = getShadowPCF_Poisson(shadowCoord, vNormal, lightDir, shadowSoftness);
+                        } else {
+                            visibility = getShadowPCF_Standard(shadowCoord, vNormal, lightDir, shadowSoftness);
+                        }
+                    }
+
+                    // ============ RECTANGULAR PROJECTION WITH LENS SHIFT ============
+                    // Only apply projection if pixel is visible (not occluded)
+                    if (visibility > 0.01) {
+                        // Project using projector camera matrix
+                        vec3 projCoord = vProjCoords.xyz / vProjCoords.w;
+                        vec2 uv = projCoord.xy * 0.5 + 0.5;
+
+                        // Apply lens shift (off-center projection)
+                        uv.x -= shiftH;
+                        uv.y -= shiftV;
+
+                        // Check if within projection frustum
+                        if (uv.x >= 0.0 && uv.x <= 1.0 &&
+                            uv.y >= 0.0 && uv.y <= 1.0 &&
+                            projCoord.z >= 0.0 && projCoord.z <= 1.0) {
+
+                            // Surface facing calculation
+                            vec3 projDir = normalize(lightDir);
+                            float facing = clamp(dot(normalize(vNormal), projDir), 0.0, 1.0);
+                            facing = max(facing, 0.25); // Minimum facing to avoid pure black on glancing angles
+
+                            // Distance attenuation (optional, subtle)
+                            float distAttenuation = 1.0 - smoothstep(frustumFar * 0.7, frustumFar, distToProj);
+
+                            // Edge softness for smooth projection boundaries
+                            float edgeSoft = getEdgeSoftness(uv, 0.05);
+
+                            // Final projection mix factor
+                            float projMix = intensity * facing * visibility * distAttenuation * edgeSoft;
+
+                            // Apply texture or solid color
+                            if (hasTexture) {
+                                vec4 texColor = texture2D(projTexture, uv);
+                                color = mix(color, texColor.rgb * projColor, texColor.a * projMix);
+                            } else {
+                                color = mix(color, projColor, projMix);
+                            }
+                        }
+                    }
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `,
+            side: THREE.DoubleSide
+        });
+    }
+
+    // ===== UPDATES =====
+
+    function updateAll() {
+        updateProjectorCamera();
+        updateProjectionMatrix();
+        updateMeasurements();
+        updateUI();
+    }
+
+    function updateProjectorCamera() {
+        if (!projectorCamera) return;
+        projectorCamera.aspect = ASPECT;
+        projectorCamera.fov = throwToFOV(throwRatio);
+        projectorCamera.far = frustumFar;
+        projectorCamera.updateProjectionMatrix();
+    }
+
+    function updateProjectionMatrix() {
+        if (!projectorCamera || !shadowLight) return;
+
+        // Update projector camera
+        projectorCamera.updateMatrixWorld();
+        projectorCamera.updateProjectionMatrix();
+        applyLensShiftToCamera(projectorCamera, lensShiftH / 100, lensShiftV / 100);
+
+        const projMatrix = new THREE.Matrix4();
+        projMatrix.multiplyMatrices(projectorCamera.projectionMatrix, projectorCamera.matrixWorldInverse);
+
+        const worldPos = new THREE.Vector3();
+        projectorCamera.getWorldPosition(worldPos);
+
+        // Sync shadow camera with projector camera
+        const fov = throwToFOV(throwRatio);
+        shadowLight.angle = THREE.MathUtils.degToRad(fov);
+        shadowLight.shadow.camera.fov = fov;
+        shadowLight.shadow.camera.aspect = ASPECT;
+        shadowLight.shadow.camera.near = projectorCamera.near;
+        shadowLight.shadow.camera.far = frustumFar;
+        shadowLight.shadow.bias = shadowBias;
+        shadowLight.shadow.camera.updateProjectionMatrix();
+        applyLensShiftToCamera(shadowLight.shadow.camera, lensShiftH / 100, lensShiftV / 100);
+
+        shadowLight.updateMatrixWorld(true);
+        shadowLight.shadow.camera.updateMatrixWorld(true);
+
+        const shadowMatrix = new THREE.Matrix4();
+        shadowMatrix.multiplyMatrices(shadowLight.shadow.camera.projectionMatrix, shadowLight.shadow.camera.matrixWorldInverse);
+
+        // Update shadow target position
+        const dist = projDistance;
+        const width = dist / throwRatio;
+        const height = width / ASPECT;
+        const shiftOffsetV = (lensShiftV / 100) * height;
+        const shiftOffsetH = (lensShiftH / 100) * width;
+        const localCenter = new THREE.Vector3(shiftOffsetH, shiftOffsetV, -dist);
+        if (projectorMesh.userData.shadowTarget) {
+            projectorMesh.userData.shadowTarget.position.copy(localCenter);
+        }
+
+        // Update shader uniforms
+        projectedObjects.forEach(obj => {
+            if (obj.userData?.noProjection) return;
+            if (obj.material?.uniforms) {
+                obj.material.uniforms.projMatrix.value.copy(projMatrix);
+                obj.material.uniforms.projPosition.value.copy(worldPos);
+                obj.material.uniforms.shiftV.value = lensShiftV / 100;
+                obj.material.uniforms.shiftH.value = lensShiftH / 100;
+                obj.material.uniforms.hasTexture.value = !!projectionTexture;
+                obj.material.uniforms.intensity.value = projectionIntensity;
+                obj.material.uniforms.shadowSoftness.value = shadowSoftness;
+                obj.material.uniforms.shadowBias.value = shadowBias;
+                obj.material.uniforms.useHighQualityPCF.value = useHighQualityPCF;
+
+                if (projectionTexture) obj.material.uniforms.projTexture.value = projectionTexture;
+
+                obj.material.uniforms.shadowMatrix.value.copy(shadowMatrix);
+                obj.material.uniforms.shadowMap.value = shadowLight.shadow.map ? shadowLight.shadow.map.texture : null;
+                obj.material.uniforms.shadowMapSize.value.set(shadowLight.shadow.mapSize.width, shadowLight.shadow.mapSize.height);
+                obj.material.uniforms.shadowCameraNear.value = shadowLight.shadow.camera.near;
+                obj.material.uniforms.shadowCameraFar.value = shadowLight.shadow.camera.far;
+
+                obj.material.needsUpdate = true;
+            }
+        });
+
+        if (projectorHelper) projectorHelper.update();
+    }
+
+    function updateMeasurements() {
+        if (!targetMesh || !projectorGroup) return;
+
+        const dist = targetMesh.position.distanceTo(projectorGroup.position);
+        const width = dist / throwRatio;
+        const height = width / ASPECT;
+
+        const shiftOffsetV = (lensShiftV / 100) * height;
+        const shiftOffsetH = (lensShiftH / 100) * width;
+
+        const imgCenter = targetMesh.position.clone();
+        imgCenter.y += shiftOffsetV;
+        imgCenter.x += shiftOffsetH;
+
+        const visible = showMeasurements;
+        const projPos = projectorGroup.position.clone();
+
+        const labelHalfHeight = 0.1875;
+        const offset = 0.02;
+
+        spriteWidth.visible = visible;
+        spriteWidth.position.set(imgCenter.x, imgCenter.y + height/2 + labelHalfHeight + offset, imgCenter.z);
+        spriteWidth.lookAt(projPos);
+        updateSpriteText(spriteWidth, width.toFixed(3) + ' m');
+
+        spriteHeight.visible = visible;
+        spriteHeight.position.set(imgCenter.x - width/2, imgCenter.y, imgCenter.z);
+        spriteHeight.lookAt(projPos);
+        updateSpriteText(spriteHeight, height.toFixed(3) + ' m');
+
+        spriteTR.visible = visible;
+        spriteTR.position.set(imgCenter.x - width/2, imgCenter.y + height/2 + labelHalfHeight + offset, imgCenter.z);
+        spriteTR.lookAt(projPos);
+        updateSpriteText(spriteTR, 'tr: ' + throwRatio.toFixed(2));
+
+        spriteInfo.visible = visible;
+        const midPoint = projectorGroup.position.clone().lerp(targetMesh.position, 0.5);
+        spriteInfo.position.copy(midPoint);
+        spriteInfo.lookAt(projPos);
+        const lux = LUMENS / (width * height);
+        updateSpriteText(spriteInfo, lux.toFixed(0) + ' lx / ' + dist.toFixed(3) + ' m');
+
+        document.getElementById('image-width').value = width.toFixed(2);
+        document.getElementById('image-height').value = height.toFixed(2);
+        document.getElementById('throw-ratio-display').textContent = throwRatio.toFixed(2) + ':1';
+        document.getElementById('distance-display').textContent = dist.toFixed(2);
+    }
+
+    function updateUI() {
+        document.getElementById('zoom-val').textContent = throwRatio.toFixed(2) + ':1';
+        document.getElementById('shift-v-val').textContent = lensShiftV + '%';
+        document.getElementById('shift-h-val').textContent = lensShiftH + '%';
+        document.getElementById('shadow-softness-val').textContent = shadowSoftness.toFixed(1);
+        document.getElementById('shadow-bias-val').textContent = shadowBias.toFixed(4);
+        document.getElementById('proj-intensity-val').textContent = projectionIntensity.toFixed(1);
+    }
+
+    // ===== PRIMITIVE FUNCTIONS =====
+
+    window.addPrimitive = function(type) {
+        const sizeX = parseFloat(document.getElementById('prim-size-x').value) || 1.5;
+        const sizeY = parseFloat(document.getElementById('prim-size-y').value) || 1.5;
+        const sizeZ = parseFloat(document.getElementById('prim-size-z').value) || 1.5;
+
+        let geometry;
+        let name = '';
+
+        switch(type) {
+            case 'cube':
+                geometry = new THREE.BoxGeometry(sizeX, sizeY, sizeZ);
+                name = 'Cube';
+                break;
+            case 'sphere':
+                geometry = new THREE.SphereGeometry(sizeX / 2, 32, 32);
+                name = 'Sphère';
+                break;
+            case 'cylinder':
+                geometry = new THREE.CylinderGeometry(sizeX / 2, sizeX / 2, sizeY, 32);
+                name = 'Cylindre';
+                break;
+            case 'cone':
+                geometry = new THREE.ConeGeometry(sizeX / 2, sizeY, 32);
+                name = 'Cône';
+                break;
+            case 'torus':
+                geometry = new THREE.TorusGeometry(sizeX / 2, sizeX / 6, 16, 100);
+                name = 'Tore';
+                break;
+            case 'plane':
+                geometry = new THREE.PlaneGeometry(sizeX, sizeY);
+                name = 'Plan';
+                break;
+            default:
+                return;
+        }
+
+        const mat = createProjectedMaterial();
+        mat.side = THREE.DoubleSide;
+        const mesh = new THREE.Mesh(geometry, mat);
+
+        mesh.position.set(
+            Math.random() * 4 - 2,
+            sizeY / 2 + 0.1,
+            -6 - Math.random() * 3
+        );
+
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.userData = { name: name, type: 'object' };
+
+        scene.add(mesh);
+        projectedObjects.push(mesh);
+        selectableObjects.push(mesh);
+
+        if (projectionTexture) {
+            mesh.material.uniforms.projTexture.value = projectionTexture;
+            mesh.material.uniforms.hasTexture.value = true;
+        }
+        mesh.material.needsUpdate = true;
+
+        updateProjectionMatrix();
+        selectObject(mesh);
+    };
+
+    window.addWall = function() {
+        const geo = new THREE.BoxGeometry(8, 5, 0.2);
+        const mat = createProjectedMaterial();
+        mat.side = THREE.DoubleSide;
+        const wall = new THREE.Mesh(geo, mat);
+        wall.position.set(0, 2.5, -8);
+        wall.castShadow = true;
+        wall.receiveShadow = true;
+        wall.userData = { name: 'Mur', type: 'object' };
+        scene.add(wall);
+        projectedObjects.push(wall);
+        selectableObjects.push(wall);
+
+        if (projectionTexture) {
+            wall.material.uniforms.projTexture.value = projectionTexture;
+            wall.material.uniforms.hasTexture.value = true;
+        }
+        wall.material.needsUpdate = true;
+        updateProjectionMatrix();
+    };
+
+    window.clearObjects = function() {
+        const toRemove = projectedObjects.filter(o => o.userData.type === 'object');
+        toRemove.forEach(o => {
+            scene.remove(o);
+            o.geometry?.dispose();
+            o.material?.dispose();
+            projectedObjects.splice(projectedObjects.indexOf(o), 1);
+            selectableObjects.splice(selectableObjects.indexOf(o), 1);
+        });
+        if (selectedObject && toRemove.includes(selectedObject)) selectObject(null);
+    };
+
+    // ===== UI HANDLERS =====
+
+    window.changeLens = function() {
+        const id = document.getElementById('lens-select').value;
+        currentLens = LENSES[id];
+
+        document.getElementById('spec-throw').textContent =
+            currentLens.fixed ? currentLens.throwMin + ':1' : currentLens.throwMin + '-' + currentLens.throwMax + ':1';
+        document.getElementById('spec-shift-v').textContent = currentLens.shiftV[0] + '% / +' + currentLens.shiftV[1] + '%';
+        document.getElementById('spec-shift-h').textContent = currentLens.shiftH[0] + '% / +' + currentLens.shiftH[1] + '%';
+
+        const zoomEl = document.getElementById('zoom');
+        zoomEl.min = currentLens.throwMin;
+        zoomEl.max = currentLens.throwMax;
+        zoomEl.disabled = currentLens.fixed;
+
+        throwRatio = Math.max(currentLens.throwMin, Math.min(currentLens.throwMax, throwRatio));
+        zoomEl.value = throwRatio;
+
+        const svEl = document.getElementById('shift-v');
+        svEl.min = currentLens.shiftV[0];
+        svEl.max = currentLens.shiftV[1];
+        lensShiftV = Math.max(currentLens.shiftV[0], Math.min(currentLens.shiftV[1], lensShiftV));
+        svEl.value = lensShiftV;
+
+        const shEl = document.getElementById('shift-h');
+        shEl.min = currentLens.shiftH[0];
+        shEl.max = currentLens.shiftH[1];
+        lensShiftH = Math.max(currentLens.shiftH[0], Math.min(currentLens.shiftH[1], lensShiftH));
+        shEl.value = lensShiftH;
+
+        updateAll();
+    };
+
+    window.updateZoom = function() { throwRatio = parseFloat(document.getElementById('zoom').value); updateAll(); };
+
+    window.updateFrustumFar = function() {
+        frustumFar = parseFloat(document.getElementById('frustum-far').value);
+        document.getElementById('frustum-far-val').textContent = frustumFar.toFixed(1) + ' m';
+        updateProjectorCamera();
+        updateProjectionMatrix();
+    };
+
+    window.updateFromWidth = function() {
+        const w = parseFloat(document.getElementById('image-width').value);
+        if (isNaN(w) || w < 1) return;
+        const dist = targetMesh.position.distanceTo(projectorGroup.position);
+        const newTR = dist / w;
+        if (newTR >= currentLens.throwMin && newTR <= currentLens.throwMax) {
+            throwRatio = newTR;
+            document.getElementById('zoom').value = throwRatio;
+            updateAll();
+        }
+    };
+
+    window.updateFromHeight = function() {
+        const h = parseFloat(document.getElementById('image-height').value);
+        if (isNaN(h) || h < 0.5) return;
+        const w = h * ASPECT;
+        const dist = targetMesh.position.distanceTo(projectorGroup.position);
+        const newTR = dist / w;
+        if (newTR >= currentLens.throwMin && newTR <= currentLens.throwMax) {
+            throwRatio = newTR;
+            document.getElementById('zoom').value = throwRatio;
+            updateAll();
+        }
+    };
+
+    window.updateLensShift = function() {
+        lensShiftV = parseFloat(document.getElementById('shift-v').value);
+        lensShiftH = parseFloat(document.getElementById('shift-h').value);
+        updateAll();
+    };
+
+    window.resetLensShift = function() {
+        lensShiftV = 0; lensShiftH = 0;
+        document.getElementById('shift-v').value = 0;
+        document.getElementById('shift-h').value = 0;
+        updateAll();
+    };
+
+    window.updateShadowQuality = function() {
+        shadowSoftness = parseFloat(document.getElementById('shadow-softness').value);
+        shadowBias = parseFloat(document.getElementById('shadow-bias').value);
+        updateAll();
+    };
+
+    window.updateProjectionIntensity = function() {
+        projectionIntensity = parseFloat(document.getElementById('proj-intensity').value);
+        updateProjectionMatrix();
+        updateUI();
+    };
+
+    window.togglePCFQuality = function() {
+        useHighQualityPCF = document.getElementById('high-quality-pcf').checked;
+        updateProjectionMatrix();
+    };
+
+    window.toggleTargetLock = function() {
+        targetLocked = document.getElementById('target-locked').checked;
+    };
+
+    window.toggleFrustum = function() {
+        projectorHelper.visible = document.getElementById('show-frustum').checked;
+    };
+
+    window.toggleMeasurements = function() {
+        showMeasurements = document.getElementById('show-measurements').checked;
+        updateMeasurements();
+    };
+
+    window.setSnapPoint = function(point) {
+        snapPoint = point;
+        document.querySelectorAll('.snap-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`[data-snap="${point}"]`).classList.add('active');
+    };
+
+    window.setSelectedAsTarget = function() {
+        if (!selectedObject || selectedObject.userData.isProjector || selectedObject.userData.isTarget) return;
+
+        const box = new THREE.Box3().setFromObject(selectedObject);
+        const center = new THREE.Vector3();
+        box.getCenter(center);
+
+        let targetPos = center.clone();
+        const size = new THREE.Vector3();
+        box.getSize(size);
+
+        switch(snapPoint) {
+            case 'tl': targetPos.add(new THREE.Vector3(-size.x/2, size.y/2, 0)); break;
+            case 'tr': targetPos.add(new THREE.Vector3(size.x/2, size.y/2, 0)); break;
+            case 'bl': targetPos.add(new THREE.Vector3(-size.x/2, -size.y/2, 0)); break;
+            case 'br': targetPos.add(new THREE.Vector3(size.x/2, -size.y/2, 0)); break;
+        }
+
+        targetMesh.position.copy(targetPos);
+        userMovedTarget = true;
+        updateAll();
+    };
+
+    window.loadImage = function() {
+        const file = document.getElementById('image-upload').files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            new THREE.TextureLoader().load(e.target.result, tex => {
+                projectionTexture = tex;
+                tex.minFilter = THREE.LinearFilter;
+                projectedObjects.forEach(obj => {
+                    if (obj.material?.uniforms) {
+                        obj.material.uniforms.projTexture.value = projectionTexture;
+                        obj.material.uniforms.hasTexture.value = true;
+                        obj.material.needsUpdate = true;
+                    }
+                });
+                updateProjectionMatrix();
+                document.getElementById('image-status').innerHTML = '<div class="status success">✓ Chargé</div>';
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+
+    window.removeImage = function() {
+        projectionTexture = null;
+        projectedObjects.forEach(obj => {
+            if (obj.material?.uniforms) {
+                obj.material.uniforms.projTexture.value = null;
+                obj.material.uniforms.hasTexture.value = false;
+                obj.material.needsUpdate = true;
+            }
+        });
+        updateProjectionMatrix();
+        document.getElementById('image-upload').value = '';
+        document.getElementById('image-status').innerHTML = '<div class="status info">Enlevé</div>';
+    };
+
+    function onTransformChange() {
+        if (transformControls.object === targetMesh) userMovedTarget = true;
+        updateProjectionMatrix();
+        updateMeasurements();
+    }
+
+    function onClick(e) {
+        const rect = renderer.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObjects(selectableObjects, false);
+        selectObject(hits.length > 0 ? hits[0].object : null);
+    }
+
+    function selectObject(obj) {
+        selectedObject = obj;
+        if (obj) {
+            if (obj.userData.isProjector) transformControls.attach(projectorGroup);
+            else transformControls.attach(obj);
+            document.getElementById('selected-name').textContent = obj.userData.name;
+        } else {
+            transformControls.detach();
+            document.getElementById('selected-name').textContent = 'Aucun';
+        }
+    }
+
+    function onKeyDown(e) {
+        switch(e.key.toLowerCase()) {
+            case 'g': transformControls.setMode('translate'); break;
+            case 'r': transformControls.setMode('rotate'); break;
+            case 's': transformControls.setMode('scale'); break;
+            case 'delete':
+            case 'backspace':
+                if (selectedObject && !selectedObject.userData.isProjector && !selectedObject.userData.isTarget) {
+                    scene.remove(selectedObject);
+                    projectedObjects.splice(projectedObjects.indexOf(selectedObject), 1);
+                    selectableObjects.splice(selectableObjects.indexOf(selectedObject), 1);
+                    selectedObject.geometry?.dispose();
+                    selectedObject.material?.dispose();
+                    selectObject(null);
+                }
+                e.preventDefault();
+                break;
+            case 'escape': selectObject(null); break;
+        }
+    }
+
+    function onResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+
+        if (projectorGroup && targetMesh) {
+            if (targetLocked) {
+                if (userMovedTarget) {
+                    const targetPos = targetMesh.position.clone();
+                    const projPos = projectorGroup.position.clone();
+                    const dir = new THREE.Vector3().subVectors(targetPos, projPos);
+                    if (dir.length() > 0.01) {
+                        const m = new THREE.Matrix4().lookAt(projPos, targetMesh.position, new THREE.Vector3(0,1,0));
+                        projectorGroup.quaternion.setFromRotationMatrix(m);
+                    }
+                }
+            } else {
+                if (transformControls.object === projectorGroup && transformControls.dragging) {
+                    const dir = new THREE.Vector3(0,0,-1).applyQuaternion(projectorGroup.quaternion);
+                    targetMesh.position.copy(projectorGroup.position.clone().add(dir.multiplyScalar(projDistance)));
+                    userMovedTarget = true;
+                }
+            }
+
+            if (transformControls.dragging) projDistance = targetMesh.position.distanceTo(projectorGroup.position);
+
+            updateProjectionMatrix();
+            updateMeasurements();
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    init();
+
+    </script>
+</body>
+</html>
