@@ -598,6 +598,9 @@
         changeLens();
         updateAll();
 
+        // Ensure all objects have bright base color
+        setTimeout(() => updateAllBaseColors(), 100);
+
         animate();
     }
 
@@ -723,7 +726,7 @@
                 projTexture: { value: projectionTexture },
                 projMatrix: { value: new THREE.Matrix4() },
                 projPosition: { value: new THREE.Vector3() },
-                baseColor: { value: new THREE.Color(0x666666) }, // Lighter base color
+                baseColor: { value: new THREE.Color(0xdddddd) }, // Visible base color - bright
                 projColor: { value: new THREE.Color(0xffffff) },
                 intensity: { value: projectionIntensity },
                 hasTexture: { value: false },
@@ -1239,6 +1242,21 @@
             selectableObjects.splice(selectableObjects.indexOf(o), 1);
         });
         if (selectedObject && toRemove.includes(selectedObject)) selectObject(null);
+    };
+
+    // Update base color for all existing projected objects
+    function updateAllBaseColors() {
+        projectedObjects.forEach(obj => {
+            if (obj.material && obj.material.uniforms && obj.material.uniforms.baseColor) {
+                obj.material.uniforms.baseColor.value.setHex(0xdddddd);
+                console.log('Updated base color for:', obj.userData.name);
+            }
+        });
+    }
+
+    // Call this on init to ensure any existing objects get the bright color
+    window.refreshObjectColors = function() {
+        updateAllBaseColors();
     };
 
     // ===== UI HANDLERS =====
