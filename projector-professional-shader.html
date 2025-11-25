@@ -17,7 +17,8 @@
         #controls { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.95); padding:15px; border-radius:8px; width:300px; max-height:90vh; overflow-y:auto; font-size:11px; }
         .control-group { margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid #333; }
         .control-group h3 { font-size:10px; margin-bottom:8px; color:#0d9488; text-transform:uppercase; }
-        .control-row { margin-bottom:8px; } label { display:block; font-size:10px; margin-bottom:3px; color:#aaa; }
+        .control-row { margin-bottom:8px; }
+        label { display:block; font-size:10px; margin-bottom:3px; color:#aaa; }
         input[type="range"] { width:100%; height:3px; background:#333; border-radius:2px; outline:none; }
         input[type="range"]::-webkit-slider-thumb { appearance:none; width:10px; height:10px; border-radius:50%; background:#0d9488; cursor:pointer; }
         input[type="number"], select, input[type="file"] { width:100%; padding:5px; background:#2a2a2a; border:1px solid #444; color:white; border-radius:3px; font-size:11px; }
@@ -27,7 +28,9 @@
         .value-display { color:#0d9488; font-weight:600; margin-left:5px; }
         .checkbox-row { display:flex; align-items:center; gap:6px; margin:5px 0; }
         .throw-display { background: linear-gradient(135deg,#0d9488 0%,#065f46 100%); padding:8px; border-radius:5px; text-align:center; margin-bottom:10px; }
-        .throw-display .label { font-size:8px; color:rgba(255,255,255,0.7); } .throw-display .value { font-size:18px; font-weight:700; } .throw-display .sub { font-size:9px; color:rgba(255,255,255,0.6); }
+        .throw-display .label { font-size:8px; color:rgba(255,255,255,0.7); }
+        .throw-display .value { font-size:18px; font-weight:700; }
+        .throw-display .sub { font-size:9px; color:rgba(255,255,255,0.6); }
         .measurement-group { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
         .measurement-input { background:#1a1a1a; padding:6px; border-radius:3px; text-align:center; }
         .lens-specs { background:#1a1a1a; padding:5px; border-radius:3px; margin-top:5px; font-size:9px; }
@@ -39,36 +42,6 @@
         .status.success { background:rgba(13,148,136,0.2); color:#0d9488; }
         .status.info { background:rgba(59,130,246,0.2); color:#3b82f6; }
 
-        .primitive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 8px; }
-        .primitive-btn {
-            padding: 8px 4px;
-            background: #2a2a2a;
-            border: 1px solid #444;
-            color: white;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 9px;
-            transition: all 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2px;
-        }
-        .primitive-btn:hover {
-            background: #0d9488;
-            border-color: #0d9488;
-        }
-        .primitive-icon { font-size: 16px; }
-        .primitive-label { font-size: 8px; text-transform: uppercase; }
-        .size-controls { margin-top: 8px; background: #1a1a1a; padding: 8px; border-radius: 4px; }
-        .size-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; margin-bottom: 4px; }
-        .size-input {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .size-input label { font-size: 8px; margin-bottom: 2px; }
-        .size-input input { width: 100%; text-align: center; padding: 4px; }
         .keyboard-hint { background:#2a2a2a; padding:4px; border-radius:3px; font-size:8px; color:#888; margin-top:5px; }
         .shader-quality-badge {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
@@ -79,10 +52,235 @@
             margin-bottom: 8px;
             font-weight: bold;
         }
+
+        /* Transform Parameters Panel */
+        #transform-params {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.95);
+            padding: 15px;
+            border-radius: 8px;
+            width: 280px;
+            border: 1px solid #0d9488;
+            display: none;
+        }
+        #transform-params.visible { display: block; }
+        #transform-params h3 {
+            font-size: 11px;
+            color: #0d9488;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        .param-section {
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .param-section:last-child { border-bottom: none; }
+        .param-section-title {
+            font-size: 9px;
+            color: #888;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .param-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 4px;
+            margin-bottom: 4px;
+        }
+        .param-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .param-input label {
+            font-size: 8px;
+            margin-bottom: 2px;
+            color: #aaa;
+        }
+        .param-input input {
+            width: 100%;
+            text-align: center;
+            padding: 4px;
+            font-size: 10px;
+        }
+
+        /* Gizmo Mode Indicator */
+        #gizmo-mode {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.9);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px solid #0d9488;
+            display: none;
+        }
+        #gizmo-mode.visible { display: block; }
+        #gizmo-mode .mode {
+            color: #0d9488;
+            font-weight: bold;
+        }
+
+        /* Popup Menu for Primitives */
+        #primitive-popup {
+            position: fixed;
+            background: rgba(0,0,0,0.98);
+            border: 2px solid #0d9488;
+            border-radius: 8px;
+            padding: 8px;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        #primitive-popup.visible { display: block; }
+        .popup-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .popup-item:hover {
+            background: #0d9488;
+        }
+        .popup-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+        }
+        .popup-divider {
+            height: 1px;
+            background: #333;
+            margin: 4px 0;
+        }
+
+        /* Add Primitive Button */
+        .add-primitive-btn {
+            background: linear-gradient(135deg, #0d9488 0%, #065f46 100%);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+        .add-primitive-btn:hover {
+            background: linear-gradient(135deg, #0f9d96 0%, #076e52 100%);
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
     <div id="container"></div>
+
+    <!-- Gizmo Mode Indicator -->
+    <div id="gizmo-mode">
+        Mode: <span class="mode" id="gizmo-mode-text">Move</span>
+    </div>
+
+    <!-- Transform Parameters Panel -->
+    <div id="transform-params">
+        <h3>⚙️ Transform Parameters</h3>
+
+        <div class="param-section">
+            <div class="param-section-title">Position</div>
+            <div class="param-row">
+                <div class="param-input">
+                    <label>X</label>
+                    <input type="number" id="pos-x" step="0.1" onchange="updateTransformFromInputs()">
+                </div>
+                <div class="param-input">
+                    <label>Y</label>
+                    <input type="number" id="pos-y" step="0.1" onchange="updateTransformFromInputs()">
+                </div>
+                <div class="param-input">
+                    <label>Z</label>
+                    <input type="number" id="pos-z" step="0.1" onchange="updateTransformFromInputs()">
+                </div>
+            </div>
+        </div>
+
+        <div class="param-section">
+            <div class="param-section-title">Rotation (degrés)</div>
+            <div class="param-row">
+                <div class="param-input">
+                    <label>X</label>
+                    <input type="number" id="rot-x" step="1" onchange="updateTransformFromInputs()">
+                </div>
+                <div class="param-input">
+                    <label>Y</label>
+                    <input type="number" id="rot-y" step="1" onchange="updateTransformFromInputs()">
+                </div>
+                <div class="param-input">
+                    <label>Z</label>
+                    <input type="number" id="rot-z" step="1" onchange="updateTransformFromInputs()">
+                </div>
+            </div>
+        </div>
+
+        <div class="param-section">
+            <div class="param-section-title">Scale</div>
+            <div class="param-row">
+                <div class="param-input">
+                    <label>X</label>
+                    <input type="number" id="scale-x" step="0.1" min="0.01" onchange="updateTransformFromInputs()">
+                </div>
+                <div class="param-input">
+                    <label>Y</label>
+                    <input type="number" id="scale-y" step="0.1" min="0.01" onchange="updateTransformFromInputs()">
+                </div>
+                <div class="param-input">
+                    <label>Z</label>
+                    <input type="number" id="scale-z" step="0.1" min="0.01" onchange="updateTransformFromInputs()">
+                </div>
+            </div>
+        </div>
+
+        <button onclick="resetTransform()">Reset Transform</button>
+    </div>
+
+    <!-- Primitive Creation Popup -->
+    <div id="primitive-popup">
+        <div class="popup-item" onclick="addPrimitive('cube')">
+            <span class="popup-icon">⬛</span>
+            <span>Cube</span>
+        </div>
+        <div class="popup-item" onclick="addPrimitive('sphere')">
+            <span class="popup-icon">⚫</span>
+            <span>Sphère</span>
+        </div>
+        <div class="popup-item" onclick="addPrimitive('cylinder')">
+            <span class="popup-icon">⬜</span>
+            <span>Cylindre</span>
+        </div>
+        <div class="popup-item" onclick="addPrimitive('cone')">
+            <span class="popup-icon">🔺</span>
+            <span>Cône</span>
+        </div>
+        <div class="popup-item" onclick="addPrimitive('torus')">
+            <span class="popup-icon">⭕</span>
+            <span>Tore</span>
+        </div>
+        <div class="popup-item" onclick="addPrimitive('plane')">
+            <span class="popup-icon">▭</span>
+            <span>Plan</span>
+        </div>
+        <div class="popup-divider"></div>
+        <div class="popup-item" onclick="addWall()">
+            <span class="popup-icon">🧱</span>
+            <span>Mur Standard</span>
+        </div>
+    </div>
 
     <div id="controls">
         <div class="projector-model">
@@ -217,59 +415,21 @@
         </div>
 
         <div class="control-group">
-            <h3>📦 Primitives 3D</h3>
-            <div class="primitive-grid">
-                <button class="primitive-btn" onclick="addPrimitive('cube')">
-                    <span class="primitive-icon">⬛</span>
-                    <span class="primitive-label">Cube</span>
-                </button>
-                <button class="primitive-btn" onclick="addPrimitive('sphere')">
-                    <span class="primitive-icon">⚫</span>
-                    <span class="primitive-label">Sphère</span>
-                </button>
-                <button class="primitive-btn" onclick="addPrimitive('cylinder')">
-                    <span class="primitive-icon">⬜</span>
-                    <span class="primitive-label">Cylindre</span>
-                </button>
-                <button class="primitive-btn" onclick="addPrimitive('cone')">
-                    <span class="primitive-icon">🔺</span>
-                    <span class="primitive-label">Cône</span>
-                </button>
-                <button class="primitive-btn" onclick="addPrimitive('torus')">
-                    <span class="primitive-icon">⭕</span>
-                    <span class="primitive-label">Tore</span>
-                </button>
-                <button class="primitive-btn" onclick="addPrimitive('plane')">
-                    <span class="primitive-icon">▭</span>
-                    <span class="primitive-label">Plan</span>
-                </button>
+            <h3>📦 Objets 3D</h3>
+
+            <div class="add-primitive-btn" onclick="showPrimitivePopup(event)">
+                ➕ Ajouter une Primitive
             </div>
 
-            <div class="size-controls">
-                <label style="font-size:9px; margin-bottom:4px; display:block;">Taille par défaut:</label>
-                <div class="size-row">
-                    <div class="size-input">
-                        <label>X</label>
-                        <input type="number" id="prim-size-x" value="1.5" step="0.1" min="0.1">
-                    </div>
-                    <div class="size-input">
-                        <label>Y</label>
-                        <input type="number" id="prim-size-y" value="1.5" step="0.1" min="0.1">
-                    </div>
-                    <div class="size-input">
-                        <label>Z</label>
-                        <input type="number" id="prim-size-z" value="1.5" step="0.1" min="0.1">
-                    </div>
-                </div>
-            </div>
-
-            <button onclick="addWall()" style="margin-top:8px;">+ Mur Standard</button>
-            <button class="danger" onclick="clearObjects()">Effacer Tout</button>
+            <button class="danger" onclick="clearObjects()" style="margin-top:8px;">Effacer Tout</button>
         </div>
 
         <div class="control-group">
             <h3>⌨️ Raccourcis</h3>
-            <div class="keyboard-hint">G: Move • R: Rotate • S: Scale<br>Del: Supprimer • Esc: Désélectionner</div>
+            <div class="keyboard-hint">
+                <strong>Gizmo:</strong> G = Move • R = Rotate • S = Scale<br>
+                <strong>Objet:</strong> Del = Supprimer • Esc = Désélectionner
+            </div>
         </div>
     </div>
 
@@ -340,9 +500,12 @@
         controls.enableDamping = true;
 
         transformControls = new THREE.TransformControls(camera, renderer.domElement);
-        transformControls.setSize(0.25);
-        transformControls.addEventListener('dragging-changed', e => controls.enabled = !e.value);
+        transformControls.setSize(0.75);
+        transformControls.addEventListener('dragging-changed', e => {
+            controls.enabled = !e.value;
+        });
         transformControls.addEventListener('objectChange', onTransformChange);
+        transformControls.addEventListener('change', updateTransformInputs);
         scene.add(transformControls);
 
         raycaster = new THREE.Raycaster();
@@ -368,6 +531,7 @@
         window.addEventListener('resize', onResize);
         renderer.domElement.addEventListener('click', onClick);
         window.addEventListener('keydown', onKeyDown);
+        document.addEventListener('click', hidePrimitivePopup);
 
         changeLens();
         updateAll();
@@ -398,12 +562,10 @@
         lens.position.z = -570*s/2 - 0.02;
         projectorMesh.add(lens);
 
-        // Projector camera for rectangular projection
         projectorCamera = new THREE.PerspectiveCamera(throwToFOV(throwRatio), ASPECT, 0.1, frustumFar);
         projectorGroup.add(projectorCamera);
 
-        // INVISIBLE SPOTLIGHT - Used ONLY for shadow map generation
-        // Intensity = 0, Color = Black → No lighting contribution
+        // INVISIBLE SPOTLIGHT - Shadow maps only
         shadowLight = new THREE.SpotLight(0x000000, 0);
         shadowLight.angle = THREE.MathUtils.degToRad(throwToFOV(throwRatio));
         shadowLight.penumbra = 0;
@@ -420,19 +582,16 @@
         shadowLight.position.set(0,0,0);
         projectorGroup.add(shadowLight);
 
-        // Shadow target (local space)
         const shadowTarget = new THREE.Object3D();
         shadowTarget.position.set(0,0,-projDistance);
         projectorGroup.add(shadowTarget);
         shadowLight.target = shadowTarget;
         projectorMesh.userData.shadowTarget = shadowTarget;
 
-        // Camera helper
         projectorHelper = new THREE.CameraHelper(shadowLight.shadow.camera);
         projectorHelper.visible = false;
         scene.add(projectorHelper);
 
-        // Visual target (world space)
         const tGeo = new THREE.SphereGeometry(0.15, 32, 32);
         const tMat = new THREE.MeshBasicMaterial({ color:0xffff00 });
         targetMesh = new THREE.Mesh(tGeo, tMat);
@@ -486,7 +645,6 @@
         return THREE.MathUtils.radToDeg(vFov);
     }
 
-    // Apply off-center projection for lens shift
     function applyLensShiftToCamera(camera, shiftH_frac, shiftV_frac) {
         camera.updateProjectionMatrix();
         const pm = camera.projectionMatrix.elements;
@@ -496,19 +654,10 @@
 
     /**
      * PROFESSIONAL SHADOW-MAPPED PROJECTION SHADER
-     *
-     * Features:
-     * - Reads shadow maps from invisible spotlight for accurate occlusion
-     * - Maintains rectangular projection with lens shift (no circular distortion)
-     * - High-quality PCF with Poisson disk sampling for smooth shadows
-     * - Adaptive normal bias to prevent shadow acne
-     * - Distance-based attenuation
-     * - Smooth falloff at projection edges
      */
     function createProjectedMaterial() {
         return new THREE.ShaderMaterial({
             uniforms: {
-                // Projection uniforms
                 projTexture: { value: projectionTexture },
                 projMatrix: { value: new THREE.Matrix4() },
                 projPosition: { value: new THREE.Vector3() },
@@ -518,8 +667,6 @@
                 hasTexture: { value: false },
                 shiftV: { value: 0 },
                 shiftH: { value: 0 },
-
-                // Shadow map uniforms
                 shadowMap: { value: null },
                 shadowMatrix: { value: new THREE.Matrix4() },
                 shadowMapSize: { value: new THREE.Vector2(4096,4096) },
@@ -540,57 +687,38 @@
                 uniform mat4 shadowMatrix;
 
                 void main() {
-                    // Transform normal to world space
                     vNormal = normalize(normalMatrix * normal);
-
-                    // World position
                     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
                     vWorldPos = worldPosition.xyz;
-
-                    // Projection coordinates for rectangular projection
                     vProjCoords = projMatrix * worldPosition;
-
-                    // Shadow coordinates for occlusion testing
                     vShadowCoord = shadowMatrix * worldPosition;
-
-                    // View position for distance attenuation
                     vViewPos = (modelViewMatrix * vec4(position, 1.0)).xyz;
-
                     gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
                 }
             `,
             fragmentShader: `
                 precision highp float;
 
-                // Textures
                 uniform sampler2D projTexture;
                 uniform sampler2D shadowMap;
-
-                // Colors
                 uniform vec3 baseColor;
                 uniform vec3 projColor;
-
-                // Projection
                 uniform vec3 projPosition;
                 uniform float intensity;
                 uniform float shiftV;
                 uniform float shiftH;
                 uniform bool hasTexture;
-
-                // Shadow
                 uniform vec2 shadowMapSize;
                 uniform float shadowBias;
                 uniform float shadowSoftness;
                 uniform bool useHighQualityPCF;
 
-                // Varyings
                 varying vec4 vProjCoords;
                 varying vec4 vShadowCoord;
                 varying vec3 vNormal;
                 varying vec3 vWorldPos;
                 varying vec3 vViewPos;
 
-                // Poisson disk samples for high-quality PCF
                 const vec2 poissonDisk[16] = vec2[](
                     vec2(-0.94201624, -0.39906216),
                     vec2(0.94558609, -0.76890725),
@@ -610,52 +738,38 @@
                     vec2(0.14383161, -0.14100790)
                 );
 
-                // Read shadow map depth
                 float readShadowMapDepth(vec2 uv) {
                     return texture2D(shadowMap, uv).r;
                 }
 
-                // High-quality PCF with Poisson disk sampling
                 float getShadowPCF_Poisson(vec3 shadowCoord, vec3 normal, vec3 lightDir, float softness) {
                     float currentDepth = shadowCoord.z;
                     vec2 texelSize = 1.0 / shadowMapSize;
-
-                    // Adaptive normal bias based on surface angle
                     float nDotL = clamp(dot(normalize(normal), normalize(lightDir)), 0.0, 1.0);
                     float normalBias = mix(0.005, 0.0005, nDotL);
                     float bias = max(normalBias, shadowBias);
-
-                    // Poisson disk sampling
                     float shadow = 0.0;
                     float radius = softness * 2.0;
-                    int samples = 16;
 
                     for (int i = 0; i < 16; i++) {
                         vec2 offset = poissonDisk[i] * texelSize * radius;
                         vec2 uv = shadowCoord.xy + offset;
-
-                        // Clamp to shadow map bounds
                         if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
                             shadow += 1.0;
                             continue;
                         }
-
                         float shadowDepth = readShadowMapDepth(uv);
                         shadow += (currentDepth - bias) > shadowDepth ? 0.0 : 1.0;
                     }
-
-                    return shadow / float(samples);
+                    return shadow / 16.0;
                 }
 
-                // Standard PCF (3x3 grid)
                 float getShadowPCF_Standard(vec3 shadowCoord, vec3 normal, vec3 lightDir, float softness) {
                     float currentDepth = shadowCoord.z;
                     vec2 texelSize = 1.0 / shadowMapSize;
-
                     float nDotL = clamp(dot(normalize(normal), normalize(lightDir)), 0.0, 1.0);
                     float normalBias = mix(0.005, 0.0005, nDotL);
                     float bias = max(normalBias, shadowBias);
-
                     float shadow = 0.0;
                     float samples = 0.0;
                     int range = int(softness) + 1;
@@ -664,22 +778,18 @@
                         for (int x = -range; x <= range; x++) {
                             vec2 offset = vec2(float(x), float(y)) * texelSize;
                             vec2 uv = shadowCoord.xy + offset;
-
                             if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
                                 samples += 1.0;
                                 continue;
                             }
-
                             float shadowDepth = readShadowMapDepth(uv);
                             shadow += (currentDepth - bias) > shadowDepth ? 0.0 : 1.0;
                             samples += 1.0;
                         }
                     }
-
                     return samples > 0.0 ? shadow / samples : 0.0;
                 }
 
-                // Edge softness for smooth projection boundaries
                 float getEdgeSoftness(vec2 uv, float margin) {
                     vec2 edgeDist = min(uv, 1.0 - uv);
                     float minDist = min(edgeDist.x, edgeDist.y);
@@ -688,25 +798,18 @@
 
                 void main() {
                     vec3 color = baseColor;
-
-                    // Skip projection for geometry very close to projector (prevents self-projection)
                     float distToProj = distance(projPosition, vWorldPos);
                     if (distToProj < 0.15) {
                         gl_FragColor = vec4(color, 1.0);
                         return;
                     }
 
-                    // ============ SHADOW MAP OCCLUSION TEST ============
-                    // Convert shadow coordinates to NDC [0,1]
                     vec3 shadowCoord = vShadowCoord.xyz / vShadowCoord.w;
                     shadowCoord = shadowCoord * 0.5 + 0.5;
-
-                    // Check if in shadow map bounds
                     bool shadowOutside = (shadowCoord.x < 0.0 || shadowCoord.x > 1.0 ||
                                          shadowCoord.y < 0.0 || shadowCoord.y > 1.0 ||
                                          shadowCoord.z < 0.0 || shadowCoord.z > 1.0);
 
-                    // Calculate visibility using shadow map
                     vec3 lightDir = projPosition - vWorldPos;
                     float visibility = 1.0;
 
@@ -718,37 +821,23 @@
                         }
                     }
 
-                    // ============ RECTANGULAR PROJECTION WITH LENS SHIFT ============
-                    // Only apply projection if pixel is visible (not occluded)
                     if (visibility > 0.01) {
-                        // Project using projector camera matrix
                         vec3 projCoord = vProjCoords.xyz / vProjCoords.w;
                         vec2 uv = projCoord.xy * 0.5 + 0.5;
-
-                        // Apply lens shift (off-center projection)
                         uv.x -= shiftH;
                         uv.y -= shiftV;
 
-                        // Check if within projection frustum
                         if (uv.x >= 0.0 && uv.x <= 1.0 &&
                             uv.y >= 0.0 && uv.y <= 1.0 &&
                             projCoord.z >= 0.0 && projCoord.z <= 1.0) {
 
-                            // Surface facing calculation
                             vec3 projDir = normalize(lightDir);
                             float facing = clamp(dot(normalize(vNormal), projDir), 0.0, 1.0);
-                            facing = max(facing, 0.25); // Minimum facing to avoid pure black on glancing angles
-
-                            // Distance attenuation (optional, subtle)
+                            facing = max(facing, 0.25);
                             float distAttenuation = 1.0 - smoothstep(frustumFar * 0.7, frustumFar, distToProj);
-
-                            // Edge softness for smooth projection boundaries
                             float edgeSoft = getEdgeSoftness(uv, 0.05);
-
-                            // Final projection mix factor
                             float projMix = intensity * facing * visibility * distAttenuation * edgeSoft;
 
-                            // Apply texture or solid color
                             if (hasTexture) {
                                 vec4 texColor = texture2D(projTexture, uv);
                                 color = mix(color, texColor.rgb * projColor, texColor.a * projMix);
@@ -763,6 +852,77 @@
             `,
             side: THREE.DoubleSide
         });
+    }
+
+    // ===== TRANSFORM CONTROLS =====
+
+    function updateTransformInputs() {
+        if (!selectedObject) return;
+
+        const obj = selectedObject.userData.isProjector ? projectorGroup : selectedObject;
+
+        document.getElementById('pos-x').value = obj.position.x.toFixed(2);
+        document.getElementById('pos-y').value = obj.position.y.toFixed(2);
+        document.getElementById('pos-z').value = obj.position.z.toFixed(2);
+
+        document.getElementById('rot-x').value = THREE.MathUtils.radToDeg(obj.rotation.x).toFixed(1);
+        document.getElementById('rot-y').value = THREE.MathUtils.radToDeg(obj.rotation.y).toFixed(1);
+        document.getElementById('rot-z').value = THREE.MathUtils.radToDeg(obj.rotation.z).toFixed(1);
+
+        document.getElementById('scale-x').value = obj.scale.x.toFixed(2);
+        document.getElementById('scale-y').value = obj.scale.y.toFixed(2);
+        document.getElementById('scale-z').value = obj.scale.z.toFixed(2);
+    }
+
+    window.updateTransformFromInputs = function() {
+        if (!selectedObject) return;
+
+        const obj = selectedObject.userData.isProjector ? projectorGroup : selectedObject;
+
+        obj.position.x = parseFloat(document.getElementById('pos-x').value);
+        obj.position.y = parseFloat(document.getElementById('pos-y').value);
+        obj.position.z = parseFloat(document.getElementById('pos-z').value);
+
+        obj.rotation.x = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rot-x').value));
+        obj.rotation.y = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rot-y').value));
+        obj.rotation.z = THREE.MathUtils.degToRad(parseFloat(document.getElementById('rot-z').value));
+
+        obj.scale.x = parseFloat(document.getElementById('scale-x').value);
+        obj.scale.y = parseFloat(document.getElementById('scale-y').value);
+        obj.scale.z = parseFloat(document.getElementById('scale-z').value);
+
+        updateProjectionMatrix();
+        updateMeasurements();
+    };
+
+    window.resetTransform = function() {
+        if (!selectedObject || selectedObject.userData.isProjector || selectedObject.userData.isTarget) return;
+
+        selectedObject.position.set(0, 0, 0);
+        selectedObject.rotation.set(0, 0, 0);
+        selectedObject.scale.set(1, 1, 1);
+
+        updateTransformInputs();
+        updateProjectionMatrix();
+    };
+
+    // ===== PRIMITIVE POPUP =====
+
+    window.showPrimitivePopup = function(event) {
+        event.stopPropagation();
+        const popup = document.getElementById('primitive-popup');
+        popup.classList.add('visible');
+
+        const rect = event.target.getBoundingClientRect();
+        popup.style.left = rect.left + 'px';
+        popup.style.top = (rect.top - popup.offsetHeight - 5) + 'px';
+    };
+
+    function hidePrimitivePopup(event) {
+        const popup = document.getElementById('primitive-popup');
+        if (!popup.contains(event.target) && !event.target.classList.contains('add-primitive-btn')) {
+            popup.classList.remove('visible');
+        }
     }
 
     // ===== UPDATES =====
@@ -785,7 +945,6 @@
     function updateProjectionMatrix() {
         if (!projectorCamera || !shadowLight) return;
 
-        // Update projector camera
         projectorCamera.updateMatrixWorld();
         projectorCamera.updateProjectionMatrix();
         applyLensShiftToCamera(projectorCamera, lensShiftH / 100, lensShiftV / 100);
@@ -796,7 +955,6 @@
         const worldPos = new THREE.Vector3();
         projectorCamera.getWorldPosition(worldPos);
 
-        // Sync shadow camera with projector camera
         const fov = throwToFOV(throwRatio);
         shadowLight.angle = THREE.MathUtils.degToRad(fov);
         shadowLight.shadow.camera.fov = fov;
@@ -813,7 +971,6 @@
         const shadowMatrix = new THREE.Matrix4();
         shadowMatrix.multiplyMatrices(shadowLight.shadow.camera.projectionMatrix, shadowLight.shadow.camera.matrixWorldInverse);
 
-        // Update shadow target position
         const dist = projDistance;
         const width = dist / throwRatio;
         const height = width / ASPECT;
@@ -824,7 +981,6 @@
             projectorMesh.userData.shadowTarget.position.copy(localCenter);
         }
 
-        // Update shader uniforms
         projectedObjects.forEach(obj => {
             if (obj.userData?.noProjection) return;
             if (obj.material?.uniforms) {
@@ -913,9 +1069,9 @@
     // ===== PRIMITIVE FUNCTIONS =====
 
     window.addPrimitive = function(type) {
-        const sizeX = parseFloat(document.getElementById('prim-size-x').value) || 1.5;
-        const sizeY = parseFloat(document.getElementById('prim-size-y').value) || 1.5;
-        const sizeZ = parseFloat(document.getElementById('prim-size-z').value) || 1.5;
+        const sizeX = 1.5;
+        const sizeY = 1.5;
+        const sizeZ = 1.5;
 
         let geometry;
         let name = '';
@@ -975,6 +1131,8 @@
 
         updateProjectionMatrix();
         selectObject(mesh);
+
+        document.getElementById('primitive-popup').classList.remove('visible');
     };
 
     window.addWall = function() {
@@ -996,6 +1154,8 @@
         }
         wall.material.needsUpdate = true;
         updateProjectionMatrix();
+
+        document.getElementById('primitive-popup').classList.remove('visible');
     };
 
     window.clearObjects = function() {
@@ -1203,21 +1363,41 @@
 
     function selectObject(obj) {
         selectedObject = obj;
+        const transformPanel = document.getElementById('transform-params');
+        const gizmoMode = document.getElementById('gizmo-mode');
+
         if (obj) {
-            if (obj.userData.isProjector) transformControls.attach(projectorGroup);
-            else transformControls.attach(obj);
+            if (obj.userData.isProjector) {
+                transformControls.attach(projectorGroup);
+            } else {
+                transformControls.attach(obj);
+            }
             document.getElementById('selected-name').textContent = obj.userData.name;
+            transformPanel.classList.add('visible');
+            gizmoMode.classList.add('visible');
+            updateTransformInputs();
         } else {
             transformControls.detach();
             document.getElementById('selected-name').textContent = 'Aucun';
+            transformPanel.classList.remove('visible');
+            gizmoMode.classList.remove('visible');
         }
     }
 
     function onKeyDown(e) {
         switch(e.key.toLowerCase()) {
-            case 'g': transformControls.setMode('translate'); break;
-            case 'r': transformControls.setMode('rotate'); break;
-            case 's': transformControls.setMode('scale'); break;
+            case 'g':
+                transformControls.setMode('translate');
+                document.getElementById('gizmo-mode-text').textContent = 'Move';
+                break;
+            case 'r':
+                transformControls.setMode('rotate');
+                document.getElementById('gizmo-mode-text').textContent = 'Rotate';
+                break;
+            case 's':
+                transformControls.setMode('scale');
+                document.getElementById('gizmo-mode-text').textContent = 'Scale';
+                break;
             case 'delete':
             case 'backspace':
                 if (selectedObject && !selectedObject.userData.isProjector && !selectedObject.userData.isTarget) {
@@ -1230,7 +1410,9 @@
                 }
                 e.preventDefault();
                 break;
-            case 'escape': selectObject(null); break;
+            case 'escape':
+                selectObject(null);
+                break;
         }
     }
 
