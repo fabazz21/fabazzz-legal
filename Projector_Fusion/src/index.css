@@ -1,0 +1,412 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 3D Camera Mapping Professional Design System */
+
+@layer base {
+  :root {
+    /* Dark professional theme for 3D software */
+    --background: 220 15% 8%;
+    --foreground: 210 20% 95%;
+
+    --card: 220 15% 10%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 18% 12%;
+    --popover-foreground: 210 20% 95%;
+
+    /* Teal accent - professional projection/mapping */
+    --primary: 172 66% 40%;
+    --primary-foreground: 220 15% 8%;
+    --primary-glow: 172 66% 50%;
+
+    --secondary: 220 12% 16%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 220 12% 18%;
+    --muted-foreground: 215 15% 55%;
+
+    --accent: 172 50% 25%;
+    --accent-foreground: 172 66% 70%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 220 15% 8%;
+
+    --success: 142 70% 45%;
+    --success-foreground: 220 15% 8%;
+
+    --border: 220 12% 20%;
+    --input: 220 12% 16%;
+    --ring: 172 66% 40%;
+
+    --radius: 0.5rem;
+
+    /* Custom colors for 3D viewport */
+    --viewport-bg: 220 18% 6%;
+    --panel-bg: 220 15% 10%;
+    --panel-header: 220 15% 12%;
+    --timeline-bg: 220 18% 8%;
+    --preview-border: 172 66% 40%;
+    
+    /* Projector colors */
+    --projector-primary: 172 66% 40%;
+    --projector-secondary: 280 60% 50%;
+    --projector-tertiary: 38 92% 50%;
+    --target-color: 60 100% 50%;
+
+    /* Sidebar */
+    --sidebar-background: 220 15% 9%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 172 66% 40%;
+    --sidebar-primary-foreground: 220 15% 8%;
+    --sidebar-accent: 220 12% 14%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 12% 18%;
+    --sidebar-ring: 172 66% 40%;
+  }
+
+  .dark {
+    /* Already dark by default */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', sans-serif;
+    overflow: hidden;
+  }
+}
+
+@layer components {
+  /* 3D Viewport Container */
+  .viewport-container {
+    @apply relative overflow-hidden rounded-lg;
+    background: hsl(var(--viewport-bg));
+    border: 1px solid hsl(var(--border));
+  }
+
+  /* Panel styling */
+  .control-panel {
+    @apply rounded-lg border border-border overflow-hidden;
+    background: hsl(var(--panel-bg));
+  }
+
+  .panel-header {
+    @apply px-3 py-2 flex items-center justify-between text-xs font-semibold uppercase tracking-wide;
+    background: hsl(var(--panel-header));
+    color: hsl(var(--primary));
+    border-bottom: 1px solid hsl(var(--border));
+  }
+
+  .panel-content {
+    @apply p-3 space-y-3;
+  }
+
+  /* Slider styling */
+  .control-slider {
+    @apply w-full h-1 rounded-full appearance-none cursor-pointer;
+    background: hsl(var(--muted));
+  }
+
+  .control-slider::-webkit-slider-thumb {
+    @apply appearance-none w-3 h-3 rounded-full cursor-pointer;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 8px hsl(var(--primary-glow) / 0.4);
+  }
+
+  .control-slider::-moz-range-thumb {
+    @apply w-3 h-3 rounded-full cursor-pointer border-0;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 8px hsl(var(--primary-glow) / 0.4);
+  }
+
+  /* Preview window */
+  .preview-window {
+    @apply relative rounded-lg overflow-hidden;
+    border: 2px solid hsl(var(--preview-border) / 0.3);
+    background: #000;
+  }
+
+  .preview-label {
+    @apply absolute top-2 left-2 px-2 py-1 rounded text-xs font-semibold z-10;
+    background: hsl(var(--primary) / 0.9);
+    color: hsl(var(--primary-foreground));
+  }
+
+  .preview-label-secondary {
+    @apply absolute top-2 left-2 px-2 py-1 rounded text-xs font-semibold z-10;
+    background: hsl(var(--destructive) / 0.9);
+    color: white;
+  }
+
+  /* Timeline styling */
+  .timeline-container {
+    @apply border-t border-border;
+    background: hsl(var(--timeline-bg));
+  }
+
+  .timeline-track {
+    @apply relative h-8 rounded;
+    background: hsl(var(--muted));
+  }
+
+  .timeline-playhead {
+    @apply absolute top-0 bottom-0 w-0.5;
+    background: hsl(var(--destructive));
+    box-shadow: 0 0 8px hsl(var(--destructive) / 0.6);
+  }
+
+  .keyframe-marker {
+    @apply absolute w-2 h-2 rounded-full cursor-pointer transform -translate-x-1/2 -translate-y-1/2 top-1/2;
+    background: hsl(var(--primary));
+    border: 2px solid hsl(var(--background));
+    transition: transform 0.15s ease;
+  }
+
+  .keyframe-marker:hover {
+    transform: translate(-50%, -50%) scale(1.4);
+    background: hsl(var(--primary-glow));
+  }
+
+  /* Hierarchy list */
+  .hierarchy-item {
+    @apply flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer transition-colors text-sm;
+  }
+
+  .hierarchy-item:hover {
+    background: hsl(var(--accent) / 0.3);
+  }
+
+  .hierarchy-item.selected {
+    background: hsl(var(--primary) / 0.2);
+    border-left: 2px solid hsl(var(--primary));
+  }
+
+  /* Top menu bar */
+  .top-menu-bar {
+    @apply h-14 flex items-center gap-2 px-4 border-b border-border;
+    background: hsl(var(--panel-header));
+  }
+
+  .menu-btn {
+    @apply px-3 py-1.5 rounded text-xs font-medium transition-all;
+    background: hsl(var(--secondary));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .menu-btn:hover {
+    background: hsl(var(--accent));
+    border-color: hsl(var(--primary));
+  }
+
+  .menu-btn-primary {
+    @apply px-3 py-1.5 rounded text-xs font-semibold transition-all;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border: 1px solid hsl(var(--primary));
+  }
+
+  .menu-btn-primary:hover {
+    background: hsl(var(--primary-glow));
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.4);
+  }
+
+  .menu-btn-danger {
+    @apply px-3 py-1.5 rounded text-xs font-semibold transition-all;
+    background: hsl(var(--destructive) / 0.15);
+    color: hsl(var(--destructive));
+    border: 1px solid hsl(var(--destructive) / 0.5);
+  }
+
+  .menu-btn-danger:hover {
+    background: hsl(var(--destructive) / 0.3);
+  }
+
+  /* Tab navigation */
+  .nav-tabs {
+    @apply flex gap-1 p-1 rounded-lg;
+    background: hsl(var(--muted) / 0.5);
+  }
+
+  .nav-tab {
+    @apply px-4 py-1.5 rounded text-xs font-medium transition-all;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .nav-tab:hover {
+    color: hsl(var(--foreground));
+  }
+
+  .nav-tab.active {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.3);
+  }
+
+  /* Transform gizmo buttons */
+  .gizmo-btn {
+    @apply w-8 h-8 flex items-center justify-center rounded text-sm transition-all;
+    background: hsl(var(--secondary));
+    color: hsl(var(--muted-foreground));
+    border: 1px solid hsl(var(--border));
+  }
+
+  .gizmo-btn:hover {
+    border-color: hsl(var(--primary));
+    color: hsl(var(--foreground));
+  }
+
+  .gizmo-btn.active {
+    background: hsl(var(--primary) / 0.2);
+    border-color: hsl(var(--primary));
+    color: hsl(var(--primary));
+  }
+
+  /* Recording indicator */
+  .recording-indicator {
+    @apply w-2 h-2 rounded-full;
+    background: hsl(var(--destructive));
+    animation: pulse-recording 1s ease-in-out infinite;
+  }
+
+  @keyframes pulse-recording {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Control input styling */
+  .control-input {
+    @apply w-full px-2 py-1.5 rounded text-xs;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  .control-input:focus {
+    outline: none;
+    border-color: hsl(var(--primary));
+    box-shadow: 0 0 0 2px hsl(var(--primary) / 0.2);
+  }
+
+  .control-select {
+    @apply w-full px-2 py-1.5 rounded text-xs cursor-pointer;
+    background: hsl(var(--input));
+    border: 1px solid hsl(var(--border));
+    color: hsl(var(--foreground));
+  }
+
+  /* Metrics display */
+  .metric-display {
+    @apply px-3 py-2 rounded text-center;
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.05) 100%);
+    border: 1px solid hsl(var(--primary) / 0.3);
+  }
+
+  .metric-value {
+    @apply text-lg font-bold;
+    color: hsl(var(--primary));
+  }
+
+  .metric-label {
+    @apply text-xs uppercase tracking-wide;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Section divider */
+  .section-divider {
+    @apply my-3 border-t;
+    border-color: hsl(var(--border));
+  }
+
+  /* Collapsible panel */
+  .collapsible-header {
+    @apply flex items-center justify-between px-3 py-2 cursor-pointer select-none;
+    background: hsl(var(--panel-header));
+  }
+
+  .collapsible-header:hover {
+    background: hsl(var(--accent) / 0.5);
+  }
+
+  .chevron {
+    @apply transition-transform duration-200;
+  }
+
+  .chevron.open {
+    transform: rotate(180deg);
+  }
+}
+
+/* Three.js canvas styling */
+canvas {
+  display: block;
+  outline: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Tooltip */
+[data-tooltip] {
+  position: relative;
+}
+
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: hsl(var(--popover));
+  color: hsl(var(--foreground));
+  font-size: 10px;
+  white-space: nowrap;
+  border-radius: 4px;
+  z-index: 1000;
+  margin-bottom: 4px;
+  box-shadow: 0 4px 12px hsl(0 0% 0% / 0.3);
+}
