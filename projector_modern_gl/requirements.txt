@@ -1,0 +1,45 @@
+# ModernGL - Modern OpenGL Core
+moderngl==5.10.0
+moderngl-window==2.4.6
+
+# Window Management & Input
+glfw==2.7.0
+pygame==2.5.2
+
+# Mathematics & Numpy
+numpy==1.26.4
+pyrr==0.10.3
+
+# 3D Model Loading
+trimesh==4.3.2
+pywavefront==1.3.3
+pygltflib==1.16.1
+
+# Image Processing
+Pillow==10.3.0
+imageio==2.34.1
+imageio-ffmpeg==0.4.9
+
+# UI - ImGui
+imgui[glfw]==2.0.0
+imgui[pygame]==2.0.0
+
+# PDF Export
+reportlab==4.2.0
+matplotlib==3.8.4
+
+# Video Export
+opencv-python==4.9.0.80
+
+# Utilities
+PyYAML==6.0.1
+toml==0.10.2
+
+# Scientific Computing
+scipy==1.13.0
+
+# Timeline & Animation
+bezier==2023.7.28
+
+# Export & Archiving
+zipfile36==0.1.3
