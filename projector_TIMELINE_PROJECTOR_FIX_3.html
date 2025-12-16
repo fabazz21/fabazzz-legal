@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Panasonic PT-RQ25K - Professional Shadow-Mapped Projection Shader</title>
+    <title>Panasonic PT-RQ25K - Professional Shadow-Mapped Projection Shader [FIX_3 v1.1]</title>
     <style>
         /* 3D Mapping Pro Color Palette */
         :root {
@@ -5519,6 +5519,8 @@
     };
     
     function init() {
+        console.log('%c🔧 FIX_3 v1.1 LOADED - Delete buttons & Size display & Slider refresh & Portrait rotation ACTIVE', 'background: #14b8a6; color: #000; font-weight: bold; padding: 4px 8px; border-radius: 4px;');
+
         // Create default shadow texture (1x1 white = max depth = no shadow)
         // Use UnsignedByteType for broader compatibility
         const data = new Uint8Array([255, 255, 255, 255]);
@@ -5526,13 +5528,13 @@
         defaultShadowTexture.minFilter = THREE.NearestFilter;
         defaultShadowTexture.magFilter = THREE.NearestFilter;
         defaultShadowTexture.needsUpdate = true;
-        
+
         // Also create a default projection texture (1x1 white)
         defaultProjectionTexture = new THREE.DataTexture(data, 1, 1, THREE.RGBAFormat, THREE.UnsignedByteType);
         defaultProjectionTexture.minFilter = THREE.NearestFilter;
         defaultProjectionTexture.magFilter = THREE.NearestFilter;
         defaultProjectionTexture.needsUpdate = true;
-        
+
         scene = new THREE.Scene();
         scene.background = new THREE.Color(0x1a1a1a);
 
@@ -9446,35 +9448,26 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
             }
         }
 
-        // Rotate the projector mesh and frustum physically if orientation changed
-        if (orientationChanged && activeProjector.mesh) {
+        // Rotate the ENTIRE projector group physically if orientation changed
+        // IMPORTANT: We keep the aspect ratio 16:10 and just rotate everything 90°
+        if (orientationChanged) {
             const rotationAngle = (orientation === 'portrait') ? Math.PI / 2 : 0;
 
-            // Rotate the projector mesh (visual representation)
-            if (activeProjector.mesh) {
-                activeProjector.mesh.rotation.z = rotationAngle;
-            }
-
-            // Rotate the frustum helper if it exists
-            if (activeProjector.frustumHelper) {
-                // The frustum helper needs to be rotated around its local Z axis
-                activeProjector.frustumHelper.rotation.z = rotationAngle;
-            }
-
-            // Rotate the dummy camera frustum if it exists
-            if (activeProjector.dummyCamera) {
-                activeProjector.dummyCamera.rotation.z = rotationAngle;
+            // Rotate the entire projector group (this rotates mesh + camera + frustum together)
+            if (activeProjector.group) {
+                activeProjector.group.rotation.z = rotationAngle;
             }
         }
 
-        // Update camera aspect ratio
-        const aspect = getAspectRatio(orientation);
+        // DO NOT change aspect ratio - keep it 16:10 always
+        // The physical rotation of the group handles the portrait mode
+        const aspect = 16/10; // Always 16:10, rotation handles orientation
         if (activeProjector.camera) {
             activeProjector.camera.aspect = aspect;
             activeProjector.camera.updateProjectionMatrix();
         }
 
-        // Update shadow camera aspect ratio
+        // Update shadow camera - also keep 16:10
         if (activeProjector.light && activeProjector.light.shadow && activeProjector.light.shadow.camera) {
             activeProjector.light.shadow.camera.aspect = aspect;
             activeProjector.light.shadow.camera.updateProjectionMatrix();
@@ -9483,7 +9476,7 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
         // Update projection matrix
         updateProjectionMatrixForInstance(activeProjector);
 
-        console.log(`✅ Projector #${activeProjector.id} orientation set to ${orientation} (${orientation === 'portrait' ? '10:16' : '16:10'})`);
+        console.log(`✅ Projector #${activeProjector.id} orientation set to ${orientation} - Rotated ${orientation === 'portrait' ? '90°' : '0°'} (keeping 16:10 aspect)`);
     };
 
     window.resetLensShift = function() {
