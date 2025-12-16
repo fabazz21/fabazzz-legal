@@ -13746,6 +13746,7 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
         if (selectedObject.userData.isProjector) {
             const instance = selectedObject.userData.projectorInstance || activeProjector;
             if (instance && confirm(`Supprimer le projecteur #${instance.id} ?`)) {
+                selectObject(null); // Deselect first to remove gizmo
                 deleteProjectorInternal(instance.id);
                 console.log(`🗑️ Deleted projector #${instance.id}`);
             }
@@ -13756,10 +13757,10 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
         if (selectedObject.userData.isCamera) {
             const camInstance = selectedObject.userData.cameraInstance;
             if (camInstance && confirm(`Supprimer la caméra #${camInstance.id} ?`)) {
+                selectObject(null); // Deselect first to remove gizmo
                 scene.remove(camInstance.group);
                 const idx = cameras.indexOf(camInstance);
                 if (idx !== -1) cameras.splice(idx, 1);
-                selectObject(null);
                 populateSceneHierarchy();
                 console.log(`🗑️ Deleted camera #${camInstance.id}`);
             }
@@ -13768,12 +13769,13 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
 
         // Delete regular object
         if (!selectedObject.userData.isTarget && confirm(`Supprimer ${selectedObject.userData.name || 'cet objet'} ?`)) {
-            scene.remove(selectedObject);
-            const idx = projectedObjects.indexOf(selectedObject);
+            const objToDelete = selectedObject;
+            selectObject(null); // Deselect first to remove gizmo
+            scene.remove(objToDelete);
+            const idx = projectedObjects.indexOf(objToDelete);
             if (idx !== -1) projectedObjects.splice(idx, 1);
-            const sidx = selectableObjects.indexOf(selectedObject);
+            const sidx = selectableObjects.indexOf(objToDelete);
             if (sidx !== -1) selectableObjects.splice(sidx, 1);
-            selectObject(null);
             updateProjectionMatrix();
             populateSceneHierarchy();
             console.log(`🗑️ Deleted object`);
@@ -13817,6 +13819,15 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
         if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') {
             if (selectedObject && !selectedObject.userData.isTarget) {
                 duplicateObject(selectedObject);
+                e.preventDefault();
+            }
+            return;
+        }
+
+        // Delete key - Delete object
+        if (e.key === 'Delete') {
+            if (selectedObject && !selectedObject.userData.isTarget) {
+                deleteSelectedObject();
                 e.preventDefault();
             }
             return;
