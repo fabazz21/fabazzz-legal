@@ -22,7 +22,7 @@ from core.renderer import Renderer
 from core.scene import Scene
 from core.camera import Camera
 from ui.main_ui import MainUI
-from timeline.timeline import Timeline
+from animation.timeline import Timeline
 from utils.history import History
 
 
