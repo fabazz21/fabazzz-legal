@@ -4171,6 +4171,102 @@
     </div>
 
     <div id="controls" class="hidden">
+        <!-- OBJECT PARAMETERS PANEL (shown when object selected) -->
+        <div id="object-panel" style="display: none;">
+            <div style="background: linear-gradient(135deg, #1e3a5f 0%, #0d1b2a 100%); padding: 10px; border-radius: 6px; margin-bottom: 12px; border: 1px solid #2a4a6f;">
+                <div style="font-size: 10px; color: #888; text-transform: uppercase; margin-bottom: 4px;">Object</div>
+                <div style="font-size: 14px; font-weight: 600; color: var(--primary);" id="object-name">Unknown Object</div>
+                <div style="font-size: 9px; color: #aaa; margin-top: 2px;" id="object-type">3D Mesh</div>
+            </div>
+
+            <div class="control-group">
+                <h3>📍 Position</h3>
+                <div class="measurement-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">X</label>
+                        <input type="number" id="obj-pos-x" value="0" step="0.1" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">Y</label>
+                        <input type="number" id="obj-pos-y" value="0" step="0.1" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">Z</label>
+                        <input type="number" id="obj-pos-z" value="0" step="0.1" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>🔄 Rotation (degrés)</h3>
+                <div class="measurement-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">X</label>
+                        <input type="number" id="obj-rot-x" value="0" step="1" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">Y</label>
+                        <input type="number" id="obj-rot-y" value="0" step="1" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">Z</label>
+                        <input type="number" id="obj-rot-z" value="0" step="1" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>⤡ Scale</h3>
+                <div class="measurement-group" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">X</label>
+                        <input type="number" id="obj-scale-x" value="1" step="0.1" min="0.01" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">Y</label>
+                        <input type="number" id="obj-scale-y" value="1" step="0.1" min="0.01" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                    <div style="text-align: center;">
+                        <label style="font-size: 9px; color: #888;">Z</label>
+                        <input type="number" id="obj-scale-z" value="1" step="0.1" min="0.01" style="text-align: center; width: 100%;" oninput="updateObjectTransform()">
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>📏 Size (Bounding Box)</h3>
+                <div style="background: #1a1a1a; padding: 8px; border-radius: 4px; font-size: 11px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="color: #888;">Width:</span>
+                        <span style="color: var(--primary); font-weight: 600;" id="obj-size-w">0.00 m</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span style="color: #888;">Height:</span>
+                        <span style="color: var(--primary); font-weight: 600;" id="obj-size-h">0.00 m</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span style="color: #888;">Depth:</span>
+                        <span style="color: var(--primary); font-weight: 600;" id="obj-size-d">0.00 m</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>⚡ Actions</h3>
+                <button onclick="duplicateSelectedObject()" style="width: 100%; margin-bottom: 6px; background: #2a2a2a; border: 1px solid var(--primary); color: var(--primary);">
+                    📋 Duplicate (Ctrl+D)
+                </button>
+                <button onclick="deleteSelectedObject()" class="danger">
+                    🗑️ Delete
+                </button>
+                <button class="secondary" onclick="selectObject(null)" style="margin-top: 6px;">
+                    Esc - Deselect
+                </button>
+            </div>
+        </div>
+
+        <!-- PROJECTOR PARAMETERS PANEL (shown when projector selected) -->
+        <div id="projector-panel">
         <div class="projector-model" id="projector-model-display">
             <div class="brand" id="proj-brand">Panasonic</div>
             <div class="model-name" id="proj-model-name">PT-RQ25K</div>
@@ -4349,7 +4445,8 @@
                 <strong>Objet:</strong> Del = Supprimer • Esc = Désélectionner
             </div>
         </div>
-    </div>
+        </div><!-- End projector-panel -->
+    </div><!-- End controls -->
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -11267,6 +11364,84 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
         }
     }
 
+    // ========== OBJECT PANEL MANAGEMENT ==========
+
+    function showObjectPanel() {
+        const objPanel = document.getElementById('object-panel');
+        const projPanel = document.getElementById('projector-panel');
+        if (objPanel) objPanel.style.display = 'block';
+        if (projPanel) projPanel.style.display = 'none';
+    }
+
+    function showProjectorPanel() {
+        const objPanel = document.getElementById('object-panel');
+        const projPanel = document.getElementById('projector-panel');
+        if (objPanel) objPanel.style.display = 'none';
+        if (projPanel) projPanel.style.display = 'block';
+    }
+
+    function updateObjectPanel(obj) {
+        if (!obj) return;
+
+        // Update name and type
+        const nameEl = document.getElementById('object-name');
+        const typeEl = document.getElementById('object-type');
+        if (nameEl) nameEl.textContent = obj.userData.name || 'Unnamed Object';
+        if (typeEl) typeEl.textContent = obj.type || '3D Mesh';
+
+        // Update position
+        document.getElementById('obj-pos-x').value = obj.position.x.toFixed(2);
+        document.getElementById('obj-pos-y').value = obj.position.y.toFixed(2);
+        document.getElementById('obj-pos-z').value = obj.position.z.toFixed(2);
+
+        // Update rotation (convert to degrees)
+        document.getElementById('obj-rot-x').value = THREE.MathUtils.radToDeg(obj.rotation.x).toFixed(1);
+        document.getElementById('obj-rot-y').value = THREE.MathUtils.radToDeg(obj.rotation.y).toFixed(1);
+        document.getElementById('obj-rot-z').value = THREE.MathUtils.radToDeg(obj.rotation.z).toFixed(1);
+
+        // Update scale
+        document.getElementById('obj-scale-x').value = obj.scale.x.toFixed(2);
+        document.getElementById('obj-scale-y').value = obj.scale.y.toFixed(2);
+        document.getElementById('obj-scale-z').value = obj.scale.z.toFixed(2);
+
+        // Update size (bounding box)
+        const box = new THREE.Box3().setFromObject(obj);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        document.getElementById('obj-size-w').textContent = size.x.toFixed(2) + ' m';
+        document.getElementById('obj-size-h').textContent = size.y.toFixed(2) + ' m';
+        document.getElementById('obj-size-d').textContent = size.z.toFixed(2) + ' m';
+    }
+
+    window.updateObjectTransform = function() {
+        if (!selectedObject || selectedObject.userData.isProjector || selectedObject.userData.isCamera) return;
+
+        // Update position
+        selectedObject.position.x = parseFloat(document.getElementById('obj-pos-x').value);
+        selectedObject.position.y = parseFloat(document.getElementById('obj-pos-y').value);
+        selectedObject.position.z = parseFloat(document.getElementById('obj-pos-z').value);
+
+        // Update rotation (convert from degrees)
+        selectedObject.rotation.x = THREE.MathUtils.degToRad(parseFloat(document.getElementById('obj-rot-x').value));
+        selectedObject.rotation.y = THREE.MathUtils.degToRad(parseFloat(document.getElementById('obj-rot-y').value));
+        selectedObject.rotation.z = THREE.MathUtils.degToRad(parseFloat(document.getElementById('obj-rot-z').value));
+
+        // Update scale
+        selectedObject.scale.x = parseFloat(document.getElementById('obj-scale-x').value);
+        selectedObject.scale.y = parseFloat(document.getElementById('obj-scale-y').value);
+        selectedObject.scale.z = parseFloat(document.getElementById('obj-scale-z').value);
+
+        // Update size display
+        const box = new THREE.Box3().setFromObject(selectedObject);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        document.getElementById('obj-size-w').textContent = size.x.toFixed(2) + ' m';
+        document.getElementById('obj-size-h').textContent = size.y.toFixed(2) + ' m';
+        document.getElementById('obj-size-d').textContent = size.z.toFixed(2) + ' m';
+
+        updateProjectionMatrix();
+    };
+
     function selectObject(obj) {
         selectedObject = obj;
         const gizmoControls = document.getElementById('gizmo-controls');
@@ -11330,12 +11505,28 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
                 transformControls.attach(attachTarget);
                 transformControls.setSpace('world');
             }
+
+            // Show appropriate panel based on object type
+            if (obj.userData.isProjector || obj.userData.isCamera) {
+                // Show projector/camera panel
+                showProjectorPanel();
+            } else if (!obj.userData.isTarget) {
+                // Show object panel for regular objects
+                showObjectPanel();
+                updateObjectPanel(obj);
+            } else {
+                // Target - show projector panel
+                showProjectorPanel();
+            }
+
             const selName = document.getElementById('selected-name');
             if (selName) selName.textContent = obj.userData.name || 'Objet 3D';
             gizmoControls?.classList.add('visible');
             updateTransformInputs();
             updatePropertiesPanel(); // Update modern interface properties
         } else {
+            // Nothing selected - show projector panel by default
+            showProjectorPanel();
             transformControls.detach();
             const selName = document.getElementById('selected-name');
             if (selName) selName.textContent = 'Aucun';
