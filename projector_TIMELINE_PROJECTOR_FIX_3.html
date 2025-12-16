@@ -11369,6 +11369,11 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
     function showObjectPanel() {
         const objPanel = document.getElementById('object-panel');
         const projPanel = document.getElementById('projector-panel');
+        const controlsPanel = document.getElementById('controls');
+
+        // Show controls panel if hidden
+        if (controlsPanel) controlsPanel.classList.remove('hidden');
+
         if (objPanel) objPanel.style.display = 'block';
         if (projPanel) projPanel.style.display = 'none';
     }
@@ -11376,6 +11381,11 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
     function showProjectorPanel() {
         const objPanel = document.getElementById('object-panel');
         const projPanel = document.getElementById('projector-panel');
+        const controlsPanel = document.getElementById('controls');
+
+        // Show controls panel if hidden
+        if (controlsPanel) controlsPanel.classList.remove('hidden');
+
         if (objPanel) objPanel.style.display = 'none';
         if (projPanel) projPanel.style.display = 'block';
     }
