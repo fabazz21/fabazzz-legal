@@ -11933,10 +11933,16 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
             console.log('📂 Loading project...', jsonData);
 
             // 1. Clear current scene
-            // Remove all objects except ground and lights
+            // Remove all objects except ground, lights, camera, and grid
             const objectsToRemove = [];
             scene.children.forEach(child => {
-                if (child !== ground && !child.isLight && child !== camera && child.type !== 'GridHelper') {
+                // Keep lights, camera, grid, and plane meshes that might be the ground
+                const isLight = child.isLight || child.type.includes('Light');
+                const isCamera = child === camera || child.type === 'Camera' || child.type === 'PerspectiveCamera';
+                const isGrid = child.type === 'GridHelper' || child.type === 'Grid';
+                const isPermanent = child.userData && child.userData.permanent;
+
+                if (!isLight && !isCamera && !isGrid && !isPermanent) {
                     objectsToRemove.push(child);
                 }
             });
