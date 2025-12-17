@@ -1,0 +1,443 @@
+{
+  "version": "1.0",
+  "timestamp": "2025-01-15T12:00:00.000Z",
+  "projectName": "Salle_8x10_8Projecteurs",
+  "projectVersion": 1,
+  "projectors": [
+    {
+      "id": 1,
+      "modelId": "PowerLite L690SE",
+      "lensId": "SHORT-ZOOM",
+      "position": {
+        "x": -2.5,
+        "y": 2,
+        "z": -5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 0.5,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 0,
+      "softEdgeR": 20,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": -2.5,
+        "y": 2,
+        "z": 0
+      }
+    },
+    {
+      "id": 2,
+      "modelId": "PowerLite L690SE",
+      "lensId": "SHORT-ZOOM",
+      "position": {
+        "x": 2.5,
+        "y": 2,
+        "z": -5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 0.5,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 20,
+      "softEdgeR": 0,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": 2.5,
+        "y": 2,
+        "z": 0
+      }
+    },
+    {
+      "id": 3,
+      "modelId": "PowerLite L690SE",
+      "lensId": "SHORT-ZOOM",
+      "position": {
+        "x": 5,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": -1.5708,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 0.5,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 0,
+      "softEdgeR": 20,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": 0,
+        "y": 2,
+        "z": -2
+      }
+    },
+    {
+      "id": 4,
+      "modelId": "PowerLite L690SE",
+      "lensId": "SHORT-ZOOM",
+      "position": {
+        "x": 5,
+        "y": 2,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": -1.5708,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 0.5,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 20,
+      "softEdgeR": 0,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": 0,
+        "y": 2,
+        "z": 2
+      }
+    },
+    {
+      "id": 5,
+      "modelId": "PowerLite L690SE",
+      "lensId": "SHORT-ZOOM",
+      "position": {
+        "x": -5,
+        "y": 2,
+        "z": -2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1.5708,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 0.5,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 0,
+      "softEdgeR": 20,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": 0,
+        "y": 2,
+        "z": -2
+      }
+    },
+    {
+      "id": 6,
+      "modelId": "PowerLite L690SE",
+      "lensId": "SHORT-ZOOM",
+      "position": {
+        "x": -5,
+        "y": 2,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 1.5708,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 0.5,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 20,
+      "softEdgeR": 0,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": 0,
+        "y": 2,
+        "z": 2
+      }
+    },
+    {
+      "id": 7,
+      "modelId": "EB-L570U",
+      "lensId": "EPSON-L570U-FIXED",
+      "position": {
+        "x": -2.65,
+        "y": 2,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 3.14159,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 1.35,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 0,
+      "softEdgeR": 20,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": -2.65,
+        "y": 2,
+        "z": 0
+      }
+    },
+    {
+      "id": 8,
+      "modelId": "EB-L570U",
+      "lensId": "EPSON-L570U-FIXED",
+      "position": {
+        "x": 2.65,
+        "y": 2,
+        "z": 4
+      },
+      "rotation": {
+        "x": 0,
+        "y": 3.14159,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "throwRatio": 1.35,
+      "orientation": "landscape",
+      "intensity": 1,
+      "brightness": 50,
+      "contrast": 50,
+      "hue": 0,
+      "saturation": 50,
+      "keystoneTLX": 0,
+      "keystoneTLY": 0,
+      "keystoneTRX": 0,
+      "keystoneTRY": 0,
+      "keystoneBLX": 0,
+      "keystoneBLY": 0,
+      "keystoneBRX": 0,
+      "keystoneBRY": 0,
+      "softEdgeL": 20,
+      "softEdgeR": 0,
+      "softEdgeT": 0,
+      "softEdgeB": 0,
+      "contentType": "color",
+      "contentUrl": null,
+      "videoTime": 0,
+      "targetPosition": {
+        "x": 2.65,
+        "y": 2,
+        "z": 0
+      }
+    }
+  ],
+  "objects": [
+    {
+      "uuid": "room-floor",
+      "name": "Salle 8x10m",
+      "type": "Mesh",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "rotation": {
+        "x": -1.5708,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      "geometry": {
+        "type": "PlaneGeometry",
+        "parameters": {
+          "width": 10,
+          "height": 8
+        }
+      },
+      "material": {
+        "type": "MeshStandardMaterial",
+        "color": 2236962,
+        "opacity": 1,
+        "transparent": false
+      }
+    }
+  ],
+  "timeline": {
+    "duration": 30,
+    "currentTime": 0,
+    "fps": 30,
+    "layers": []
+  },
+  "camera": {
+    "position": {
+      "x": 0,
+      "y": 8,
+      "z": 12
+    },
+    "rotation": {
+      "x": -0.6,
+      "y": 0,
+      "z": 0
+    },
+    "fov": 50,
+    "near": 0.1,
+    "far": 1000
+  },
+  "scene": {
+    "background": null
+  }
+}

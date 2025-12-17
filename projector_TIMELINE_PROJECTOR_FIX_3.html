@@ -11919,14 +11919,243 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
     // Load project from JSON
     function loadProject(jsonData) {
         try {
-            // TODO: Implement full project loading
-            // This will restore all objects, projectors, timeline, etc.
             console.log('📂 Loading project...', jsonData);
 
-            // Clear current scene
-            // ... (to be implemented)
+            // 1. Clear current scene
+            // Remove all objects except ground and lights
+            const objectsToRemove = [];
+            scene.children.forEach(child => {
+                if (child !== ground && !child.isLight && child !== camera && child.type !== 'GridHelper') {
+                    objectsToRemove.push(child);
+                }
+            });
+            objectsToRemove.forEach(obj => scene.remove(obj));
 
-            showNotification('📂 Project loaded successfully', 'success');
+            // Clear arrays
+            selectableObjects.length = 0;
+            projectors.length = 0;
+            timeline.layers.length = 0;
+
+            // Deselect current object
+            if (selectedObject) {
+                selectObject(null);
+            }
+
+            // 2. Restore project metadata
+            currentProjectName = jsonData.projectName || 'project';
+            currentProjectVersion = jsonData.projectVersion || 0;
+
+            // 3. Restore projectors
+            if (jsonData.projectors && Array.isArray(jsonData.projectors)) {
+                jsonData.projectors.forEach(projData => {
+                    // Create projector instance
+                    const position = new THREE.Vector3(
+                        projData.position.x,
+                        projData.position.y,
+                        projData.position.z
+                    );
+
+                    const instance = createProjectorInstance(projData.modelId, position);
+
+                    // Restore rotation
+                    instance.group.rotation.set(
+                        projData.rotation.x,
+                        projData.rotation.y,
+                        projData.rotation.z
+                    );
+
+                    // Restore scale
+                    instance.group.scale.set(
+                        projData.scale.x,
+                        projData.scale.y,
+                        projData.scale.z
+                    );
+
+                    // Restore lens
+                    if (projData.lensId && projData.lensId !== instance.lensId) {
+                        instance.lensId = projData.lensId;
+                        instance.lens = LENSES[projData.lensId];
+                    }
+
+                    // Restore throw ratio
+                    if (projData.throwRatio !== undefined) {
+                        instance.throwRatio = projData.throwRatio;
+                    }
+
+                    // Restore orientation
+                    if (projData.orientation) {
+                        instance.orientation = projData.orientation;
+                    }
+
+                    // Restore intensity and color adjustments
+                    if (projData.intensity !== undefined) instance.intensity = projData.intensity;
+                    if (projData.brightness !== undefined) instance.brightness = projData.brightness;
+                    if (projData.contrast !== undefined) instance.contrast = projData.contrast;
+                    if (projData.hue !== undefined) instance.hue = projData.hue;
+                    if (projData.saturation !== undefined) instance.saturation = projData.saturation;
+
+                    // Restore keystone
+                    if (projData.keystoneTLX !== undefined) instance.keystoneTLX = projData.keystoneTLX;
+                    if (projData.keystoneTLY !== undefined) instance.keystoneTLY = projData.keystoneTLY;
+                    if (projData.keystoneTRX !== undefined) instance.keystoneTRX = projData.keystoneTRX;
+                    if (projData.keystoneTRY !== undefined) instance.keystoneTRY = projData.keystoneTRY;
+                    if (projData.keystoneBLX !== undefined) instance.keystoneBLX = projData.keystoneBLX;
+                    if (projData.keystoneBLY !== undefined) instance.keystoneBLY = projData.keystoneBLY;
+                    if (projData.keystoneBRX !== undefined) instance.keystoneBRX = projData.keystoneBRX;
+                    if (projData.keystoneBRY !== undefined) instance.keystoneBRY = projData.keystoneBRY;
+
+                    // Restore soft edge
+                    if (projData.softEdgeL !== undefined) instance.softEdgeL = projData.softEdgeL;
+                    if (projData.softEdgeR !== undefined) instance.softEdgeR = projData.softEdgeR;
+                    if (projData.softEdgeT !== undefined) instance.softEdgeT = projData.softEdgeT;
+                    if (projData.softEdgeB !== undefined) instance.softEdgeB = projData.softEdgeB;
+
+                    // Restore target position
+                    if (projData.targetPosition && instance.target) {
+                        instance.target.position.set(
+                            projData.targetPosition.x,
+                            projData.targetPosition.y,
+                            projData.targetPosition.z
+                        );
+                    }
+
+                    // Add to scene
+                    scene.add(instance.group);
+                    if (instance.target) scene.add(instance.target);
+                    if (instance.frustumHelper) scene.add(instance.frustumHelper);
+
+                    // Add to projectors array
+                    projectors.push(instance);
+
+                    // Update projector after all parameters are set
+                    updateProjector(instance);
+                });
+
+                // Set first projector as active
+                if (projectors.length > 0) {
+                    setActiveProjector(projectors[0]);
+                }
+            }
+
+            // 4. Restore 3D objects
+            if (jsonData.objects && Array.isArray(jsonData.objects)) {
+                jsonData.objects.forEach(objData => {
+                    let mesh = null;
+
+                    // Recreate geometry based on type
+                    if (objData.geometry) {
+                        let geometry = null;
+                        const params = objData.geometry.parameters || {};
+
+                        switch (objData.geometry.type) {
+                            case 'BoxGeometry':
+                                geometry = new THREE.BoxGeometry(
+                                    params.width || 1,
+                                    params.height || 1,
+                                    params.depth || 1
+                                );
+                                break;
+                            case 'SphereGeometry':
+                                geometry = new THREE.SphereGeometry(
+                                    params.radius || 1,
+                                    params.widthSegments || 32,
+                                    params.heightSegments || 16
+                                );
+                                break;
+                            case 'CylinderGeometry':
+                                geometry = new THREE.CylinderGeometry(
+                                    params.radiusTop || 1,
+                                    params.radiusBottom || 1,
+                                    params.height || 1,
+                                    params.radialSegments || 32
+                                );
+                                break;
+                            case 'PlaneGeometry':
+                                geometry = new THREE.PlaneGeometry(
+                                    params.width || 1,
+                                    params.height || 1
+                                );
+                                break;
+                            default:
+                                console.warn('Unknown geometry type:', objData.geometry.type);
+                                return;
+                        }
+
+                        // Recreate material
+                        let material = new THREE.MeshStandardMaterial();
+                        if (objData.material) {
+                            if (objData.material.color) {
+                                material.color.setHex(objData.material.color);
+                            }
+                            if (objData.material.opacity !== undefined) {
+                                material.opacity = objData.material.opacity;
+                            }
+                            if (objData.material.transparent !== undefined) {
+                                material.transparent = objData.material.transparent;
+                            }
+                        }
+
+                        // Create mesh
+                        mesh = new THREE.Mesh(geometry, material);
+                        mesh.castShadow = true;
+                        mesh.receiveShadow = true;
+
+                        // Restore transform
+                        mesh.position.set(
+                            objData.position.x,
+                            objData.position.y,
+                            objData.position.z
+                        );
+                        mesh.rotation.set(
+                            objData.rotation.x,
+                            objData.rotation.y,
+                            objData.rotation.z
+                        );
+                        mesh.scale.set(
+                            objData.scale.x,
+                            objData.scale.y,
+                            objData.scale.z
+                        );
+
+                        // Restore userData
+                        mesh.userData.name = objData.name || 'Object';
+                        mesh.uuid = objData.uuid;
+
+                        // Add to scene
+                        scene.add(mesh);
+                        selectableObjects.push(mesh);
+                    }
+                });
+            }
+
+            // 5. Restore camera
+            if (jsonData.camera) {
+                camera.position.set(
+                    jsonData.camera.position.x,
+                    jsonData.camera.position.y,
+                    jsonData.camera.position.z
+                );
+                camera.rotation.set(
+                    jsonData.camera.rotation.x,
+                    jsonData.camera.rotation.y,
+                    jsonData.camera.rotation.z
+                );
+                if (jsonData.camera.fov) camera.fov = jsonData.camera.fov;
+                camera.updateProjectionMatrix();
+            }
+
+            // 6. Restore timeline (basic - keyframes not implemented yet)
+            if (jsonData.timeline) {
+                timeline.duration = jsonData.timeline.duration || 30;
+                timeline.currentTime = jsonData.timeline.currentTime || 0;
+                timeline.fps = jsonData.timeline.fps || 30;
+            }
+
+            console.log('✅ Project loaded successfully');
+            console.log(`- ${projectors.length} projectors`);
+            console.log(`- ${selectableObjects.length} objects`);
+
+            showNotification('✅ Project loaded: ' + jsonData.projectName, 'success');
             return true;
         } catch (error) {
             console.error('❌ Load error:', error);
