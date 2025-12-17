@@ -12057,6 +12057,10 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
                 // Set first projector as active
                 if (projectors.length > 0) {
                     setActiveProjector(projectors[0]);
+                    // Select the first projector's mesh to show gizmo
+                    if (projectors[0].mesh) {
+                        selectObject(projectors[0].mesh);
+                    }
                 }
             }
 
