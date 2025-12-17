@@ -11974,6 +11974,9 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
 
                     const instance = createProjectorInstance(projData.modelId, position);
 
+                    // Create Three.js objects (group, mesh, camera, etc.)
+                    createProjectorObjects(instance, position);
+
                     // Check if instance was created successfully
                     if (!instance || !instance.group) {
                         console.error('Failed to create projector:', projData.modelId);
