@@ -4720,6 +4720,21 @@
             dimensions: '440×362×151 mm',
             defaultLens: 'SHORT-ZOOM',
             compatibleLenses: ['SHORT-ZOOM']
+        },
+        'EB-L570U': {
+            name: 'EB-L570U',
+            brand: 'Epson',
+            lumens: 5200,
+            resolution: 'WUXGA with 4K Enhancement (1920×1200)',
+            resolutionPixels: [1920, 1200],
+            aspect: 16/10,
+            chipSize: '0.76"',
+            type: '3LCD Laser',
+            contrast: '2,500,000:1',
+            weight: 7.9,
+            dimensions: '440×128×325 mm',
+            defaultLens: 'EPSON-L570U-FIXED',
+            compatibleLenses: ['EPSON-L570U-FIXED']
         }
     };
 
@@ -4750,6 +4765,7 @@
         'ELPLL08': { throwMin: 2.22, throwMax: 3.61, fixed: false, shiftV: [-96, 96], shiftH: [-47, 47], name: 'Long Throw' },
         // Epson fixed short-throw lenses
         'FIXED-ST': { throwMin: 0.80, throwMax: 0.80, fixed: true, shiftV: [-50, 50], shiftH: [-20, 20], name: 'Fixed Short Throw 0.80:1' },
+        'EPSON-L570U-FIXED': { throwMin: 1.35, throwMax: 2.20, fixed: false, shiftV: [-50, 50], shiftH: [-20, 20], name: 'Standard Zoom 1.35-2.20:1 (1.6x)' },
         'SHORT-ZOOM': { throwMin: 0.50, throwMax: 0.70, fixed: false, shiftV: [-50, 50], shiftH: [-20, 20], name: 'Short Throw Zoom 0.5-0.7:1' },
         // Barco lenses
         'R9801814': { throwMin: 0.36, throwMax: 0.36, fixed: true, shiftV: [-100, 100], shiftH: [-30, 30], name: 'UST' },
@@ -5861,7 +5877,7 @@
         }
         if (epsonShortThrow) {
             epsonShortThrow.innerHTML = '';
-            ['EB-L630SU', 'PowerLite L690SE', 'PowerLite L695SE'].forEach(model => {
+            ['EB-L630SU', 'EB-L570U', 'PowerLite L690SE', 'PowerLite L695SE'].forEach(model => {
                 epsonShortThrow.appendChild(createProjectorCard(model));
             });
         }
