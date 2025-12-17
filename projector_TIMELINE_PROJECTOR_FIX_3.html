@@ -11974,6 +11974,12 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
 
                     const instance = createProjectorInstance(projData.modelId, position);
 
+                    // Check if instance was created successfully
+                    if (!instance || !instance.group) {
+                        console.error('Failed to create projector:', projData.modelId);
+                        return;
+                    }
+
                     // Restore rotation
                     instance.group.rotation.set(
                         projData.rotation.x,
