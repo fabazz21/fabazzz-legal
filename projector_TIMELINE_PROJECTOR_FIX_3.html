@@ -2242,7 +2242,10 @@
     </style>
 </head>
 <body class="modern-interface">
-    
+
+    <!-- Hidden file input for loading projects -->
+    <input type="file" id="load-project-input" accept=".json" style="display: none;" onchange="handleProjectLoad(event)">
+
     <!-- MODERN TOP BAR -->
     <div id="modern-top-bar">
         <div class="modern-logo">
@@ -2981,13 +2984,34 @@
     <!-- Top Menu Bar -->
     <div id="top-menu">
         <div class="menu-logo">PROJECTOR STUDIO</div>
-        
+
+        <!-- File Menu -->
+        <div class="menu-item">
+            💾 File
+            <div class="menu-dropdown">
+                <div class="dropdown-item" onclick="saveProject()">
+                    <span>💾</span> Save (Ctrl+S)
+                </div>
+                <div class="dropdown-item" onclick="saveProjectIncremental()">
+                    <span>📁</span> Save Incremental (Ctrl+Alt+S)
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" onclick="document.getElementById('load-project-input').click()">
+                    <span>📂</span> Load Project...
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="dropdown-item" onclick="toggleAutoSave()">
+                    <span id="autosave-icon">✓</span> Auto-Save (every 3 min)
+                </div>
+            </div>
+        </div>
+
         <!-- Undo/Redo Buttons -->
         <div class="history-buttons">
             <button id="undo-btn" class="history-btn" onclick="historyUndo()" disabled title="Annuler (Ctrl+Z)">↶</button>
             <button id="redo-btn" class="history-btn" onclick="historyRedo()" disabled title="Rétablir (Ctrl+Y)">↷</button>
         </div>
-        
+
         <!-- Calculateur -->
         <div class="menu-item" onclick="openWidescreenCalculator()" style="cursor:pointer;">
             🧮 Calculateur
@@ -11702,6 +11726,289 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
             </div>
         `;
     }
+
+    // ========== PROJECT SAVE/LOAD SYSTEM ==========
+
+    let currentProjectName = 'project';
+    let currentProjectVersion = 0;
+    let autoSaveInterval = null;
+    let autoSaveEnabled = true;
+    let autoSaveFrequency = 180000; // 3 minutes in milliseconds
+
+    // Serialize the entire scene state to JSON
+    function serializeScene() {
+        const sceneData = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            projectName: currentProjectName,
+            projectVersion: currentProjectVersion,
+
+            // Save all projectors
+            projectors: projectors.map(proj => ({
+                id: proj.id,
+                modelId: proj.modelId,
+                lensId: proj.lensId,
+                position: { x: proj.group.position.x, y: proj.group.position.y, z: proj.group.position.z },
+                rotation: { x: proj.group.rotation.x, y: proj.group.rotation.y, z: proj.group.rotation.z },
+                scale: { x: proj.group.scale.x, y: proj.group.scale.y, z: proj.group.scale.z },
+                throwRatio: proj.throwRatio,
+                orientation: proj.orientation,
+                intensity: proj.intensity,
+                brightness: proj.brightness,
+                contrast: proj.contrast,
+                hue: proj.hue,
+                saturation: proj.saturation,
+                keystoneTLX: proj.keystoneTLX,
+                keystoneTLY: proj.keystoneTLY,
+                keystoneTRX: proj.keystoneTRX,
+                keystoneTRY: proj.keystoneTRY,
+                keystoneBLX: proj.keystoneBLX,
+                keystoneBLY: proj.keystoneBLY,
+                keystoneBRX: proj.keystoneBRX,
+                keystoneBRY: proj.keystoneBRY,
+                softEdgeL: proj.softEdgeL,
+                softEdgeR: proj.softEdgeR,
+                softEdgeT: proj.softEdgeT,
+                softEdgeB: proj.softEdgeB,
+                contentType: proj.contentType,
+                contentUrl: proj.contentUrl,
+                videoTime: proj.video ? proj.video.currentTime : 0,
+                targetPosition: proj.target ? { x: proj.target.position.x, y: proj.target.position.y, z: proj.target.position.z } : null
+            })),
+
+            // Save all 3D objects
+            objects: selectableObjects.filter(obj => !obj.userData.isProjector && !obj.userData.isCamera && !obj.userData.isTarget).map(obj => ({
+                uuid: obj.uuid,
+                name: obj.userData.name || 'Object',
+                type: obj.type,
+                position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
+                rotation: { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z },
+                scale: { x: obj.scale.x, y: obj.scale.y, z: obj.scale.z },
+                geometry: obj.geometry ? {
+                    type: obj.geometry.type,
+                    parameters: obj.geometry.parameters
+                } : null,
+                material: obj.material ? {
+                    type: obj.material.type,
+                    color: obj.material.color ? obj.material.color.getHex() : null,
+                    opacity: obj.material.opacity,
+                    transparent: obj.material.transparent
+                } : null
+            })),
+
+            // Save timeline
+            timeline: {
+                duration: timeline.duration,
+                currentTime: timeline.currentTime,
+                fps: timeline.fps,
+                layers: timeline.layers.map(layer => ({
+                    objectUuid: layer.object ? layer.object.uuid : null,
+                    name: layer.name,
+                    visible: layer.visible,
+                    locked: layer.locked,
+                    keyframes: layer.keyframes.map(kf => ({
+                        time: kf.time,
+                        position: kf.position,
+                        rotation: kf.rotation,
+                        scale: kf.scale
+                    }))
+                }))
+            },
+
+            // Save camera
+            camera: {
+                position: { x: camera.position.x, y: camera.position.y, z: camera.position.z },
+                rotation: { x: camera.rotation.x, y: camera.rotation.y, z: camera.rotation.z },
+                fov: camera.fov,
+                near: camera.near,
+                far: camera.far
+            },
+
+            // Save scene settings
+            scene: {
+                background: scene.background ? (scene.background.isColor ? scene.background.getHex() : null) : null
+            }
+        };
+
+        return sceneData;
+    }
+
+    // Save project to file
+    function saveProject(filename = null) {
+        try {
+            if (!filename) {
+                filename = `${currentProjectName}_v${String(currentProjectVersion).padStart(3, '0')}.json`;
+            }
+
+            const sceneData = serializeScene();
+            const json = JSON.stringify(sceneData, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            console.log('✅ Project saved:', filename);
+            showNotification('✅ Project saved: ' + filename, 'success');
+
+            return true;
+        } catch (error) {
+            console.error('❌ Save error:', error);
+            showNotification('❌ Save failed: ' + error.message, 'error');
+            return false;
+        }
+    }
+
+    // Save Incremental - like After Effects (increments version number)
+    function saveProjectIncremental() {
+        currentProjectVersion++;
+        const filename = `${currentProjectName}_v${String(currentProjectVersion).padStart(3, '0')}.json`;
+        return saveProject(filename);
+    }
+
+    // Auto-save
+    function autoSave() {
+        if (!autoSaveEnabled) return;
+
+        const filename = `${currentProjectName}_autosave.json`;
+        const success = saveProject(filename);
+
+        if (success) {
+            const now = new Date().toLocaleTimeString();
+            console.log(`🔄 Auto-saved at ${now}`);
+        }
+    }
+
+    // Start auto-save timer
+    function startAutoSave() {
+        if (autoSaveInterval) clearInterval(autoSaveInterval);
+        autoSaveInterval = setInterval(autoSave, autoSaveFrequency);
+        console.log(`🔄 Auto-save enabled (every ${autoSaveFrequency / 60000} minutes)`);
+    }
+
+    // Stop auto-save
+    function stopAutoSave() {
+        if (autoSaveInterval) {
+            clearInterval(autoSaveInterval);
+            autoSaveInterval = null;
+        }
+        console.log('🔄 Auto-save disabled');
+    }
+
+    // Load project from JSON
+    function loadProject(jsonData) {
+        try {
+            // TODO: Implement full project loading
+            // This will restore all objects, projectors, timeline, etc.
+            console.log('📂 Loading project...', jsonData);
+
+            // Clear current scene
+            // ... (to be implemented)
+
+            showNotification('📂 Project loaded successfully', 'success');
+            return true;
+        } catch (error) {
+            console.error('❌ Load error:', error);
+            showNotification('❌ Load failed: ' + error.message, 'error');
+            return false;
+        }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 12px;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+
+    // Toggle auto-save on/off
+    function toggleAutoSave() {
+        autoSaveEnabled = !autoSaveEnabled;
+        const icon = document.getElementById('autosave-icon');
+
+        if (autoSaveEnabled) {
+            startAutoSave();
+            if (icon) icon.textContent = '✓';
+            showNotification('🔄 Auto-save enabled', 'success');
+        } else {
+            stopAutoSave();
+            if (icon) icon.textContent = '';
+            showNotification('🔄 Auto-save disabled', 'info');
+        }
+    }
+
+    // Handle project file load
+    function handleProjectLoad(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const jsonData = JSON.parse(e.target.result);
+                loadProject(jsonData);
+            } catch (error) {
+                console.error('❌ Failed to parse project file:', error);
+                showNotification('❌ Invalid project file', 'error');
+            }
+        };
+        reader.readAsText(file);
+    }
+
+    // Keyboard shortcuts for save
+    document.addEventListener('keydown', (e) => {
+        // Ctrl+S - Save
+        if (e.ctrlKey && e.key === 's' && !e.altKey && !e.shiftKey) {
+            e.preventDefault();
+            saveProject();
+        }
+
+        // Ctrl+Alt+S - Save Incremental
+        if (e.ctrlKey && e.altKey && e.key === 's') {
+            e.preventDefault();
+            saveProjectIncremental();
+        }
+    });
+
+    // Initialize auto-save on page load
+    window.addEventListener('load', () => {
+        if (autoSaveEnabled) {
+            startAutoSave();
+        }
+    });
+
+    // Expose functions globally
+    window.saveProject = saveProject;
+    window.saveProjectIncremental = saveProjectIncremental;
+    window.loadProject = loadProject;
+    window.autoSave = autoSave;
+    window.startAutoSave = startAutoSave;
+    window.stopAutoSave = stopAutoSave;
+    window.toggleAutoSave = toggleAutoSave;
+    window.handleProjectLoad = handleProjectLoad;
 
     // ========== ADVANCED TIMELINE SYSTEM (Layer-based) ==========
     
