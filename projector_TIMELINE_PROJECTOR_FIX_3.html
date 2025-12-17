@@ -2254,10 +2254,21 @@
         </div>
         
         <!-- Calculator Button (avant tabs) -->
-        <button class="btn-modern btn-modern-secondary" onclick="openWidescreenCalculator()" style="margin-right: 20px; font-size: 11px;">
+        <button class="btn-modern btn-modern-secondary" onclick="openWidescreenCalculator()" style="margin-right: 12px; font-size: 11px;">
             🧮 Calc
         </button>
-        
+
+        <!-- Save/Load Buttons -->
+        <button class="btn-modern btn-modern-primary" onclick="saveProject()" title="Save Project (Ctrl+S)" style="margin-right: 8px; font-size: 11px; background: var(--primary); color: white;">
+            💾 Save
+        </button>
+        <button class="btn-modern btn-modern-secondary" onclick="saveProjectIncremental()" title="Save Incremental (Ctrl+Alt+S)" style="margin-right: 8px; font-size: 11px;">
+            📁 Save+
+        </button>
+        <button class="btn-modern btn-modern-secondary" onclick="document.getElementById('load-project-input').click()" title="Load Project" style="margin-right: 20px; font-size: 11px;">
+            📂 Load
+        </button>
+
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="switchTab('setup')">Setup</button>
             <button class="nav-tab" onclick="switchTab('calibration')">Calibration</button>
@@ -12235,6 +12246,70 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
         if (e.ctrlKey && e.altKey && e.key === 's') {
             e.preventDefault();
             saveProjectIncremental();
+        }
+    });
+
+    // Drag and Drop support for loading projects
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropZone = document.body;
+
+        // Prevent default drag behaviors
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // Highlight drop zone when item is dragged over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            dropZone.style.outline = '3px dashed var(--primary)';
+            dropZone.style.outlineOffset = '-10px';
+        }
+
+        function unhighlight(e) {
+            dropZone.style.outline = '';
+            dropZone.style.outlineOffset = '';
+        }
+
+        // Handle dropped files
+        dropZone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length > 0) {
+                const file = files[0];
+
+                // Check if it's a JSON file
+                if (file.name.endsWith('.json')) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const jsonData = JSON.parse(e.target.result);
+                            loadProject(jsonData);
+                        } catch (error) {
+                            console.error('❌ Failed to parse project file:', error);
+                            showNotification('❌ Invalid project file', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                } else {
+                    showNotification('⚠️ Please drop a .json file', 'error');
+                }
+            }
         }
     });
 
