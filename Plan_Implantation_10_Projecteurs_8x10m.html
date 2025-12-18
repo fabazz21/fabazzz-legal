@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan d'Implantation - SALLE 8×10m - 10 Projecteurs</title>
+    <style>
+        @page { size: A4; margin: 15mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #222; background: white; padding: 20px; max-width: 210mm; margin: 0 auto; }
+        h1 { color: #d32f2f; border-bottom: 4px solid #d32f2f; padding-bottom: 10px; margin-bottom: 20px; font-size: 24pt; }
+        h2 { color: #1976d2; margin-top: 25px; margin-bottom: 15px; font-size: 16pt; border-left: 5px solid #1976d2; padding-left: 10px; }
+        .header-info { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #d32f2f; }
+        .header-info p { margin: 5px 0; font-size: 11pt; }
+        .header-info strong { color: #d32f2f; min-width: 150px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 9pt; page-break-inside: avoid; }
+        thead { background: #1976d2; color: white; }
+        th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #f57c00; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-box h4 { color: #e65100; margin-bottom: 8px; font-size: 11pt; }
+        .info-box { background: #e1f5fe; border-left: 5px solid #0288d1; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .info-box h4 { color: #0277bd; margin-bottom: 8px; font-size: 11pt; }
+        .info-box ul { margin-left: 20px; font-size: 9pt; }
+        .coord { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 9pt; }
+        .schematic { background: #263238; color: #00ff00; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 8pt; line-height: 1.4; margin: 20px 0; white-space: pre; overflow-x: auto; }
+        @media print { .print-instruction { display: none; } }
+        .print-instruction { background: #4caf50; color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; font-weight: 600; font-size: 11pt; }
+    </style>
+</head>
+<body>
+    <div class="print-instruction">📄 Pour générer le PDF: <strong>Ctrl+P</strong> → Enregistrer au format PDF</div>
+
+    <h1>📽️ Plan d'Implantation - Salle 8m×10m - 10 Projecteurs</h1>
+
+    <div class="header-info">
+        <p><strong>Salle:</strong> 8m (largeur) × 10m (longueur) × 4m (hauteur)</p>
+        <p><strong>Projecteurs:</strong> 6× Epson L690SE + 4× Epson L570U</p>
+        <p><strong>Hauteur montage:</strong> 3.50m (plafond)</p>
+        <p><strong>Configuration:</strong> Panoramique 360° - Couverture TOTALE 3.5m hauteur</p>
+        <p><strong>Soft Edge:</strong> 60.7% sur murs 10m, 57% sur murs 8m</p>
+    </div>
+
+    <h2>📐 Schéma de la Salle</h2>
+
+    <div class="schematic">
+                           NORD (10m)
+           ╔═══════════════════════════════════════╗
+           ║    [P7]  ←60%→  [P8]  ←60%→  [P9]    ║
+           ║       ↓           ↓           ↓       ║
+           ║                                       ║
+   OUEST   ║   [P5]                                ║   EST
+   (8m)    ║     →                                 ║   (8m)
+    ║      ║   [P6]          CENTRE          [P3]  ║     ║
+           ║     →                             ←   ║
+           ║                                  [P4] ║
+           ║                                    ←  ║
+           ║       ↑           ↑           ↑       ║
+           ║    [P1]  ←60%→  [P2] ←60%→  [P10]    ║
+           ╚═══════════════════════════════════════╝
+                           SUD (10m)
+
+Légende: [PX] = Projecteur Y=3.5m | ← → = Direction projection
+         60% / 57% = Zone soft edge overlap
+    </div>
+
+    <h2>🎯 Configuration Matérielle</h2>
+
+    <table>
+        <thead>
+            <tr><th>Quantité</th><th>Matériel</th><th>Spécifications</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>6×</strong></td>
+                <td>Epson L690SE</td>
+                <td>6000 lm, WUXGA (1920×1200), 0.50-0.70:1</td>
+                <td>Murs 10m (3 par mur)</td>
+            </tr>
+            <tr>
+                <td><strong>4×</strong></td>
+                <td>Epson L570U</td>
+                <td>5200 lm, WUXGA (1920×1200), 1.35-2.20:1</td>
+                <td>Murs 8m (2 par mur)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>📊 Tableau Récapitulatif des Projecteurs</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Proj</th>
+                <th>Modèle</th>
+                <th>Mur</th>
+                <th>Position (X,Y,Z)</th>
+                <th>Recul</th>
+                <th>Image L×H</th>
+                <th>Ratio</th>
+                <th>Soft Edge</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>P1</strong></td><td>L690SE</td><td>SUD-G</td><td class="coord">(-2.8, 3.5, +6.75)</td><td>3.25m</td><td>5.6×3.5m</td><td>0.58:1</td><td>Droite 60.7%</td></tr>
+            <tr><td><strong>P2</strong></td><td>L690SE</td><td>SUD-C</td><td class="coord">(0, 3.5, +6.75)</td><td>3.25m</td><td>5.6×3.5m</td><td>0.58:1</td><td>G+D 60.7%</td></tr>
+            <tr><td><strong>P10</strong></td><td>L690SE</td><td>SUD-D</td><td class="coord">(+2.8, 3.5, +6.75)</td><td>3.25m</td><td>5.6×3.5m</td><td>0.58:1</td><td>Gauche 60.7%</td></tr>
+            <tr><td><strong>P7</strong></td><td>L690SE</td><td>NORD-G</td><td class="coord">(-2.8, 3.5, -6.75)</td><td>3.25m</td><td>5.6×3.5m</td><td>0.58:1</td><td>Droite 60.7%</td></tr>
+            <tr><td><strong>P8</strong></td><td>L690SE</td><td>NORD-C</td><td class="coord">(0, 3.5, -6.75)</td><td>3.25m</td><td>5.6×3.5m</td><td>0.58:1</td><td>G+D 60.7%</td></tr>
+            <tr><td><strong>P9</strong></td><td>L690SE</td><td>NORD-D</td><td class="coord">(+2.8, 3.5, -6.75)</td><td>3.25m</td><td>5.6×3.5m</td><td>0.58:1</td><td>Gauche 60.7%</td></tr>
+            <tr><td><strong>P3</strong></td><td>L570U</td><td>EST-H</td><td class="coord">(+1.2, 3.5, +3.44)</td><td>7.56m</td><td>5.6×3.5m</td><td>1.35:1</td><td>Haut 57%</td></tr>
+            <tr><td><strong>P4</strong></td><td>L570U</td><td>EST-B</td><td class="coord">(+1.2, 3.5, -3.44)</td><td>7.56m</td><td>5.6×3.5m</td><td>1.35:1</td><td>Bas 57%</td></tr>
+            <tr><td><strong>P5</strong></td><td>L570U</td><td>OUEST-H</td><td class="coord">(-1.2, 3.5, +3.44)</td><td>7.56m</td><td>5.6×3.5m</td><td>1.35:1</td><td>Haut 57%</td></tr>
+            <tr><td><strong>P6</strong></td><td>L570U</td><td>OUEST-B</td><td class="coord">(-1.2, 3.5, -3.44)</td><td>7.56m</td><td>5.6×3.5m</td><td>1.35:1</td><td>Bas 57%</td></tr>
+        </tbody>
+    </table>
+
+    <div class="warning-box">
+        <h4>⚠️ POINTS CRITIQUES - Overlap Élevé</h4>
+        <ul style="margin-left:20px;font-size:9pt;">
+            <li><strong>Murs 10m:</strong> Overlap 60.7% (3.4m) entre chaque projecteur - nécessaire pour couverture totale 3.5m</li>
+            <li><strong>Murs 8m:</strong> Overlap 57% (3.2m) entre les 2 projecteurs - couverture complète garantie</li>
+            <li><strong>Perte de résolution:</strong> Zones overlap utilisent pixels de 2 projecteurs superposés</li>
+            <li><strong>Blending obligatoire:</strong> Calibration soft edge précise indispensable pour raccords invisibles</li>
+            <li><strong>Lens Shift:</strong> -50% vertical sur TOUS les projecteurs (image de 0m à 3.5m)</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>📺 Résolution et Couverture</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Mur SUD (10m):</strong> 3 proj × 1920px - overlap 60.7% = ~3,172 × 1,200 px effectifs</li>
+            <li><strong>Mur NORD (10m):</strong> 3 proj × 1920px - overlap 60.7% = ~3,172 × 1,200 px effectifs</li>
+            <li><strong>Mur EST (8m):</strong> 2 proj × 1920px - overlap 57% = ~3,456 × 1,200 px effectifs</li>
+            <li><strong>Mur OUEST (8m):</strong> 2 proj × 1920px - overlap 57% = ~3,456 × 1,200 px effectifs</li>
+            <li><strong>TOTAL panoramique:</strong> ~13,256 × 1,200 pixels effectifs (après blending)</li>
+            <li><strong>Couverture hauteur:</strong> 3.5m (0m à 3.5m) = 87.5% du mur</li>
+            <li><strong>Gap plafond:</strong> 0.5m non couvert (de 3.5m à 4m)</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>🔧 Notes d'Installation</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Fixation:</strong> 10 supports plafond robustes à 3.50m</li>
+            <li><strong>Reculs mixtes:</strong> L690SE à 3.25m, L570U à 7.56m des murs</li>
+            <li><strong>Lens Shift:</strong> -50% vertical OBLIGATOIRE sur tous projecteurs</li>
+            <li><strong>Soft Edge:</strong> Calibration haute précision requise (overlaps >50%)</li>
+            <li><strong>Alimentation:</strong> 10 prises 230V/16A dédiées</li>
+            <li><strong>Réseau:</strong> Switch Gigabit 12 ports minimum</li>
+            <li><strong>Logiciel:</strong> Blending via Epson Edge Blending ou logiciel tiers</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 40px; text-align: center; color: #666; font-size: 9pt; border-top: 2px solid #ddd; padding-top: 20px;">
+        <p><strong>Plan d'Implantation - Salle 8m×10m - 10 Projecteurs Epson</strong></p>
+        <p>Couverture panoramique 360° avec hauteur 3.5m garantie | Soft edge 57-60.7%</p>
+        <p>Document généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
+    </div>
+</body>
+</html>

@@ -2,611 +2,208 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan d'Implantation - 6 Projecteurs NEC - Salle 8×5m</title>
+    <title>Plan d'Implantation - SALLE 8×5m - 6 NEC - Overlap 57%</title>
     <style>
-        @page {
-            size: A4;
-            margin: 15mm;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #222;
-            background: white;
-            padding: 20px;
-            max-width: 210mm;
-            margin: 0 auto;
-        }
-
-        h1 {
-            color: #d32f2f;
-            border-bottom: 4px solid #d32f2f;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-            font-size: 24pt;
-        }
-
-        h2 {
-            color: #1976d2;
-            margin-top: 25px;
-            margin-bottom: 15px;
-            font-size: 16pt;
-            border-left: 5px solid #1976d2;
-            padding-left: 10px;
-        }
-
-        h3 {
-            color: #455a64;
-            margin-top: 15px;
-            margin-bottom: 10px;
-            font-size: 13pt;
-        }
-
-        .header-info {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-left: 5px solid #d32f2f;
-        }
-
-        .header-info p {
-            margin: 5px 0;
-            font-size: 11pt;
-        }
-
-        .header-info strong {
-            color: #d32f2f;
-            min-width: 150px;
-            display: inline-block;
-        }
-
-        .schematic {
-            background: #263238;
-            color: #00ff00;
-            padding: 20px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 9pt;
-            line-height: 1.4;
-            margin: 20px 0;
-            overflow-x: auto;
-            white-space: pre;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 9pt;
-            page-break-inside: avoid;
-        }
-
-        thead {
-            background: #1976d2;
-            color: white;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        th {
-            font-weight: 600;
-            font-size: 9pt;
-        }
-
-        tbody tr:nth-child(even) {
-            background: #f8f9fa;
-        }
-
-        tbody tr:hover {
-            background: #e3f2fd;
-        }
-
-        .projector-card {
-            background: white;
-            border: 2px solid #1976d2;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-            page-break-inside: avoid;
-        }
-
-        .projector-card h3 {
-            color: #1976d2;
-            margin: 0 0 10px 0;
-            font-size: 12pt;
-        }
-
-        .projector-card .specs {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            font-size: 9pt;
-        }
-
-        .projector-card .spec-item {
-            padding: 5px;
-            background: #f8f9fa;
-            border-radius: 4px;
-        }
-
-        .projector-card .spec-label {
-            font-weight: 600;
-            color: #455a64;
-            display: inline-block;
-            min-width: 110px;
-        }
-
-        .info-box {
-            background: #e1f5fe;
-            border-left: 5px solid #0288d1;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-            page-break-inside: avoid;
-        }
-
-        .info-box h4 {
-            color: #0277bd;
-            margin-bottom: 8px;
-            font-size: 11pt;
-        }
-
-        .info-box ul {
-            margin-left: 20px;
-            font-size: 9pt;
-        }
-
-        .info-box li {
-            margin: 5px 0;
-        }
-
-        .warning-box {
-            background: #fff3e0;
-            border-left: 5px solid #f57c00;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 4px;
-            page-break-inside: avoid;
-        }
-
-        .warning-box h4 {
-            color: #e65100;
-            margin-bottom: 8px;
-            font-size: 11pt;
-        }
-
-        .resolution-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            page-break-inside: avoid;
-        }
-
-        .resolution-summary h3 {
-            color: white;
-            font-size: 14pt;
-            margin-bottom: 10px;
-        }
-
-        .resolution-summary .big-number {
-            font-size: 28pt;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .print-instruction {
-            background: #4caf50;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            margin: 20px 0;
-            font-weight: 600;
-            font-size: 11pt;
-        }
-
-        @media print {
-            body {
-                padding: 0;
-            }
-
-            .print-instruction {
-                display: none;
-            }
-
-            .page-break {
-                page-break-before: always;
-            }
-        }
-
-        .coord {
-            font-family: 'Courier New', monospace;
-            background: #f5f5f5;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-size: 9pt;
-        }
+        @page { size: A4; margin: 15mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #222; background: white; padding: 20px; max-width: 210mm; margin: 0 auto; }
+        h1 { color: #d32f2f; border-bottom: 4px solid #d32f2f; padding-bottom: 10px; margin-bottom: 20px; font-size: 24pt; }
+        h2 { color: #1976d2; margin-top: 25px; margin-bottom: 15px; font-size: 16pt; border-left: 5px solid #1976d2; padding-left: 10px; }
+        .header-info { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #d32f2f; }
+        .header-info p { margin: 5px 0; font-size: 11pt; }
+        .header-info strong { color: #d32f2f; min-width: 150px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 9pt; page-break-inside: avoid; }
+        thead { background: #1976d2; color: white; }
+        th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #f57c00; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-box h4 { color: #e65100; margin-bottom: 8px; font-size: 11pt; }
+        .info-box { background: #e1f5fe; border-left: 5px solid #0288d1; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .info-box h4 { color: #0277bd; margin-bottom: 8px; font-size: 11pt; }
+        .info-box ul { margin-left: 20px; font-size: 9pt; }
+        .coord { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 9pt; }
+        .schematic { background: #263238; color: #00ff00; padding: 20px; border-radius: 8px; font-family: 'Courier New', monospace; font-size: 9pt; line-height: 1.4; margin: 20px 0; white-space: pre; overflow-x: auto; }
+        @media print { .print-instruction { display: none; } }
+        .print-instruction { background: #4caf50; color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; font-weight: 600; font-size: 11pt; }
     </style>
 </head>
 <body>
-    <div class="print-instruction">
-        📄 Pour générer le PDF: <strong>Ctrl+P</strong> (ou Cmd+P) → Enregistrer au format PDF
-    </div>
+    <div class="print-instruction">📄 Pour générer le PDF: <strong>Ctrl+P</strong> → Enregistrer au format PDF</div>
 
-    <h1>📽️ Plan d'Implantation - 6 Projecteurs NEC</h1>
+    <h1>📽️ Plan d'Implantation - 6 Projecteurs NEC - COUVERTURE TOTALE 3.5m</h1>
 
     <div class="header-info">
         <p><strong>Salle:</strong> 8m (largeur) × 5m (profondeur) × 4m (hauteur)</p>
         <p><strong>Projecteurs:</strong> 6× NEC NP-PX803UL (8000 lumens, WUXGA 1920×1200)</p>
         <p><strong>Objectifs:</strong> NP31ZL - Ultra Court Zoom 0.75-0.93:1</p>
         <p><strong>Hauteur montage:</strong> 3.50m (plafond)</p>
-        <p><strong>Configuration:</strong> Panoramique 360° (2+2+1+1)</p>
-        <p><strong>Soft Edge:</strong> 20% sur murs de 8m</p>
-        <p><strong>Date:</strong> <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
+        <p><strong>Configuration:</strong> Panoramique 360° - Couverture TOTALE 3.5m</p>
+        <p><strong>Soft Edge:</strong> 57% (3.2m) sur murs 8m pour coverage complète</p>
     </div>
 
-    <h2>📐 Schéma de la Salle (Vue de Dessus)</h2>
+    <h2>📐 Schéma de la Salle</h2>
 
     <div class="schematic">
                         NORD (8m)
            ╔═════════════════════════════════╗
-           ║     [P3]  ←→  [P4]              ║
-           ║       ↓   20%   ↓               ║
+           ║     [P3]  ←57%→  [P4]           ║
+           ║       ↓           ↓             ║
            ║                                 ║
    OUEST   ║                                 ║   EST
    (5m)    ║  [P5] →              ← [P6]    ║   (5m)
     ║      ║                                 ║     ║
-           ║       ↑   20%   ↑               ║
-           ║     [P1]  ←→  [P2]              ║
+           ║       ↑           ↑             ║
+           ║     [P1]  ←57%→  [P2]           ║
            ╚═════════════════════════════════╝
                         SUD (8m)
 
-Légende:
-  [PX]   = Projecteur (hauteur 3.5m - plafond)
-  ←→     = Zone soft edge 20% overlap
-  ↓/↑/←/→ = Direction de projection
-
-Système de coordonnées:
-  • Centre salle: (0, 0, 0)
-  • X: -4m (Ouest) ←→ +4m (Est)
-  • Z: -2.5m (Sud) ←→ +2.5m (Nord)
-  • Y: 0m (Sol) ↕ 4m (Plafond) | Projecteurs à Y=3.5m
+Légende: [PX] = Projecteur Y=3.5m | ← → = Direction
+         57% = Zone soft edge overlap (3.2m)
     </div>
 
-    <h2>🎯 Configuration Matérielle</h2>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Quantité</th>
-                <th>Matériel</th>
-                <th>Spécifications</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>6×</strong></td>
-                <td>NEC NP-PX803UL</td>
-                <td>8000 lumens, WUXGA (1920×1200), DLP Laser, 10,000:1 contrast</td>
-            </tr>
-            <tr>
-                <td><strong>6×</strong></td>
-                <td>Objectif NP31ZL</td>
-                <td>Ultra Court Zoom 0.75-0.93:1, Lens Shift ±50%V/±15%H</td>
-            </tr>
-            <tr>
-                <td><strong>6×</strong></td>
-                <td>Support plafond</td>
-                <td>Compatible NEC, charge 28kg, hauteur montage 3.50m</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>📊 Tableau Récapitulatif des Projecteurs</h2>
+    <h2>📊 Configuration des Projecteurs</h2>
 
     <table>
         <thead>
             <tr>
                 <th>Proj</th>
-                <th>Mur Cible</th>
-                <th>Position (X, Y, Z)</th>
-                <th>Rotation Y</th>
+                <th>Mur</th>
+                <th>Position (X,Y,Z)</th>
                 <th>Recul</th>
                 <th>Image L×H</th>
                 <th>Ratio</th>
                 <th>Lens Shift V</th>
                 <th>Soft Edge</th>
+                <th>Coverage X</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td><strong>P1</strong></td>
-                <td>SUD-Gauche</td>
-                <td class="coord">(-1.78, 3.5, +1.5)</td>
-                <td>0°</td>
-                <td>4.0m</td>
-                <td>4.44×2.78m</td>
-                <td>0.90:1</td>
-                <td>-44%</td>
-                <td>R:20%</td>
+                <td>SUD-G</td>
+                <td class="coord">(-1.2, 3.5, +1.7)</td>
+                <td>4.2m</td>
+                <td>5.6×3.5m</td>
+                <td>0.75:1</td>
+                <td>-50%</td>
+                <td>Droite 57%</td>
+                <td>-4.0 → +1.6m</td>
             </tr>
             <tr>
                 <td><strong>P2</strong></td>
-                <td>SUD-Droite</td>
-                <td class="coord">(+1.78, 3.5, +1.5)</td>
-                <td>0°</td>
-                <td>4.0m</td>
-                <td>4.44×2.78m</td>
-                <td>0.90:1</td>
-                <td>-44%</td>
-                <td>L:20%</td>
+                <td>SUD-D</td>
+                <td class="coord">(+1.2, 3.5, +1.7)</td>
+                <td>4.2m</td>
+                <td>5.6×3.5m</td>
+                <td>0.75:1</td>
+                <td>-50%</td>
+                <td>Gauche 57%</td>
+                <td>-1.6 → +4.0m</td>
             </tr>
             <tr>
                 <td><strong>P3</strong></td>
-                <td>NORD-Gauche</td>
-                <td class="coord">(-1.78, 3.5, -1.5)</td>
-                <td>180°</td>
-                <td>4.0m</td>
-                <td>4.44×2.78m</td>
-                <td>0.90:1</td>
-                <td>-44%</td>
-                <td>R:20%</td>
+                <td>NORD-G</td>
+                <td class="coord">(-1.2, 3.5, -1.7)</td>
+                <td>4.2m</td>
+                <td>5.6×3.5m</td>
+                <td>0.75:1</td>
+                <td>-50%</td>
+                <td>Droite 57%</td>
+                <td>-4.0 → +1.6m</td>
             </tr>
             <tr>
                 <td><strong>P4</strong></td>
-                <td>NORD-Droite</td>
-                <td class="coord">(+1.78, 3.5, -1.5)</td>
-                <td>180°</td>
-                <td>4.0m</td>
-                <td>4.44×2.78m</td>
-                <td>0.90:1</td>
-                <td>-44%</td>
-                <td>L:20%</td>
+                <td>NORD-D</td>
+                <td class="coord">(+1.2, 3.5, -1.7)</td>
+                <td>4.2m</td>
+                <td>5.6×3.5m</td>
+                <td>0.75:1</td>
+                <td>-50%</td>
+                <td>Gauche 57%</td>
+                <td>-1.6 → +4.0m</td>
             </tr>
             <tr>
                 <td><strong>P5</strong></td>
                 <td>OUEST</td>
                 <td class="coord">(+0.5, 3.5, 0)</td>
-                <td>+90°</td>
                 <td>4.5m</td>
                 <td>5.0×3.125m</td>
                 <td>0.90:1</td>
                 <td>-50%</td>
                 <td>-</td>
+                <td>Z: -2.5 → +2.5m</td>
             </tr>
             <tr>
                 <td><strong>P6</strong></td>
                 <td>EST</td>
                 <td class="coord">(-0.5, 3.5, 0)</td>
-                <td>-90°</td>
                 <td>4.5m</td>
                 <td>5.0×3.125m</td>
                 <td>0.90:1</td>
                 <td>-50%</td>
                 <td>-</td>
+                <td>Z: -2.5 → +2.5m</td>
             </tr>
         </tbody>
     </table>
-
-    <h2>🎬 Configuration Détaillée par Projecteur</h2>
-
-    <div class="projector-card">
-        <h3>Projecteur P1 - SUD Gauche</h3>
-        <div class="specs">
-            <div class="spec-item"><span class="spec-label">Position:</span> X=-1.78m, Y=3.5m, Z=+1.5m</div>
-            <div class="spec-item"><span class="spec-label">Rotation:</span> 0° (face SUD)</div>
-            <div class="spec-item"><span class="spec-label">Recul:</span> 4.0m (depuis mur SUD)</div>
-            <div class="spec-item"><span class="spec-label">Image:</span> 4.44m × 2.78m</div>
-            <div class="spec-item"><span class="spec-label">Couverture:</span> X=-4.0m à X=+0.44m</div>
-            <div class="spec-item"><span class="spec-label">Hauteur image:</span> Y=0.72m à Y=3.50m</div>
-            <div class="spec-item"><span class="spec-label">Lens Shift:</span> Vertical -44% (1.39m vers bas)</div>
-            <div class="spec-item"><span class="spec-label">Soft Edge:</span> Droite 20% (0.89m)</div>
-            <div class="spec-item"><span class="spec-label">Résolution:</span> 1920 × 1200 px</div>
-            <div class="spec-item"><span class="spec-label">Densité:</span> 432 px/m</div>
-        </div>
-    </div>
-
-    <div class="projector-card">
-        <h3>Projecteur P2 - SUD Droite</h3>
-        <div class="specs">
-            <div class="spec-item"><span class="spec-label">Position:</span> X=+1.78m, Y=3.5m, Z=+1.5m</div>
-            <div class="spec-item"><span class="spec-label">Rotation:</span> 0° (face SUD)</div>
-            <div class="spec-item"><span class="spec-label">Recul:</span> 4.0m (depuis mur SUD)</div>
-            <div class="spec-item"><span class="spec-label">Image:</span> 4.44m × 2.78m</div>
-            <div class="spec-item"><span class="spec-label">Couverture:</span> X=-0.44m à X=+4.0m</div>
-            <div class="spec-item"><span class="spec-label">Hauteur image:</span> Y=0.72m à Y=3.50m</div>
-            <div class="spec-item"><span class="spec-label">Lens Shift:</span> Vertical -44% (1.39m vers bas)</div>
-            <div class="spec-item"><span class="spec-label">Soft Edge:</span> Gauche 20% (0.89m)</div>
-            <div class="spec-item"><span class="spec-label">Résolution:</span> 1920 × 1200 px</div>
-            <div class="spec-item"><span class="spec-label">Densité:</span> 432 px/m</div>
-        </div>
-    </div>
-
-    <div class="projector-card">
-        <h3>Projecteur P3 - NORD Gauche</h3>
-        <div class="specs">
-            <div class="spec-item"><span class="spec-label">Position:</span> X=-1.78m, Y=3.5m, Z=-1.5m</div>
-            <div class="spec-item"><span class="spec-label">Rotation:</span> 180° (face NORD)</div>
-            <div class="spec-item"><span class="spec-label">Recul:</span> 4.0m (depuis mur NORD)</div>
-            <div class="spec-item"><span class="spec-label">Image:</span> 4.44m × 2.78m</div>
-            <div class="spec-item"><span class="spec-label">Couverture:</span> X=-4.0m à X=+0.44m</div>
-            <div class="spec-item"><span class="spec-label">Hauteur image:</span> Y=0.72m à Y=3.50m</div>
-            <div class="spec-item"><span class="spec-label">Lens Shift:</span> Vertical -44% (1.39m vers bas)</div>
-            <div class="spec-item"><span class="spec-label">Soft Edge:</span> Droite 20% (0.89m)</div>
-            <div class="spec-item"><span class="spec-label">Résolution:</span> 1920 × 1200 px</div>
-            <div class="spec-item"><span class="spec-label">Densité:</span> 432 px/m</div>
-        </div>
-    </div>
-
-    <div class="projector-card">
-        <h3>Projecteur P4 - NORD Droite</h3>
-        <div class="specs">
-            <div class="spec-item"><span class="spec-label">Position:</span> X=+1.78m, Y=3.5m, Z=-1.5m</div>
-            <div class="spec-item"><span class="spec-label">Rotation:</span> 180° (face NORD)</div>
-            <div class="spec-item"><span class="spec-label">Recul:</span> 4.0m (depuis mur NORD)</div>
-            <div class="spec-item"><span class="spec-label">Image:</span> 4.44m × 2.78m</div>
-            <div class="spec-item"><span class="spec-label">Couverture:</span> X=-0.44m à X=+4.0m</div>
-            <div class="spec-item"><span class="spec-label">Hauteur image:</span> Y=0.72m à Y=3.50m</div>
-            <div class="spec-item"><span class="spec-label">Lens Shift:</span> Vertical -44% (1.39m vers bas)</div>
-            <div class="spec-item"><span class="spec-label">Soft Edge:</span> Gauche 20% (0.89m)</div>
-            <div class="spec-item"><span class="spec-label">Résolution:</span> 1920 × 1200 px</div>
-            <div class="spec-item"><span class="spec-label">Densité:</span> 432 px/m</div>
-        </div>
-    </div>
-
-    <div class="projector-card">
-        <h3>Projecteur P5 - OUEST</h3>
-        <div class="specs">
-            <div class="spec-item"><span class="spec-label">Position:</span> X=+0.5m, Y=3.5m, Z=0m</div>
-            <div class="spec-item"><span class="spec-label">Rotation:</span> +90° (face OUEST)</div>
-            <div class="spec-item"><span class="spec-label">Recul:</span> 4.5m (depuis mur OUEST)</div>
-            <div class="spec-item"><span class="spec-label">Image:</span> 5.0m × 3.125m</div>
-            <div class="spec-item"><span class="spec-label">Couverture:</span> Z=-2.5m à Z=+2.5m (pleine)</div>
-            <div class="spec-item"><span class="spec-label">Hauteur image:</span> Y=0.38m à Y=3.50m</div>
-            <div class="spec-item"><span class="spec-label">Lens Shift:</span> Vertical -50% (1.56m vers bas)</div>
-            <div class="spec-item"><span class="spec-label">Soft Edge:</span> Aucun</div>
-            <div class="spec-item"><span class="spec-label">Résolution:</span> 1920 × 1200 px</div>
-            <div class="spec-item"><span class="spec-label">Densité:</span> 384 px/m</div>
-        </div>
-    </div>
-
-    <div class="projector-card">
-        <h3>Projecteur P6 - EST</h3>
-        <div class="specs">
-            <div class="spec-item"><span class="spec-label">Position:</span> X=-0.5m, Y=3.5m, Z=0m</div>
-            <div class="spec-item"><span class="spec-label">Rotation:</span> -90° (face EST)</div>
-            <div class="spec-item"><span class="spec-label">Recul:</span> 4.5m (depuis mur EST)</div>
-            <div class="spec-item"><span class="spec-label">Image:</span> 5.0m × 3.125m</div>
-            <div class="spec-item"><span class="spec-label">Couverture:</span> Z=-2.5m à Z=+2.5m (pleine)</div>
-            <div class="spec-item"><span class="spec-label">Hauteur image:</span> Y=0.38m à Y=3.50m</div>
-            <div class="spec-item"><span class="spec-label">Lens Shift:</span> Vertical -50% (1.56m vers bas)</div>
-            <div class="spec-item"><span class="spec-label">Soft Edge:</span> Aucun</div>
-            <div class="spec-item"><span class="spec-label">Résolution:</span> 1920 × 1200 px</div>
-            <div class="spec-item"><span class="spec-label">Densité:</span> 384 px/m</div>
-        </div>
-    </div>
-
-    <h2>📺 Résolution et Couverture</h2>
-
-    <table>
-        <thead>
-            <tr>
-                <th>Mur</th>
-                <th>Dimensions</th>
-                <th>Nb Proj</th>
-                <th>Hauteur Image</th>
-                <th>Résolution Totale</th>
-                <th>Densité</th>
-                <th>Couverture</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>SUD</strong></td>
-                <td>8.0m × 4.0m</td>
-                <td>2</td>
-                <td>2.78m (0.72-3.50m)</td>
-                <td>3,456 × 1,200 px</td>
-                <td>432 px/m</td>
-                <td>100% largeur, 70% hauteur</td>
-            </tr>
-            <tr>
-                <td><strong>NORD</strong></td>
-                <td>8.0m × 4.0m</td>
-                <td>2</td>
-                <td>2.78m (0.72-3.50m)</td>
-                <td>3,456 × 1,200 px</td>
-                <td>432 px/m</td>
-                <td>100% largeur, 70% hauteur</td>
-            </tr>
-            <tr>
-                <td><strong>OUEST</strong></td>
-                <td>5.0m × 4.0m</td>
-                <td>1</td>
-                <td>3.12m (0.38-3.50m)</td>
-                <td>1,920 × 1,200 px</td>
-                <td>384 px/m</td>
-                <td>100% largeur, 78% hauteur</td>
-            </tr>
-            <tr>
-                <td><strong>EST</strong></td>
-                <td>5.0m × 4.0m</td>
-                <td>1</td>
-                <td>3.12m (0.38-3.50m)</td>
-                <td>1,920 × 1,200 px</td>
-                <td>384 px/m</td>
-                <td>100% largeur, 78% hauteur</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="resolution-summary">
-        <h3>🎯 Résolution Panoramique Totale</h3>
-        <div class="big-number">10,752 × 1,200 pixels</div>
-        <p>Surface totale projetée: ~57 m²</p>
-        <p>Périmètre panoramique: 26m × ~3m hauteur moyenne</p>
-    </div>
-
-    <div class="info-box">
-        <h4>✅ Avantages de cette Configuration</h4>
-        <ul>
-            <li><strong>Montage plafond:</strong> Projecteurs à 3.50m de hauteur, fixation plafond professionnelle</li>
-            <li><strong>Couverture complète:</strong> 100% des 4 murs en largeur</li>
-            <li><strong>Soft edge 20%:</strong> Blending parfait sur les murs de 8m</li>
-            <li><strong>Hauteur optimisée:</strong> 70-78% de hauteur de mur grâce au lens shift -44% à -50%</li>
-            <li><strong>Densité homogène:</strong> 384-432 px/m pour qualité uniforme</li>
-            <li><strong>Configuration symétrique:</strong> Installation et calibration simplifiées</li>
-            <li><strong>Objectifs ultra-courts:</strong> Recul minimal 4-4.5m malgré hauteur plafond</li>
-        </ul>
-    </div>
 
     <div class="warning-box">
-        <h4>⚠️ Points d'Attention</h4>
-        <ul>
-            <li><strong>Lens Shift requis:</strong> -44% vertical pour murs 8m, -50% pour murs 5m - OBLIGATOIRE pour couverture optimale</li>
-            <li><strong>Hauteur non complète:</strong> Images couvrent 70-78% de la hauteur (2.78-3.12m sur 4m)</li>
-            <li><strong>Gap au plafond:</strong> 0.5m non couvert en haut (de 3.5m à 4m plafond)</li>
-            <li><strong>Gap au sol:</strong> 0.38-0.72m non couvert en bas selon murs</li>
-            <li><strong>Calibration soft edge:</strong> Zones overlap de 0.89m nécessitent calibration précise</li>
-            <li><strong>Placement P5/P6:</strong> Projecteurs proches du centre (0.5m) - vérifier dégagement</li>
+        <h4>⚠️ CONFIGURATION OVERLAP ÉLEVÉ (57%)</h4>
+        <ul style="margin-left:20px;font-size:9pt;line-height:1.6;">
+            <li><strong>Soft Edge 57%:</strong> Zone overlap de 3.2m entre P1-P2 et P3-P4 (vs 20% standard = 0.89m)</li>
+            <li><strong>Raison:</strong> Seule configuration permettant couverture TOTALE 8m en largeur avec 3.5m de hauteur</li>
+            <li><strong>Recul augmenté:</strong> 4.2m (vs 4.0m avec 20% overlap) - projectors plus proches mur opposé</li>
+            <li><strong>Perte pixels:</strong> Dans zone overlap 57%, pixels de 2 projecteurs superposés → résolution effective réduite</li>
+            <li><strong>Calibration critique:</strong> Blending soft edge doit être parfaitement calibré pour raccord invisible</li>
+            <li><strong>Lens Shift -50%:</strong> OBLIGATOIRE sur TOUS projecteurs pour descendre image de 1.75m</li>
         </ul>
     </div>
 
-    <h2>🔧 Notes d'Installation</h2>
+    <div class="info-box">
+        <h4>📺 Résolution et Couverture</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Mur SUD (8m):</strong> 2 proj × 1920px - overlap 57% = ~3,456 × 1,200 px effectifs | Couverture: 100% largeur</li>
+            <li><strong>Mur NORD (8m):</strong> 2 proj × 1920px - overlap 57% = ~3,456 × 1,200 px effectifs | Couverture: 100% largeur</li>
+            <li><strong>Mur OUEST (5m):</strong> 1 proj × 1920 × 1,200 px | Couverture: 100% largeur</li>
+            <li><strong>Mur EST (5m):</strong> 1 proj × 1920 × 1,200 px | Couverture: 100% largeur</li>
+            <li><strong>TOTAL panoramique:</strong> ~10,752 × 1,200 pixels effectifs (après blending)</li>
+            <li><strong>Couverture hauteur:</strong> 3.5m (0m à 3.5m) sur murs 8m = 87.5% du mur</li>
+            <li><strong>Couverture hauteur:</strong> 3.125m (0.38m à 3.5m) sur murs 5m = 78% du mur</li>
+            <li><strong>Gap plafond:</strong> 0.5m non couvert (de 3.5m à 4m plafond)</li>
+        </ul>
+    </div>
 
     <div class="info-box">
-        <h4>Points Clés d'Installation</h4>
-        <ul>
-            <li><strong>Fixation:</strong> Supports plafond robustes à 3.50m de hauteur (28kg par projecteur + marge)</li>
-            <li><strong>Lens Shift:</strong> IMPÉRATIF de configurer -44% à -50% vertical pour descendre l'image</li>
+        <h4>📏 MESURES CLÉS</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Recul P1-P4 (murs 8m):</strong> 4.2m (throw ratio 0.75:1 minimum)</li>
+            <li><strong>Recul P5-P6 (murs 5m):</strong> 4.5m (throw ratio 0.90:1)</li>
+            <li><strong>Zone soft edge murs 8m:</strong> 3.2m de large (57% de 5.6m)</li>
+            <li><strong>Distance P1 ↔ P2:</strong> 2.4m horizontal</li>
+            <li><strong>Distance P3 ↔ P4:</strong> 2.4m horizontal</li>
+            <li><strong>Distance P5 ↔ P6:</strong> 1.0m horizontal</li>
+            <li><strong>Image hauteur (tous):</strong> De Y=0m (sol) à Y=3.5m</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>🔧 Notes d'Installation</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Fixation:</strong> 6 supports plafond robustes à 3.50m (28kg par projecteur)</li>
+            <li><strong>Lens Shift:</strong> Configurer -50% vertical sur TOUS projecteurs (NP31ZL permet ±50%)</li>
+            <li><strong>Throw ratio:</strong> Régler NP31ZL à 0.75:1 (minimum) pour P1-P4, 0.90:1 pour P5-P6</li>
+            <li><strong>Soft Edge:</strong> Utiliser mode Edge Blending NEC avec 57% overlap sur P1-P2 et P3-P4</li>
+            <li><strong>Alignement:</strong> Précision critique requise - vérifier perpendiculaire aux murs</li>
+            <li><strong>Calibration:</strong> Logiciel NEC MultiProfiler ou équivalent pour blending 57%</li>
             <li><strong>Alimentation:</strong> 6 prises 230V/16A dédiées (874W par projecteur)</li>
-            <li><strong>Réseau:</strong> Switch Gigabit pour contrôle centralisé (6 ports minimum)</li>
-            <li><strong>Soft Edge:</strong> Utiliser le mode Edge Blending natif des NEC</li>
-            <li><strong>Refroidissement:</strong> Prévoir circulation d'air au plafond</li>
-            <li><strong>Calibration:</strong> Warping et blending via logiciel NEC MultiProfiler</li>
-            <li><strong>Alignement:</strong> Vérifier perpendiculaire aux murs malgré montage plafond</li>
+            <li><strong>Réseau:</strong> Switch Gigabit 8 ports minimum pour contrôle centralisé</li>
         </ul>
     </div>
 
     <div style="margin-top: 40px; text-align: center; color: #666; font-size: 9pt; border-top: 2px solid #ddd; padding-top: 20px;">
         <p><strong>Plan d'Implantation - 6 Projecteurs NEC NP-PX803UL</strong></p>
-        <p>Salle 8m × 5m × 4m | Montage plafond 3.50m | Configuration Panoramique 360°</p>
+        <p>Salle 8m × 5m × 4m | Montage plafond 3.50m | Couverture totale 3.5m avec overlap 57%</p>
+        <p>Recul: 4.2m (murs 8m), 4.5m (murs 5m) | Soft edge haute performance</p>
         <p>Document généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
     </div>
 </body>
