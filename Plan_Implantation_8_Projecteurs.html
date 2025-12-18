@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan d'Implantation - 8 Projecteurs</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 210mm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+
+        h1 {
+            color: #0d9488;
+            border-bottom: 3px solid #0d9488;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #0d9488;
+            border-left: 4px solid #0d9488;
+            padding-left: 15px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h3 {
+            color: #047857;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .schema {
+            background: #f8f9fa;
+            border: 2px solid #0d9488;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            white-space: pre;
+            overflow-x: auto;
+            font-size: 11px;
+            line-height: 1.4;
+        }
+
+        .info-box {
+            background: #e0f2f1;
+            border-left: 4px solid #0d9488;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #0d9488;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .projector-card {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .projector-card h4 {
+            color: #0d9488;
+            margin-top: 0;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        ul li:before {
+            content: "▸ ";
+            color: #0d9488;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .highlight {
+            background: #fef08a;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .section-break {
+            page-break-after: always;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 Plan d'Implantation - Système 8 Projecteurs</h1>
+
+    <div class="info-box">
+        <strong>🏢 Salle:</strong> 8m × 10m × 4m de hauteur<br>
+        <strong>📅 Date:</strong> <?php echo date('d/m/Y'); ?>Janvier 2025<br>
+        <strong>🎯 Objectif:</strong> Couverture panoramique 360° avec soft edge
+    </div>
+
+    <h2>📦 Matériel Requis</h2>
+
+    <table>
+        <tr>
+            <th>Quantité</th>
+            <th>Modèle</th>
+            <th>Lumens</th>
+            <th>Résolution</th>
+            <th>Throw Ratio</th>
+            <th>Statut</th>
+        </tr>
+        <tr>
+            <td><strong>6</strong></td>
+            <td>Epson EB-L690SE</td>
+            <td>6,000</td>
+            <td>1920×1200 (WUXGA)</td>
+            <td>0.50-0.70:1</td>
+            <td style="color: #10b981;">✅ Possédé</td>
+        </tr>
+        <tr>
+            <td><strong>2</strong></td>
+            <td>Epson EB-L570U</td>
+            <td>5,200</td>
+            <td>1920×1200 (WUXGA)</td>
+            <td>1.35-2.20:1</td>
+            <td style="color: #f59e0b;">🛒 À acheter</td>
+        </tr>
+        <tr style="background: #e0f2f1; font-weight: bold;">
+            <td colspan="2"><strong>TOTAL</strong></td>
+            <td><strong>46,400</strong></td>
+            <td colspan="3"><strong>8 projecteurs</strong></td>
+        </tr>
+    </table>
+
+    <h2>🎯 Schéma d'Implantation (Vue de Dessus)</h2>
+
+    <div class="schema">
+        ┌──────── 10m (NORD - L570U) ────────┐
+        │   L570U-1       L570U-2            │
+        │     ●             ●                │
+        │     │8m           │8m              │
+    8m  │                                    │
+        │                                    │
+L690-5●─┤         SALLE                     ├─●L690-3
+L690-6●─┤                                   ├─●L690-4
+        │         8m × 10m                   │
+  OUEST │                                    │ EST
+        │                                    │
+        │   L690-1       L690-2              │
+        │     ●             ●                │
+        │     │3.2m         │3.2m            │
+        └──────── 10m (SUD - L690SE) ────────┘
+    </div>
+
+    <div class="section-break"></div>
+
+    <h2>📐 Configuration Détaillée par Mur</h2>
+
+    <h3>MUR SUD (10m) - 2 × Epson EB-L690SE</h3>
+
+    <div class="projector-card">
+        <h4>Projecteur L690-1</h4>
+        <ul>
+            <li><strong>Position:</strong> 2.5m du bord gauche</li>
+            <li><strong>Recul:</strong> 3.2m du mur (throw 0.50)</li>
+            <li><strong>Largeur image:</strong> 6.4m</li>
+            <li><strong>Hauteur image:</strong> 4m</li>
+            <li><strong>Soft edge:</strong> Droite 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+        </ul>
+    </div>
+
+    <div class="projector-card">
+        <h4>Projecteur L690-2</h4>
+        <ul>
+            <li><strong>Position:</strong> 7.5m du bord gauche</li>
+            <li><strong>Recul:</strong> 3.2m du mur (throw 0.50)</li>
+            <li><strong>Largeur image:</strong> 6.4m</li>
+            <li><strong>Hauteur image:</strong> 4m</li>
+            <li><strong>Soft edge:</strong> Gauche 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <strong>📊 Résolution du mur SUD:</strong> <span class="highlight">3456 × 1200 pixels</span>
+    </div>
+
+    <h3>MUR EST (8m) - 2 × Epson EB-L690SE</h3>
+
+    <div class="projector-card">
+        <h4>Projecteur L690-3</h4>
+        <ul>
+            <li><strong>Position:</strong> 2m du bord bas</li>
+            <li><strong>Recul:</strong> 3.2m du mur (throw 0.50)</li>
+            <li><strong>Largeur image:</strong> 6.4m</li>
+            <li><strong>Hauteur image:</strong> 4m</li>
+            <li><strong>Soft edge:</strong> Bas 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+            <li><strong>Rotation:</strong> -90° (pointant vers l'Est)</li>
+        </ul>
+    </div>
+
+    <div class="projector-card">
+        <h4>Projecteur L690-4</h4>
+        <ul>
+            <li><strong>Position:</strong> 6m du bord bas</li>
+            <li><strong>Recul:</strong> 3.2m du mur (throw 0.50)</li>
+            <li><strong>Largeur image:</strong> 6.4m</li>
+            <li><strong>Hauteur image:</strong> 4m</li>
+            <li><strong>Soft edge:</strong> Haut 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+            <li><strong>Rotation:</strong> -90° (pointant vers l'Est)</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <strong>📊 Résolution du mur EST:</strong> <span class="highlight">2765 × 1200 pixels</span> (adapté à 8m)
+    </div>
+
+    <div class="section-break"></div>
+
+    <h3>MUR OUEST (8m) - 2 × Epson EB-L690SE</h3>
+
+    <div class="projector-card">
+        <h4>Projecteur L690-5</h4>
+        <ul>
+            <li><strong>Position:</strong> 2m du bord bas</li>
+            <li><strong>Recul:</strong> 3.2m du mur (throw 0.50)</li>
+            <li><strong>Largeur image:</strong> 6.4m</li>
+            <li><strong>Hauteur image:</strong> 4m</li>
+            <li><strong>Soft edge:</strong> Bas 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+            <li><strong>Rotation:</strong> +90° (pointant vers l'Ouest)</li>
+        </ul>
+    </div>
+
+    <div class="projector-card">
+        <h4>Projecteur L690-6</h4>
+        <ul>
+            <li><strong>Position:</strong> 6m du bord bas</li>
+            <li><strong>Recul:</strong> 3.2m du mur (throw 0.50)</li>
+            <li><strong>Largeur image:</strong> 6.4m</li>
+            <li><strong>Hauteur image:</strong> 4m</li>
+            <li><strong>Soft edge:</strong> Haut 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+            <li><strong>Rotation:</strong> +90° (pointant vers l'Ouest)</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <strong>📊 Résolution du mur OUEST:</strong> <span class="highlight">2765 × 1200 pixels</span> (adapté à 8m)
+    </div>
+
+    <h3>MUR NORD (10m) - 2 × Epson EB-L570U</h3>
+
+    <div class="projector-card">
+        <h4>Projecteur L570-1</h4>
+        <ul>
+            <li><strong>Position:</strong> 2.65m du bord gauche</li>
+            <li><strong>Recul:</strong> 8m du mur (throw 1.35)</li>
+            <li><strong>Largeur image:</strong> 5.93m</li>
+            <li><strong>Hauteur image:</strong> 3.7m <span style="color: #f59e0b;">⚠️ Plus court</span></li>
+            <li><strong>Soft edge:</strong> Droite 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+            <li><strong>Rotation:</strong> 180° (pointant vers le Nord)</li>
+        </ul>
+    </div>
+
+    <div class="projector-card">
+        <h4>Projecteur L570-2</h4>
+        <ul>
+            <li><strong>Position:</strong> 7.35m du bord gauche</li>
+            <li><strong>Recul:</strong> 8m du mur (throw 1.35)</li>
+            <li><strong>Largeur image:</strong> 5.93m</li>
+            <li><strong>Hauteur image:</strong> 3.7m <span style="color: #f59e0b;">⚠️ Plus court</span></li>
+            <li><strong>Soft edge:</strong> Gauche 20%</li>
+            <li><strong>Résolution:</strong> 1920×1200</li>
+            <li><strong>Rotation:</strong> 180° (pointant vers le Nord)</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <strong>📊 Résolution du mur NORD:</strong> <span class="highlight">3201 × 1200 pixels</span>
+    </div>
+
+    <div class="warning-box">
+        <h4 style="margin-top: 0;">⚠️ ATTENTION - Hauteurs Différentes</h4>
+        <p><strong>Problème:</strong> Les L570U projettent <strong>3.7m de haut</strong> vs <strong>4m</strong> pour les L690SE.</p>
+        <p><strong>Solutions possibles:</strong></p>
+        <ul>
+            <li>Centrer verticalement les L570U (décalage de 15cm en haut/bas)</li>
+            <li>Utiliser le lens shift vertical (+7.5% vers le haut)</li>
+            <li>Ajuster la résolution du contenu pour compenser</li>
+        </ul>
+    </div>
+
+    <div class="section-break"></div>
+
+    <h2>✨ Résolution Panoramique Totale</h2>
+
+    <table>
+        <tr>
+            <th>Mur</th>
+            <th>Modèle</th>
+            <th>Résolution</th>
+        </tr>
+        <tr>
+            <td>Sud (10m)</td>
+            <td>2× L690SE</td>
+            <td>3456 px</td>
+        </tr>
+        <tr>
+            <td>Est (8m)</td>
+            <td>2× L690SE</td>
+            <td>2562 px</td>
+        </tr>
+        <tr>
+            <td>Nord (10m)</td>
+            <td>2× L570U</td>
+            <td>3201 px</td>
+        </tr>
+        <tr>
+            <td>Ouest (8m)</td>
+            <td>2× L690SE</td>
+            <td>2562 px</td>
+        </tr>
+        <tr style="background: #e0f2f1; font-weight: bold;">
+            <td colspan="2"><strong>TOTAL PANORAMIQUE 360°</strong></td>
+            <td><strong>11,781 × 1200 pixels</strong></td>
+        </tr>
+    </table>
+
+    <h2>💡 Notes d'Installation</h2>
+
+    <div class="info-box">
+        <h4 style="margin-top: 0;">Points clés:</h4>
+        <ul>
+            <li><strong>Soft edge:</strong> 20% d'overlap entre projecteurs adjacents (environ 1.28m)</li>
+            <li><strong>Densité uniforme:</strong> 345.6 pixels/m sur tous les murs</li>
+            <li><strong>Puissance totale:</strong> 46,400 lumens</li>
+            <li><strong>Format:</strong> Tous en 16:10 (WUXGA 1920×1200)</li>
+            <li><strong>Type:</strong> Tous laser 3LCD Epson</li>
+        </ul>
+    </div>
+
+    <div class="no-print" style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 8px; text-align: center;">
+        <p style="margin: 0; color: #666;">
+            <strong>Pour générer le PDF:</strong> Appuyez sur <kbd>Ctrl+P</kbd> (ou Cmd+P sur Mac) et choisissez "Enregistrer au format PDF"
+        </p>
+    </div>
+</body>
+</html>
