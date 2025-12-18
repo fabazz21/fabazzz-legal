@@ -198,10 +198,10 @@
     </div>
 
     <h1>📐 SCHÉMA TECHNIQUE D'IMPLANTATION</h1>
-    <div class="subtitle">6 Projecteurs NEC NP-PX803UL | Salle 8m × 5m × 4m | Objectifs NP31ZL (0.75-0.93:1)</div>
+    <div class="subtitle">6 Projecteurs NEC NP-PX803UL | Salle 8m × 5m × 4m | Objectifs NP31ZL (0.75-0.93:1) | Hauteur montage: 3.50m</div>
 
     <div class="drawing-container">
-        <h2 style="text-align: center; color: #1976d2; margin: 20px 0;">VUE DE DESSUS (Plan Y=2m)</h2>
+        <h2 style="text-align: center; color: #1976d2; margin: 20px 0;">VUE DE DESSUS (Plan Y=3.5m - Hauteur projecteurs)</h2>
 
         <svg viewBox="0 0 1200 900" xmlns="http://www.w3.org/2000/svg">
             <!-- Grid -->
@@ -227,12 +227,7 @@
             <line x1="100" y1="700" x2="700" y2="700" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
             <text x="720" y="705" class="axis-label">X (largeur)</text>
 
-            <!-- Room walls (scale: 100px = 1m, centered at 500,400) -->
-            <!-- Room 8m wide (X), 5m deep (Z) -->
-            <!-- Center at (500, 400) -->
-            <!-- X: 500-400=100 to 500+400=900 (8m) -->
-            <!-- Z: 400-250=150 to 400+250=650 (5m) -->
-
+            <!-- Room walls -->
             <rect x="100" y="150" width="800" height="500" class="wall"/>
 
             <!-- Wall labels -->
@@ -242,13 +237,11 @@
             <text x="930" y="400" class="dimension-text" text-anchor="middle" font-size="18" transform="rotate(-90 930 400)">EST (5m)</text>
 
             <!-- Dimension lines for room -->
-            <!-- Width dimension (8m) -->
             <line x1="100" y1="120" x2="900" y2="120" class="dimension-line"/>
             <line x1="100" y1="115" x2="100" y2="125" class="dimension-line"/>
             <line x1="900" y1="115" x2="900" y2="125" class="dimension-line"/>
             <text x="500" y="110" class="dimension-text" text-anchor="middle">8.00m</text>
 
-            <!-- Depth dimension (5m) -->
             <line x1="80" y1="150" x2="80" y2="650" class="dimension-line"/>
             <line x1="75" y1="150" x2="85" y2="150" class="dimension-line"/>
             <line x1="75" y1="650" x2="85" y2="650" class="dimension-line"/>
@@ -264,7 +257,7 @@
             <rect x="456" y="600" width="444" height="50" class="projection-area"/>
             <text x="678" y="630" style="fill: #2e7d32; font-size: 12px; font-weight: bold;">P2: 4.44m × 2.78m</text>
 
-            <!-- SOFT EDGE zone SUD (overlap) -->
+            <!-- SOFT EDGE zone SUD -->
             <rect x="455" y="600" width="89" height="50" class="soft-edge-zone"/>
             <text x="499" y="625" style="fill: #e65100; font-size: 11px; font-weight: bold;">SOFT</text>
             <text x="499" y="638" style="fill: #e65100; font-size: 11px; font-weight: bold;">20%</text>
@@ -277,7 +270,7 @@
             <rect x="456" y="150" width="444" height="50" class="projection-area"/>
             <text x="678" y="180" style="fill: #2e7d32; font-size: 12px; font-weight: bold;">P4: 4.44m × 2.78m</text>
 
-            <!-- SOFT EDGE zone NORD (overlap) -->
+            <!-- SOFT EDGE zone NORD -->
             <rect x="455" y="150" width="89" height="50" class="soft-edge-zone"/>
             <text x="499" y="175" style="fill: #e65100; font-size: 11px; font-weight: bold;">SOFT</text>
             <text x="499" y="188" style="fill: #e65100; font-size: 11px; font-weight: bold;">20%</text>
@@ -290,33 +283,27 @@
             <rect x="850" y="150" width="50" height="500" class="projection-area"/>
             <text x="875" y="395" style="fill: #2e7d32; font-size: 12px; font-weight: bold;" transform="rotate(-90 875 395)">P6: 5.0m × 3.125m</text>
 
-            <!-- Projectors positions -->
-            <!-- P1: (-1.78, 2.0, +1.5) → X=500-178=322, Z=400+150=550 -->
+            <!-- Projectors positions (at Y=3.5m height) -->
             <circle cx="322" cy="550" r="15" class="projector"/>
             <text x="322" y="555" class="projector-label">P1</text>
             <line x1="322" y1="550" x2="322" y2="640" class="projection-beam"/>
 
-            <!-- P2: (+1.78, 2.0, +1.5) → X=500+178=678, Z=400+150=550 -->
             <circle cx="678" cy="550" r="15" class="projector"/>
             <text x="678" y="555" class="projector-label">P2</text>
             <line x1="678" y1="550" x2="678" y2="640" class="projection-beam"/>
 
-            <!-- P3: (-1.78, 2.0, -1.5) → X=322, Z=400-150=250 -->
             <circle cx="322" cy="250" r="15" class="projector"/>
             <text x="322" y="255" class="projector-label">P3</text>
             <line x1="322" y1="250" x2="322" y2="160" class="projection-beam"/>
 
-            <!-- P4: (+1.78, 2.0, -1.5) → X=678, Z=250 -->
             <circle cx="678" cy="250" r="15" class="projector"/>
             <text x="678" y="255" class="projector-label">P4</text>
             <line x1="678" y1="250" x2="678" y2="160" class="projection-beam"/>
 
-            <!-- P5: (+0.5, 1.99, 0) → X=500+50=550, Z=400 -->
             <circle cx="550" cy="400" r="15" class="projector"/>
             <text x="550" y="405" class="projector-label">P5</text>
             <line x1="550" y1="400" x2="140" y2="400" class="projection-beam"/>
 
-            <!-- P6: (-0.5, 1.99, 0) → X=500-50=450, Z=400 -->
             <circle cx="450" cy="400" r="15" class="projector"/>
             <text x="450" y="405" class="projector-label">P6</text>
             <line x1="450" y1="400" x2="860" y2="400" class="projection-beam"/>
@@ -366,12 +353,12 @@
             <text x="510" y="395" style="fill: #ff6b6b; font-size: 10px;">Centre (0,0,0)</text>
 
             <!-- Coordinate labels for projectors -->
-            <text x="322" y="575" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(-1.78, 2.0, +1.5)</text>
-            <text x="678" y="575" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(+1.78, 2.0, +1.5)</text>
-            <text x="322" y="235" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(-1.78, 2.0, -1.5)</text>
-            <text x="678" y="235" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(+1.78, 2.0, -1.5)</text>
-            <text x="550" y="425" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(+0.5, 1.99, 0)</text>
-            <text x="450" y="425" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(-0.5, 1.99, 0)</text>
+            <text x="322" y="575" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(-1.78, 3.5, +1.5)</text>
+            <text x="678" y="575" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(+1.78, 3.5, +1.5)</text>
+            <text x="322" y="235" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(-1.78, 3.5, -1.5)</text>
+            <text x="678" y="235" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(+1.78, 3.5, -1.5)</text>
+            <text x="550" y="425" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(+0.5, 3.5, 0)</text>
+            <text x="450" y="425" class="coord-info" text-anchor="middle" style="fill: #0d47a1;">(-0.5, 3.5, 0)</text>
 
             <!-- Scale reference -->
             <rect x="1020" y="800" width="100" height="20" fill="none" stroke="#333" stroke-width="2"/>
@@ -399,52 +386,61 @@
             <line x1="100" y1="100" x2="100" y2="500" stroke="#d32f2f" stroke-width="4"/>
             <text x="70" y="300" class="dimension-text" text-anchor="middle" transform="rotate(-90 70 300)">MUR SUD (8m)</text>
 
-            <!-- Projectors P1 and P2 at Y=2m, Z=+1.5m (400px from wall) -->
-            <!-- Y=2m → 500 - 200 = 300 -->
-            <circle cx="322" cy="300" r="15" class="projector"/>
-            <text x="322" y="305" class="projector-label">P1</text>
+            <!-- Projectors P1 and P2 at Y=3.5m -->
+            <!-- Y=3.5m → SVG: 500 - (3.5 × 100) = 150 -->
+            <circle cx="322" cy="150" r="15" class="projector"/>
+            <text x="322" y="155" class="projector-label">P1</text>
 
-            <circle cx="678" cy="300" r="15" class="projector"/>
-            <text x="678" y="305" class="projector-label">P2</text>
+            <circle cx="678" cy="150" r="15" class="projector"/>
+            <text x="678" y="155" class="projector-label">P2</text>
 
             <!-- Projection beams from projectors to wall -->
-            <polygon points="322,285 100,222 100,378" class="projection-beam" fill="rgba(76, 175, 80, 0.1)"/>
-            <polygon points="678,285 100,222 100,378" class="projection-beam" fill="rgba(76, 175, 80, 0.1)"/>
+            <polygon points="322,135 100,428 100,172" class="projection-beam" fill="rgba(76, 175, 80, 0.1)"/>
+            <polygon points="678,135 100,428 100,172" class="projection-beam" fill="rgba(76, 175, 80, 0.1)"/>
 
             <!-- Projection areas on wall -->
-            <!-- P1 coverage: Y from 0.61m to 3.39m → Y positions 500-61=439 to 500-339=161 -->
-            <rect x="95" y="161" width="10" height="278" fill="#4caf50" opacity="0.5"/>
-            <text x="120" y="240" style="fill: #2e7d32; font-size: 12px; font-weight: bold;">Image P1</text>
+            <!-- Image from Y=0.72m to Y=3.50m → SVG: 428 to 150 -->
+            <rect x="95" y="150" width="10" height="278" fill="#4caf50" opacity="0.5"/>
+            <text x="120" y="240" style="fill: #2e7d32; font-size: 12px; font-weight: bold;">Image P1/P2</text>
             <text x="120" y="255" style="fill: #2e7d32; font-size: 11px;">2.78m haut</text>
+            <text x="120" y="270" style="fill: #2e7d32; font-size: 10px;">0.72m → 3.50m</text>
 
             <!-- Overlap zone -->
-            <rect x="95" y="161" width="10" height="278" fill="#ff9800" opacity="0.3"/>
-            <text x="120" y="300" style="fill: #e65100; font-size: 10px; font-weight: bold;">Zone overlap 20%</text>
+            <rect x="95" y="150" width="10" height="278" fill="#ff9800" opacity="0.3"/>
+            <text x="120" y="310" style="fill: #e65100; font-size: 10px; font-weight: bold;">Lens Shift -44%</text>
 
             <!-- Dimensions -->
-            <!-- Height dimension (4m) -->
             <line x1="80" y1="100" x2="80" y2="500" class="dimension-line"/>
             <line x1="75" y1="100" x2="85" y2="100" class="dimension-line"/>
             <line x1="75" y1="500" x2="85" y2="500" class="dimension-line"/>
             <text x="50" y="305" class="dimension-text" text-anchor="middle" transform="rotate(-90 50 305)">4.00m</text>
 
             <!-- Image height dimension -->
-            <line x1="920" y1="161" x2="920" y2="439" class="dimension-line"/>
-            <line x1="915" y1="161" x2="925" y2="161" class="dimension-line"/>
-            <line x1="915" y1="439" x2="925" y2="439" class="dimension-line"/>
-            <text x="950" y="305" class="dimension-text" text-anchor="middle" transform="rotate(-90 950 305)">2.78m</text>
+            <line x1="920" y1="150" x2="920" y2="428" class="dimension-line"/>
+            <line x1="915" y1="150" x2="925" y2="150" class="dimension-line"/>
+            <line x1="915" y1="428" x2="925" y2="428" class="dimension-line"/>
+            <text x="950" y="295" class="dimension-text" text-anchor="middle" transform="rotate(-90 950 295)">2.78m</text>
 
             <!-- Projector height from floor -->
-            <line x1="322" y1="300" x2="322" y2="500" class="dimension-line" stroke-dasharray="2,2"/>
+            <line x1="322" y1="150" x2="322" y2="500" class="dimension-line" stroke-dasharray="2,2"/>
             <line x1="317" y1="500" x2="327" y2="500" class="dimension-line"/>
-            <text x="335" y="405" class="dimension-text">2.0m</text>
+            <text x="335" y="325" class="dimension-text">3.5m</text>
+
+            <!-- Ceiling height -->
+            <line x1="200" y1="100" x2="200" y2="150" class="dimension-line" stroke-dasharray="2,2"/>
+            <text x="210" y="130" class="dimension-text" font-size="12">0.5m gap</text>
+
+            <!-- Floor gap -->
+            <line x1="200" y1="428" x2="200" y2="500" class="dimension-line" stroke-dasharray="2,2"/>
+            <text x="210" y="470" class="dimension-text" font-size="12">0.72m gap</text>
 
             <!-- Image center height -->
-            <line x1="100" y1="300" x2="200" y2="300" class="dimension-line" stroke-dasharray="5,5"/>
-            <text x="210" y="305" class="dimension-text">Centre image Y=2.0m</text>
+            <line x1="100" y1="289" x2="250" y2="289" class="dimension-line" stroke-dasharray="5,5"/>
+            <text x="260" y="294" class="dimension-text" font-size="11">Centre image Y=2.11m</text>
 
-            <!-- Distance from projector to wall (4.0m shown as depth) -->
+            <!-- Distance from projector to wall -->
             <text x="500" y="50" class="dimension-text" text-anchor="middle" font-size="16">Recul projecteur: 4.0m (profondeur Z)</text>
+            <text x="500" y="70" style="fill: #e65100; font-size: 14px; text-anchor: middle; font-weight: bold;">⚠️ Lens Shift -44% vertical OBLIGATOIRE</text>
 
             <!-- Scale -->
             <rect x="1020" y="550" width="100" height="20" fill="none" stroke="#333" stroke-width="2"/>
@@ -457,11 +453,11 @@
         <div class="legend-grid">
             <div class="legend-item">
                 <div class="legend-symbol" style="background: #1976d2; border-color: #0d47a1;"></div>
-                <span><strong>Projecteur</strong> - Position exacte (X, Y, Z)</span>
+                <span><strong>Projecteur</strong> - Position Y=3.5m (plafond)</span>
             </div>
             <div class="legend-item">
                 <div class="legend-symbol" style="background: rgba(76, 175, 80, 0.2); border-color: #4caf50; border-style: dashed;"></div>
-                <span><strong>Zone de projection</strong> - Surface couverte</span>
+                <span><strong>Zone de projection</strong> - Surface couverte sur mur</span>
             </div>
             <div class="legend-item">
                 <div class="legend-symbol" style="background: rgba(255, 152, 0, 0.3); border-color: #ff9800;"></div>
@@ -477,7 +473,7 @@
             </div>
             <div class="legend-item">
                 <div class="legend-symbol" style="background: white; border-color: #333; border-width: 3px;"></div>
-                <span><strong>Murs</strong> - Limites de la salle</span>
+                <span><strong>Murs/Sol/Plafond</strong> - Limites de la salle</span>
             </div>
         </div>
     </div>
@@ -489,72 +485,79 @@
                 <th>Position (X, Y, Z)</th>
                 <th>Recul</th>
                 <th>Image L×H</th>
+                <th>Hauteur Image</th>
                 <th>Ratio</th>
+                <th>Lens Shift V</th>
                 <th>Soft Edge</th>
-                <th>Largeur Soft Edge</th>
-                <th>Couverture X ou Z</th>
+                <th>Gap Sol/Plafond</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td><strong>P1</strong></td>
-                <td class="coord-info">(-1.78m, 2.0m, +1.5m)</td>
+                <td class="coord-info">(-1.78m, 3.5m, +1.5m)</td>
                 <td>4.0m</td>
                 <td>4.44m × 2.78m</td>
+                <td>0.72m → 3.50m</td>
                 <td>0.90:1</td>
-                <td>Droite 20%</td>
-                <td>0.89m</td>
-                <td>X: -4.0m → +0.44m</td>
+                <td>-44%</td>
+                <td>Droite 20% (0.89m)</td>
+                <td>0.72m sol / 0.5m plafond</td>
             </tr>
             <tr>
                 <td><strong>P2</strong></td>
-                <td class="coord-info">(+1.78m, 2.0m, +1.5m)</td>
+                <td class="coord-info">(+1.78m, 3.5m, +1.5m)</td>
                 <td>4.0m</td>
                 <td>4.44m × 2.78m</td>
+                <td>0.72m → 3.50m</td>
                 <td>0.90:1</td>
-                <td>Gauche 20%</td>
-                <td>0.89m</td>
-                <td>X: -0.44m → +4.0m</td>
+                <td>-44%</td>
+                <td>Gauche 20% (0.89m)</td>
+                <td>0.72m sol / 0.5m plafond</td>
             </tr>
             <tr>
                 <td><strong>P3</strong></td>
-                <td class="coord-info">(-1.78m, 2.0m, -1.5m)</td>
+                <td class="coord-info">(-1.78m, 3.5m, -1.5m)</td>
                 <td>4.0m</td>
                 <td>4.44m × 2.78m</td>
+                <td>0.72m → 3.50m</td>
                 <td>0.90:1</td>
-                <td>Droite 20%</td>
-                <td>0.89m</td>
-                <td>X: -4.0m → +0.44m</td>
+                <td>-44%</td>
+                <td>Droite 20% (0.89m)</td>
+                <td>0.72m sol / 0.5m plafond</td>
             </tr>
             <tr>
                 <td><strong>P4</strong></td>
-                <td class="coord-info">(+1.78m, 2.0m, -1.5m)</td>
+                <td class="coord-info">(+1.78m, 3.5m, -1.5m)</td>
                 <td>4.0m</td>
                 <td>4.44m × 2.78m</td>
+                <td>0.72m → 3.50m</td>
                 <td>0.90:1</td>
-                <td>Gauche 20%</td>
-                <td>0.89m</td>
-                <td>X: -0.44m → +4.0m</td>
+                <td>-44%</td>
+                <td>Gauche 20% (0.89m)</td>
+                <td>0.72m sol / 0.5m plafond</td>
             </tr>
             <tr>
                 <td><strong>P5</strong></td>
-                <td class="coord-info">(+0.5m, 1.99m, 0m)</td>
+                <td class="coord-info">(+0.5m, 3.5m, 0m)</td>
                 <td>4.5m</td>
                 <td>5.0m × 3.125m</td>
+                <td>0.38m → 3.50m</td>
                 <td>0.90:1</td>
+                <td>-50%</td>
                 <td>Aucun</td>
-                <td>-</td>
-                <td>Z: -2.5m → +2.5m</td>
+                <td>0.38m sol / 0.5m plafond</td>
             </tr>
             <tr>
                 <td><strong>P6</strong></td>
-                <td class="coord-info">(-0.5m, 1.99m, 0m)</td>
+                <td class="coord-info">(-0.5m, 3.5m, 0m)</td>
                 <td>4.5m</td>
                 <td>5.0m × 3.125m</td>
+                <td>0.38m → 3.50m</td>
                 <td>0.90:1</td>
+                <td>-50%</td>
                 <td>Aucun</td>
-                <td>-</td>
-                <td>Z: -2.5m → +2.5m</td>
+                <td>0.38m sol / 0.5m plafond</td>
             </tr>
         </tbody>
     </table>
@@ -562,20 +565,37 @@
     <div style="margin-top: 30px; padding: 15px; background: #e3f2fd; border-left: 5px solid #1976d2;">
         <h3 style="color: #1976d2; margin-bottom: 10px;">📏 MESURES CLÉS</h3>
         <ul style="margin-left: 20px; line-height: 1.8;">
+            <li><strong>Hauteur montage projecteurs:</strong> 3.50m (plafond)</li>
             <li><strong>Distance entre P1 et P2:</strong> 3.56m (écart horizontal)</li>
             <li><strong>Distance entre P3 et P4:</strong> 3.56m (écart horizontal)</li>
             <li><strong>Distance entre P5 et P6:</strong> 1.0m (écart horizontal)</li>
             <li><strong>Largeur zone soft edge:</strong> 0.89m (20% de 4.44m)</li>
-            <li><strong>Hauteur image murs 8m:</strong> 2.78m (centré à Y=2.0m, de 0.61m à 3.39m)</li>
-            <li><strong>Hauteur image murs 5m:</strong> 3.125m (centré à Y=1.99m, de 0.43m à 3.56m)</li>
+            <li><strong>Hauteur image murs 8m:</strong> 2.78m (de 0.72m à 3.50m) - Centre: 2.11m</li>
+            <li><strong>Hauteur image murs 5m:</strong> 3.125m (de 0.38m à 3.50m) - Centre: 1.94m</li>
             <li><strong>Ratio throw utilisé:</strong> 0.90:1 (dans la plage 0.75-0.93:1 de l'objectif NP31ZL)</li>
+            <li><strong>⚠️ Lens Shift OBLIGATOIRE:</strong> -44% pour P1-P4, -50% pour P5-P6</li>
+            <li><strong>Gap plafond:</strong> 0.5m non couvert (de 3.5m à 4m)</li>
+            <li><strong>Gap sol murs 8m:</strong> 0.72m non couvert (de 0 à 0.72m)</li>
+            <li><strong>Gap sol murs 5m:</strong> 0.38m non couvert (de 0 à 0.38m)</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 20px; padding: 15px; background: #fff3e0; border-left: 5px solid #f57c00;">
+        <h3 style="color: #e65100; margin-bottom: 10px;">⚠️ CONFIGURATION LENS SHIFT OBLIGATOIRE</h3>
+        <p style="font-size: 11pt; margin-bottom: 10px;"><strong>Sans le lens shift vertical, les images seraient centrées à 3.5m de hauteur, ne couvrant qu'une petite partie des murs!</strong></p>
+        <ul style="margin-left: 20px; line-height: 1.8; font-size: 10pt;">
+            <li><strong>P1, P2, P3, P4 (murs 8m):</strong> Régler lens shift à <span style="color: #d32f2f; font-weight: bold;">-44%</span> pour descendre l'image de 1.39m</li>
+            <li><strong>P5, P6 (murs 5m):</strong> Régler lens shift à <span style="color: #d32f2f; font-weight: bold;">-50%</span> (maximum) pour descendre l'image de 1.56m</li>
+            <li>Le lens shift NP31ZL permet ±50% vertical (±15% horizontal) - suffisant pour cette configuration</li>
+            <li>Sans lens shift, image centrée à Y=3.5m → couverture uniquement 2.11m-4.89m (déborde du plafond!)</li>
         </ul>
     </div>
 
     <div style="margin-top: 40px; text-align: center; color: #666; font-size: 9pt; border-top: 3px solid #333; padding-top: 20px;">
         <p><strong>SCHÉMA TECHNIQUE D'IMPLANTATION - 6 PROJECTEURS NEC NP-PX803UL</strong></p>
-        <p>Salle 8m × 5m × 4m | Objectifs NP31ZL Ultra-Court Zoom 0.75-0.93:1</p>
+        <p>Salle 8m × 5m × 4m | Objectifs NP31ZL Ultra-Court Zoom 0.75-0.93:1 | Montage plafond 3.50m</p>
         <p>Configuration panoramique 360° avec soft edge 20% | Résolution totale: 10,752 × 1,200 pixels</p>
+        <p>⚠️ Lens Shift -44% à -50% OBLIGATOIRE pour couverture optimale</p>
         <p>Document technique généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
     </div>
 </body>
