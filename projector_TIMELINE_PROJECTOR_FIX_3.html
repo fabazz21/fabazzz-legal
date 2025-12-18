@@ -4746,6 +4746,21 @@
             dimensions: '440×128×325 mm',
             defaultLens: 'EPSON-L570U-FIXED',
             compatibleLenses: ['EPSON-L570U-FIXED']
+        },
+        'NP-PX803UL': {
+            name: 'NP-PX803UL',
+            brand: 'NEC',
+            lumens: 8000,
+            resolution: 'WUXGA (1920×1200)',
+            resolutionPixels: [1920, 1200],
+            aspect: 16/10,
+            chipSize: '0.96"',
+            type: 'DLP Laser',
+            contrast: '10,000:1',
+            weight: 28.0,
+            dimensions: '500×583×216 mm',
+            defaultLens: 'NP18ZL',
+            compatibleLenses: ['NP16FL', 'NP17ZL', 'NP18ZL', 'NP19ZL', 'NP20ZL', 'NP21ZL', 'NP31ZL', 'NP39ML']
         }
     };
 
@@ -4778,6 +4793,15 @@
         'FIXED-ST': { throwMin: 0.80, throwMax: 0.80, fixed: true, shiftV: [-50, 50], shiftH: [-20, 20], name: 'Fixed Short Throw 0.80:1' },
         'EPSON-L570U-FIXED': { throwMin: 1.35, throwMax: 2.20, fixed: false, shiftV: [-50, 50], shiftH: [-20, 20], name: 'Standard Zoom 1.35-2.20:1 (1.6x)' },
         'SHORT-ZOOM': { throwMin: 0.50, throwMax: 0.70, fixed: false, shiftV: [-50, 50], shiftH: [-20, 20], name: 'Short Throw Zoom 0.5-0.7:1' },
+        // NEC lenses (for NP-PX803UL and compatible)
+        'NP39ML': { throwMin: 0.38, throwMax: 0.38, fixed: true, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Ultra Short Throw 0.38:1' },
+        'NP31ZL': { throwMin: 0.75, throwMax: 0.93, fixed: false, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Ultra Short Zoom 0.75-0.93:1' },
+        'NP16FL': { throwMin: 0.76, throwMax: 0.76, fixed: true, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Short Throw 0.76:1' },
+        'NP17ZL': { throwMin: 1.25, throwMax: 1.79, fixed: false, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Short Zoom 1.25-1.79:1' },
+        'NP18ZL': { throwMin: 1.73, throwMax: 2.27, fixed: false, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Standard Zoom 1.73-2.27:1' },
+        'NP19ZL': { throwMin: 2.22, throwMax: 3.67, fixed: false, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Medium Zoom 2.22-3.67:1' },
+        'NP20ZL': { throwMin: 3.6, throwMax: 5.4, fixed: false, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Long Zoom 3.6-5.4:1' },
+        'NP21ZL': { throwMin: 5.3, throwMax: 8.3, fixed: false, shiftV: [-50, 50], shiftH: [-15, 15], name: 'Ultra Long Zoom 5.3-8.3:1' },
         // Barco lenses
         'R9801814': { throwMin: 0.36, throwMax: 0.36, fixed: true, shiftV: [-100, 100], shiftH: [-30, 30], name: 'UST' },
         'R9801815': { throwMin: 0.75, throwMax: 0.93, fixed: false, shiftV: [-100, 100], shiftH: [-30, 30], name: 'Short Zoom' },
