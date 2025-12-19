@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Technique CORRIGÉ - 8×5m - 6 Projecteurs NEC</title>
+    <style>
+        @page { size: A3 landscape; margin: 10mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.5; color: #222; background: white; padding: 15px; }
+        h1 { color: #d32f2f; border-bottom: 4px solid #d32f2f; padding-bottom: 10px; margin-bottom: 15px; font-size: 22pt; }
+        h2 { color: #1976d2; margin-top: 20px; margin-bottom: 12px; font-size: 14pt; border-left: 5px solid #1976d2; padding-left: 10px; }
+        .header-info { background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 5px solid #d32f2f; font-size: 10pt; }
+        .header-info p { margin: 4px 0; }
+        .header-info strong { color: #d32f2f; min-width: 160px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 8.5pt; }
+        thead { background: #1976d2; color: white; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #f57c00; padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 9pt; }
+        .warning-box h4 { color: #e65100; margin-bottom: 6px; font-size: 10pt; }
+        .info-box { background: #e1f5fe; border-left: 5px solid #0288d1; padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 9pt; }
+        .info-box h4 { color: #0277bd; margin-bottom: 6px; font-size: 10pt; }
+        .success-box { background: #e8f5e9; border-left: 5px solid #4caf50; padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 9pt; }
+        .success-box h4 { color: #2e7d32; margin-bottom: 6px; font-size: 10pt; }
+        .coord { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 2px 5px; border-radius: 3px; font-size: 8.5pt; }
+        svg { border: 2px solid #333; border-radius: 6px; margin: 15px 0; background: white; }
+        @media print { .print-instruction { display: none; } body { padding: 5px; } }
+        .print-instruction { background: #4caf50; color: white; padding: 12px; border-radius: 6px; text-align: center; margin: 15px 0; font-weight: 600; font-size: 10pt; }
+    </style>
+</head>
+<body>
+    <div class="print-instruction">📄 Ctrl+P → Enregistrer au format PDF (Paysage, A3)</div>
+
+    <h1>📐 PLAN TECHNIQUE - 6 Projecteurs NEC - SALLE 8×5m</h1>
+
+    <div class="header-info">
+        <p><strong>Dimensions:</strong> 8m LARGEUR (X) × 5m PROFONDEUR (Z) × 4m HAUTEUR (Y)</p>
+        <p><strong>Projecteurs:</strong> 6× NEC NP-PX803UL avec objectifs NP31ZL (0.75-0.93:1) - WUXGA 1920×1200</p>
+        <p><strong>Hauteur montage:</strong> 3.50m (plafond) - TOUS les projecteurs</p>
+        <p><strong>Configuration:</strong> Panoramique 360° - Coverage 3.5m hauteur (0m→3.5m = 87.5%)</p>
+        <p><strong>Soft Edge:</strong> 20% STANDARD (1.12m sur murs 8m) - Pas d'overlap sur murs 5m</p>
+    </div>
+
+    <div class="success-box">
+        <h4>✅ CONFIGURATION OPTIMALE</h4>
+        <ul style="margin-left:18px;line-height:1.6;">
+            <li><strong>Murs NORD/SUD (8m):</strong> 2 projecteurs chacun - Images 5.6×3.5m avec overlap 20%</li>
+            <li><strong>Murs EST/OUEST (5m):</strong> 1 projecteur chacun - Images 5.0×3.125m (couvre exactement 5m)</li>
+            <li><strong>Clearances:</strong> Bonnes distances entre projecteurs (2.6m minimum) - Pas de zones à risque</li>
+            <li><strong>Installation:</strong> Simple, positions standard sans ajustements complexes</li>
+        </ul>
+    </div>
+
+    <h2>📐 Plan Vue de Dessus - Positions Réelles</h2>
+
+    <svg viewBox="0 0 1600 1200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                <polygon points="0 0, 10 3, 0 6" fill="#666" />
+            </marker>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e8e8e8" stroke-width="0.5"/>
+            </pattern>
+
+            <!-- Projector icons -->
+            <g id="proj-nord">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+                <path d="M -9,-9 L 0,-19 L 9,-9 Z" fill="#64b5f6" stroke="#0d47a1" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+            <g id="proj-sud">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+                <path d="M -9,9 L 0,19 L 9,9 Z" fill="#64b5f6" stroke="#0d47a1" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+            <g id="proj-est">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+                <path d="M 13,-9 L 23,0 L 13,9 Z" fill="#64b5f6" stroke="#0d47a1" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+            <g id="proj-ouest">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+                <path d="M -13,-9 L -23,0 L -13,9 Z" fill="#ba68c8" stroke="#0d47a1" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+        </defs>
+
+        <rect width="1600" height="1200" fill="url(#grid)"/>
+
+        <!-- Title -->
+        <text x="800" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#1976d2">VUE DE DESSUS - Échelle 100px = 1m</text>
+        <text x="800" y="55" text-anchor="middle" font-size="13" fill="#d32f2f" font-weight="bold">8m (largeur X) × 5m (profondeur Z)</text>
+
+        <!-- Room outline: 8m×5m, scale 100px/m, centered at 800,600 -->
+        <!-- X: 800-400=400 to 800+400=1200 (8m = 800px) -->
+        <!-- Z: 600-250=350 to 600+250=850 (5m = 500px) -->
+        <rect x="400" y="350" width="800" height="500" fill="none" stroke="#000" stroke-width="5"/>
+
+        <!-- Wall labels -->
+        <text x="800" y="330" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f">NORD - 8m</text>
+        <text x="800" y="880" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f">SUD - 8m</text>
+        <text x="1225" y="600" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f" transform="rotate(90 1225 600)">EST - 5m</text>
+        <text x="375" y="600" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f" transform="rotate(-90 375 600)">OUEST - 5m</text>
+
+        <!-- Room dimensions -->
+        <line x1="400" y1="310" x2="1200" y2="310" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <line x1="1200" y1="310" x2="400" y2="310" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <text x="800" y="300" text-anchor="middle" font-size="16" font-weight="bold" fill="#ff5722">8.00m (largeur)</text>
+
+        <line x1="1240" y1="350" x2="1240" y2="850" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <line x1="1240" y1="850" x2="1240" y2="350" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <text x="1280" y="600" text-anchor="middle" font-size="16" font-weight="bold" fill="#ff5722" transform="rotate(90 1280 600)">5.00m (profondeur)</text>
+
+        <!-- Center point -->
+        <circle cx="800" cy="600" r="8" fill="#ff5722"/>
+        <text x="820" y="595" font-size="11" fill="#ff5722" font-weight="bold">Centre (0,0,0)</text>
+
+        <!-- NORD wall (Z=-2.5, 8m) - P3, P4 -->
+        <!-- P3: (-2.24, 3.5, -1.98) → SVG: (800-224, 600-198) = (576, 402) -->
+        <!-- P4: (+2.24, 3.5, -1.98) → SVG: (1024, 402) -->
+
+        <rect x="240" y="370" width="560" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="520" y="400" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P3: 5.6×3.5m</text>
+
+        <rect x="688" y="370" width="560" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="968" y="400" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P4: 5.6×3.5m</text>
+
+        <rect x="688" y="370" width="112" height="50" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="744" y="395" text-anchor="middle" font-size="9" font-weight="bold" fill="#e65100">20%</text>
+
+        <use href="#proj-nord" x="576" y="550"/>
+        <text x="576" y="530" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P3</text>
+        <text x="576" y="575" text-anchor="middle" font-size="9" fill="#0d47a1">(-2.24, 3.5, -1.98)</text>
+        <line x1="576" y1="550" x2="576" y2="420" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+        <text x="576" y="490" text-anchor="middle" font-size="10" font-weight="bold" fill="#ff5722">4.48m</text>
+
+        <use href="#proj-nord" x="1024" y="550"/>
+        <text x="1024" y="530" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P4</text>
+        <text x="1024" y="575" text-anchor="middle" font-size="9" fill="#0d47a1">(+2.24, 3.5, -1.98)</text>
+        <line x1="1024" y1="550" x2="1024" y2="420" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <!-- SUD wall (Z=+2.5, 8m) - P1, P2 -->
+        <!-- P1: (-2.24, 3.5, +1.98) → SVG: (576, 798) -->
+        <!-- P2: (+2.24, 3.5, +1.98) → SVG: (1024, 798) -->
+
+        <rect x="240" y="780" width="560" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="520" y="810" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P1: 5.6×3.5m</text>
+
+        <rect x="688" y="780" width="560" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="968" y="810" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P2: 5.6×3.5m</text>
+
+        <rect x="688" y="780" width="112" height="50" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="744" y="805" text-anchor="middle" font-size="9" font-weight="bold" fill="#e65100">20%</text>
+
+        <use href="#proj-sud" x="576" y="650"/>
+        <text x="576" y="680" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P1</text>
+        <text x="576" y="635" text-anchor="middle" font-size="9" fill="#0d47a1">(-2.24, 3.5, +1.98)</text>
+        <line x1="576" y1="650" x2="576" y2="780" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+        <text x="576" y="720" text-anchor="middle" font-size="10" font-weight="bold" fill="#ff5722">4.48m</text>
+
+        <use href="#proj-sud" x="1024" y="650"/>
+        <text x="1024" y="680" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P2</text>
+        <text x="1024" y="635" text-anchor="middle" font-size="9" fill="#0d47a1">(+2.24, 3.5, +1.98)</text>
+        <line x1="1024" y1="650" x2="1024" y2="780" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <!-- Distance P1-P2 -->
+        <line x1="576" y1="620" x2="1024" y2="620" stroke="#666" stroke-width="2"/>
+        <line x1="576" y1="615" x2="576" y2="625" stroke="#666" stroke-width="2"/>
+        <line x1="1024" y1="615" x2="1024" y2="625" stroke="#666" stroke-width="2"/>
+        <text x="800" y="610" text-anchor="middle" font-size="11" font-weight="bold" fill="#666">4.48m espacement</text>
+
+        <!-- OUEST wall (X=-4, 5m) - P5 -->
+        <!-- P5: (+0.5, 3.5, 0) → SVG: (850, 600) -->
+
+        <rect x="420" y="350" width="50" height="500" fill="rgba(156, 39, 176, 0.15)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="445" y="600" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a" transform="rotate(90 445 600)">P5: 5.0×3.125m</text>
+
+        <use href="#proj-ouest" x="850" y="600"/>
+        <text x="875" y="606" text-anchor="start" font-size="12" font-weight="bold" fill="#6a1b9a">P5</text>
+        <text x="850" y="625" text-anchor="middle" font-size="9" fill="#6a1b9a">(+0.5, 3.5, 0)</text>
+        <line x1="850" y1="600" x2="470" y2="600" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+        <text x="660" y="590" text-anchor="middle" font-size="10" font-weight="bold" fill="#ff5722">4.5m</text>
+
+        <!-- EST wall (X=+4, 5m) - P6 -->
+        <!-- P6: (-0.5, 3.5, 0) → SVG: (750, 600) -->
+
+        <rect x="1130" y="350" width="50" height="500" fill="rgba(156, 39, 176, 0.15)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="1155" y="600" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a" transform="rotate(90 1155 600)">P6: 5.0×3.125m</text>
+
+        <use href="#proj-est" x="750" y="600"/>
+        <text x="725" y="606" text-anchor="end" font-size="12" font-weight="bold" fill="#6a1b9a">P6</text>
+        <text x="750" y="625" text-anchor="middle" font-size="9" fill="#6a1b9a">(-0.5, 3.5, 0)</text>
+        <line x1="750" y1="600" x2="1130" y2="600" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+        <text x="940" y="590" text-anchor="middle" font-size="10" font-weight="bold" fill="#ff5722">4.5m</text>
+
+        <!-- Clearance distances -->
+        <line x1="576" y1="650" x2="750" y2="600" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="663" y="625" text-anchor="middle" font-size="9" fill="#4caf50" font-weight="bold">2.6m</text>
+
+        <line x1="1024" y1="650" x2="850" y2="600" stroke="#4caf50" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <text x="937" y="625" text-anchor="middle" font-size="9" fill="#4caf50" font-weight="bold">2.6m</text>
+
+        <!-- Legend -->
+        <rect x="100" y="950" width="1400" height="140" fill="#f9f9f9" stroke="#333" stroke-width="2" rx="6"/>
+        <text x="800" y="975" text-anchor="middle" font-size="15" font-weight="bold">LÉGENDE</text>
+
+        <use href="#proj-sud" x="150" y="1010" transform="scale(0.8)"/>
+        <text x="180" y="1015" font-size="10">NEC NP-PX803UL + NP31ZL (0.75-0.93:1)</text>
+
+        <rect x="500" y="1000" width="40" height="20" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="550" y="1015" font-size="10">Zone projection</text>
+
+        <rect x="800" y="1000" width="40" height="20" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="850" y="1015" font-size="10">Overlap 20%</text>
+
+        <line x1="1050" y1="1010" x2="1100" y2="1010" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+        <text x="1110" y="1015" font-size="10">Clearance (distance entre projecteurs)</text>
+
+        <text x="800" y="1045" text-anchor="middle" font-size="10" fill="#666">Échelle: 100px = 1m | Hauteur: Y = 3.50m | Coverage: 0m → 3.5m (87.5%)</text>
+        <text x="800" y="1065" text-anchor="middle" font-size="10" fill="#4caf50" font-weight="bold">✅ Bonnes clearances: Installation simple, pas de zones à risque</text>
+    </svg>
+
+    <h2>📊 Configuration Projecteurs - Positions Validées</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Proj</th>
+                <th>Mur</th>
+                <th>Position (X,Y,Z)</th>
+                <th>Recul</th>
+                <th>Image</th>
+                <th>Ratio</th>
+                <th>Shift V</th>
+                <th>Shift H</th>
+                <th>Overlap</th>
+                <th>Coverage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>P1</strong></td>
+                <td>SUD 8m</td>
+                <td class="coord">(-2.24, 3.5, +1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04→+0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P2</strong></td>
+                <td>SUD 8m</td>
+                <td class="coord">(+2.24, 3.5, +1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56→+5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P3</strong></td>
+                <td>NORD 8m</td>
+                <td class="coord">(-2.24, 3.5, -1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04→+0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P4</strong></td>
+                <td>NORD 8m</td>
+                <td class="coord">(+2.24, 3.5, -1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56→+5.04m</td>
+            </tr>
+            <tr style="background:#e8eaf6;">
+                <td><strong>P5</strong></td>
+                <td>OUEST 5m</td>
+                <td class="coord">(+0.5, 3.5, 0)</td>
+                <td>4.5m</td>
+                <td>5.0×3.125m</td>
+                <td>0.90:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>-</td>
+                <td>Z: -2.5→+2.5m (exact)</td>
+            </tr>
+            <tr style="background:#e8eaf6;">
+                <td><strong>P6</strong></td>
+                <td>EST 5m</td>
+                <td class="coord">(-0.5, 3.5, 0)</td>
+                <td>4.5m</td>
+                <td>5.0×3.125m</td>
+                <td>0.90:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>-</td>
+                <td>Z: -2.5→+2.5m (exact)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="success-box">
+        <h4>✅ CLEARANCES VALIDÉES - INSTALLATION SIMPLE</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Distance P1 ↔ P6:</strong> 2.6m - Clearance excellente ✓</li>
+            <li><strong>Distance P2 ↔ P5:</strong> 2.6m - Clearance excellente ✓</li>
+            <li><strong>Distance P3 ↔ P6:</strong> 2.6m - Clearance excellente ✓</li>
+            <li><strong>Distance P4 ↔ P5:</strong> 2.6m - Clearance excellente ✓</li>
+            <li><strong>Distance P1 ↔ P3:</strong> 3.96m - Très bon ✓</li>
+            <li><strong>Distance P2 ↔ P4:</strong> 3.96m - Très bon ✓</li>
+            <li><strong>Conclusion:</strong> Aucune zone de proximité critique - Installation directe sans ajustements</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>📺 Résolution et Coverage</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Murs NORD/SUD (8m):</strong> 2×NEC = 3,456×1,200px effectifs | Coverage: 10.08m sur 8m = spillover 1.04m/côté</li>
+            <li><strong>Murs EST/OUEST (5m):</strong> 1×NEC = 1,920×1,200px | Coverage: 5.0m EXACT (pas de spillover)</li>
+            <li><strong>Hauteur (tous murs):</strong> 3.5m (0→3.5m = 87.5% du mur de 4m) | Gap plafond: 0.5m</li>
+            <li><strong>Total panoramique:</strong> ~11,000 × 1,200 pixels effectifs (murs 8m avec soft edge + murs 5m)</li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <h4>⚠️ GESTION SPILLOVER MURS 8m</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Murs NORD/SUD:</strong> Coverage 10.08m sur 8m → spillover 1.04m chaque côté</li>
+            <li><strong>Solution content:</strong> Créer images avec zone active centrée sur 8m, accepter crop latéral de 1.04m</li>
+            <li><strong>Alternative:</strong> Créer content de 10.08m de large avec zones mortes de 1.04m chaque côté</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>🔧 GUIDE INSTALLATION</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>1. Montage supports:</strong> 6 supports plafond robustes à H=3.50m exacte</li>
+            <li><strong>2. Positioning:</strong> Utiliser coordonnées théoriques directement (bonnes clearances)</li>
+            <li><strong>3. Réglages optiques:</strong>
+                <ul style="margin-left:15px;margin-top:5px;">
+                    <li>Lens shift vertical: -50% sur TOUS (image 0→3.5m)</li>
+                    <li>Lens shift horizontal: 0% (centré) - pas d'ajustement nécessaire</li>
+                    <li>Throw ratio: 0.80:1 pour P1-P4 (murs 8m), 0.90:1 pour P5-P6 (murs 5m)</li>
+                </ul>
+            </li>
+            <li><strong>4. Soft edge:</strong> Calibration 20% sur murs NORD/SUD uniquement (pas sur murs EST/OUEST)</li>
+            <li><strong>5. Test:</strong> Grille blanche pour vérifier raccords NORD/SUD</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>📏 MESURES CLÉS</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Recul murs 8m (P1-P4):</strong> 4.48m (throw 0.80:1)</li>
+            <li><strong>Recul murs 5m (P5-P6):</strong> 4.5m (throw 0.90:1)</li>
+            <li><strong>Overlap murs 8m:</strong> 1.12m (20% de 5.6m)</li>
+            <li><strong>Overlap murs 5m:</strong> Aucun (1 seul projecteur par mur)</li>
+            <li><strong>Espacement NORD/SUD:</strong> 4.48m entre P1↔P2 et P3↔P4</li>
+            <li><strong>Consommation:</strong> 6×350W = 2,100W total (9.1A@230V) - 1 circuit 16A suffit</li>
+        </ul>
+    </div>
+
+    <h2>🎯 Matériel Requis</h2>
+
+    <table>
+        <thead>
+            <tr><th>Qté</th><th>Matériel</th><th>Spécifications</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>6×</strong></td><td>NEC NP-PX803UL</td><td>8000 lm, WUXGA 1920×1200, DLP Laser</td><td>Tous les murs</td></tr>
+            <tr><td><strong>6×</strong></td><td>Objectif NEC NP31ZL</td><td>0.75-0.93:1 Ultra Court Zoom</td><td>Compatible NP-PX803UL</td></tr>
+            <tr><td><strong>6×</strong></td><td>Support plafond robuste</td><td>Charge 30kg min, réglable en hauteur</td><td>Montage H=3.50m</td></tr>
+            <tr><td><strong>1×</strong></td><td>Switch réseau Gigabit</td><td>8 ports minimum</td><td>Contrôle projecteurs</td></tr>
+            <tr><td><strong>6×</strong></td><td>Câble réseau Cat6</td><td>Longueurs selon positions</td><td>Connexion réseau</td></tr>
+            <tr><td><strong>6×</strong></td><td>Prise 230V/16A</td><td>Dédiée, protégée</td><td>Alimentation électrique</td></tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:25px; text-align:center; font-size:9pt; color:#666; border-top:3px solid #d32f2f; padding-top:15px;">
+        <p style="font-size:11pt;"><strong>Plan Technique - 6 Projecteurs NEC NP-PX803UL - Salle 8m×5m</strong></p>
+        <p><strong>Configuration:</strong> 8m largeur (NORD/SUD avec overlap 20%) × 5m profondeur (EST/OUEST coverage exacte)</p>
+        <p>Installation simple | Clearances validées | Overlap 20% sur 2 murs | Coverage 3.5m hauteur</p>
+        <p>Document généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
+    </div>
+</body>
+</html>
