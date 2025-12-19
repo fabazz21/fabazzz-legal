@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Technique - SALLE 8×10m - 8 Projecteurs Epson</title>
+    <style>
+        @page { size: A4 landscape; margin: 15mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.6; color: #222; background: white; padding: 20px; max-width: 297mm; margin: 0 auto; }
+        h1 { color: #d32f2f; border-bottom: 4px solid #d32f2f; padding-bottom: 10px; margin-bottom: 20px; font-size: 24pt; }
+        h2 { color: #1976d2; margin-top: 25px; margin-bottom: 15px; font-size: 16pt; border-left: 5px solid #1976d2; padding-left: 10px; }
+        .header-info { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #d32f2f; }
+        .header-info p { margin: 5px 0; font-size: 11pt; }
+        .header-info strong { color: #d32f2f; min-width: 180px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 9pt; page-break-inside: avoid; }
+        thead { background: #1976d2; color: white; }
+        th, td { padding: 10px; text-align: left; border: 1px solid #ddd; }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #f57c00; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .warning-box h4 { color: #e65100; margin-bottom: 8px; font-size: 11pt; }
+        .info-box { background: #e1f5fe; border-left: 5px solid #0288d1; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .info-box h4 { color: #0277bd; margin-bottom: 8px; font-size: 11pt; }
+        .success-box { background: #e8f5e9; border-left: 5px solid #4caf50; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .success-box h4 { color: #2e7d32; margin-bottom: 8px; font-size: 11pt; }
+        .coord { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 2px 6px; border-radius: 3px; font-size: 9pt; }
+        svg { border: 1px solid #ddd; border-radius: 8px; margin: 20px 0; background: white; }
+        .dimension-line { stroke: #666; stroke-width: 1; fill: none; marker-end: url(#arrowhead); }
+        .dimension-text { font-size: 12px; fill: #444; font-family: Arial; font-weight: 600; }
+        @media print { .print-instruction { display: none; } }
+        .print-instruction { background: #4caf50; color: white; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0; font-weight: 600; font-size: 11pt; }
+    </style>
+</head>
+<body>
+    <div class="print-instruction">📄 Pour générer le PDF: <strong>Ctrl+P</strong> → Enregistrer au format PDF (Paysage)</div>
+
+    <h1>📽️ Plan Technique - 8 Projecteurs Epson - SALLE 8×10m - APPROCHE SIMPLIFIÉE</h1>
+
+    <div class="header-info">
+        <p><strong>Salle:</strong> 8m (largeur) × 10m (profondeur) × 4m (hauteur)</p>
+        <p><strong>Projecteurs:</strong> 4× Epson L690SE (6000 lm) + 4× Epson L570U (5200 lm) - WUXGA 1920×1200</p>
+        <p><strong>Hauteur montage:</strong> 3.50m (plafond)</p>
+        <p><strong>Configuration:</strong> Panoramique 360° - Couverture TOTALE 3.5m hauteur</p>
+        <p><strong>Soft Edge:</strong> 20% STANDARD (1.12m) - Configuration optimale</p>
+        <p><strong>Approche:</strong> Images agrandies (5.6×3.5m) - Spillover accepté sur côtés</p>
+    </div>
+
+    <div class="success-box">
+        <h4>✅ AVANTAGES APPROCHE SIMPLIFIÉE</h4>
+        <ul style="margin-left:20px;font-size:9pt;line-height:1.6;">
+            <li><strong>Overlap standard 20%:</strong> Calibration soft edge simple et éprouvée (vs 57-60% complexe)</li>
+            <li><strong>Murs 10m PARFAIT:</strong> Coverage 10.08m sur 10m = spillover minimal 4cm chaque côté!</li>
+            <li><strong>Murs 8m:</strong> Coverage 10.08m sur 8m = spillover 1.04m chaque côté (content à cropper)</li>
+            <li><strong>8 projecteurs seulement:</strong> Moins de matériel, installation plus simple (vs 10)</li>
+            <li><strong>Hauteur 3.5m garantie:</strong> Coverage complète 0m → 3.5m = 87.5% du mur</li>
+            <li><strong>Pas de pixels perdus:</strong> Zone overlap réduite = meilleure résolution effective</li>
+        </ul>
+    </div>
+
+    <h2>📐 Plan Technique Vue de Dessus</h2>
+
+    <svg viewBox="0 0 1400 1200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                <polygon points="0 0, 10 3, 0 6" fill="#666" />
+            </marker>
+        </defs>
+
+        <!-- Room outline 8m×10m, scale: 80px = 1m, centered at 700,600 -->
+        <rect x="380" y="200" width="640" height="800" fill="none" stroke="#000" stroke-width="4"/>
+
+        <!-- Wall labels -->
+        <text x="700" y="180" text-anchor="middle" font-size="18" font-weight="bold" fill="#d32f2f">NORD (10m)</text>
+        <text x="700" y="1030" text-anchor="middle" font-size="18" font-weight="bold" fill="#d32f2f">SUD (10m)</text>
+        <text x="1040" y="600" text-anchor="middle" font-size="18" font-weight="bold" fill="#d32f2f" transform="rotate(90 1040 600)">EST (8m)</text>
+        <text x="360" y="600" text-anchor="middle" font-size="18" font-weight="bold" fill="#d32f2f" transform="rotate(-90 360 600)">OUEST (8m)</text>
+
+        <!-- SUD wall (Z=+5m) - 2 projectors -->
+        <!-- P1: (-2.24, 3.5, +1.75) → screen X=-2.24-2.8=-5.04 to -2.24+2.8=0.56 → pixels: 700-2.24*80=520, screen 520-224=296 to 520+224=744 -->
+        <!-- P2: (+2.24, 3.5, +1.75) → screen X=-0.56 to +5.04 → pixels: 700+2.24*80=879, screen 879-224=655 to 879+224=1103 -->
+
+        <!-- P1 projection area (5.6m wide = 448px) -->
+        <rect x="296" y="860" width="448" height="40" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2"/>
+        <text x="520" y="885" text-anchor="middle" font-size="10" fill="#2e7d32" font-weight="bold">P1: 5.6m</text>
+
+        <!-- P2 projection area -->
+        <rect x="655" y="860" width="448" height="40" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2"/>
+        <text x="879" y="885" text-anchor="middle" font-size="10" fill="#2e7d32" font-weight="bold">P2: 5.6m</text>
+
+        <!-- Overlap zone 20% = 1.12m = 90px -->
+        <rect x="655" y="860" width="90" height="40" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="700" y="920" text-anchor="middle" font-size="10" fill="#e65100" font-weight="bold">Overlap 20%</text>
+        <text x="700" y="935" text-anchor="middle" font-size="9" fill="#e65100">1.12m</text>
+
+        <!-- P1 projector at (-2.24, 3.5, +1.75) → X=520, Z=600+1.75*80=740 -->
+        <circle cx="520" cy="740" r="20" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="520" y="747" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P1</text>
+        <line x1="520" y1="740" x2="520" y2="860" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- P2 projector at (+2.24, 3.5, +1.75) -->
+        <circle cx="879" cy="740" r="20" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="879" y="747" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P2</text>
+        <line x1="879" y1="740" x2="879" y2="860" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- NORD wall (Z=-5m) - 2 projectors -->
+        <!-- P3: (-2.24, 3.5, -1.75) → Z=600-1.75*80=460 -->
+        <!-- P4: (+2.24, 3.5, -1.75) -->
+
+        <!-- P3 projection area -->
+        <rect x="296" y="300" width="448" height="40" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2"/>
+        <text x="520" y="325" text-anchor="middle" font-size="10" fill="#2e7d32" font-weight="bold">P3: 5.6m</text>
+
+        <!-- P4 projection area -->
+        <rect x="655" y="300" width="448" height="40" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2"/>
+        <text x="879" y="325" text-anchor="middle" font-size="10" fill="#2e7d32" font-weight="bold">P4: 5.6m</text>
+
+        <!-- Overlap zone -->
+        <rect x="655" y="300" width="90" height="40" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="700" y="280" text-anchor="middle" font-size="10" fill="#e65100" font-weight="bold">Overlap 20% (1.12m)</text>
+
+        <!-- P3 projector -->
+        <circle cx="520" cy="460" r="20" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="520" y="467" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P3</text>
+        <line x1="520" y1="460" x2="520" y2="340" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- P4 projector -->
+        <circle cx="879" cy="460" r="20" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="879" y="467" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P4</text>
+        <line x1="879" y1="460" x2="879" y2="340" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- EST wall (X=+4m) - 2 projectors -->
+        <!-- P5: (-3.56, 3.5, -2.24) → X=700-3.56*80=415, Z=600-2.24*80=421 -->
+        <!-- P6: (-3.56, 3.5, +2.24) → X=415, Z=600+2.24*80=779 -->
+
+        <!-- P5 projection area (vertical on EST wall) -->
+        <rect x="920" y="176" width="40" height="448" fill="rgba(156, 39, 176, 0.2)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="940" y="400" text-anchor="middle" font-size="10" fill="#6a1b9a" font-weight="bold" transform="rotate(90 940 400)">P5: 5.6m</text>
+
+        <!-- P6 projection area -->
+        <rect x="920" y="535" width="40" height="448" fill="rgba(156, 39, 176, 0.2)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="940" y="759" text-anchor="middle" font-size="10" fill="#6a1b9a" font-weight="bold" transform="rotate(90 940 759)">P6: 5.6m</text>
+
+        <!-- Overlap zone -->
+        <rect x="920" y="535" width="40" height="90" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+
+        <!-- P5 projector -->
+        <circle cx="415" cy="421" r="20" fill="#9c27b0" stroke="#6a1b9a" stroke-width="3"/>
+        <text x="415" y="428" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P5</text>
+        <line x1="415" y1="421" x2="920" y2="421" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- P6 projector -->
+        <circle cx="415" cy="779" r="20" fill="#9c27b0" stroke="#6a1b9a" stroke-width="3"/>
+        <text x="415" y="786" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P6</text>
+        <line x1="415" y1="779" x2="920" y2="779" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- OUEST wall (X=-4m) - 2 projectors -->
+        <!-- P7: (+3.56, 3.5, -2.24) → X=700+3.56*80=985, Z=421 -->
+        <!-- P8: (+3.56, 3.5, +2.24) → X=985, Z=779 -->
+
+        <!-- P7 projection area -->
+        <rect x="440" y="176" width="40" height="448" fill="rgba(156, 39, 176, 0.2)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="460" y="400" text-anchor="middle" font-size="10" fill="#6a1b9a" font-weight="bold" transform="rotate(90 460 400)">P7: 5.6m</text>
+
+        <!-- P8 projection area -->
+        <rect x="440" y="535" width="40" height="448" fill="rgba(156, 39, 176, 0.2)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="460" y="759" text-anchor="middle" font-size="10" fill="#6a1b9a" font-weight="bold" transform="rotate(90 460 759)">P8: 5.6m</text>
+
+        <!-- Overlap zone -->
+        <rect x="440" y="535" width="40" height="90" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+
+        <!-- P7 projector -->
+        <circle cx="985" cy="421" r="20" fill="#9c27b0" stroke="#6a1b9a" stroke-width="3"/>
+        <text x="985" y="428" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P7</text>
+        <line x1="985" y1="421" x2="480" y2="421" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- P8 projector -->
+        <circle cx="985" cy="779" r="20" fill="#9c27b0" stroke="#6a1b9a" stroke-width="3"/>
+        <text x="985" y="786" text-anchor="middle" font-size="14" fill="white" font-weight="bold">P8</text>
+        <line x1="985" y1="779" x2="480" y2="779" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4"/>
+
+        <!-- Dimension lines -->
+        <!-- Room width 8m -->
+        <line x1="380" y1="150" x2="1020" y2="150" class="dimension-line"/>
+        <line x1="380" y1="145" x2="380" y2="155" stroke="#666" stroke-width="1"/>
+        <line x1="1020" y1="145" x2="1020" y2="155" stroke="#666" stroke-width="1"/>
+        <text x="700" y="140" text-anchor="middle" class="dimension-text">8.00m (largeur)</text>
+
+        <!-- Room depth 10m -->
+        <line x1="1070" y1="200" x2="1070" y2="1000" class="dimension-line"/>
+        <line x1="1065" y1="200" x2="1075" y2="200" stroke="#666" stroke-width="1"/>
+        <line x1="1065" y1="1000" x2="1075" y2="1000" stroke="#666" stroke-width="1"/>
+        <text x="1090" y="600" text-anchor="middle" class="dimension-text" transform="rotate(90 1090 600)">10.00m (profondeur)</text>
+
+        <!-- Throw distance P1 -->
+        <line x1="520" y1="760" x2="520" y2="860" stroke="#ff5722" stroke-width="2"/>
+        <text x="540" y="810" font-size="11" fill="#ff5722" font-weight="bold">3.25m</text>
+
+        <!-- Throw distance P5 -->
+        <line x1="435" y1="421" x2="920" y2="421" stroke="#ff5722" stroke-width="2"/>
+        <text x="677" y="410" font-size="11" fill="#ff5722" font-weight="bold">7.56m</text>
+
+        <!-- Legend -->
+        <rect x="50" y="1050" width="1300" height="120" fill="#f5f5f5" stroke="#999" stroke-width="1" rx="5"/>
+        <text x="700" y="1075" text-anchor="middle" font-size="14" font-weight="bold">LÉGENDE</text>
+
+        <circle cx="100" cy="1100" r="10" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+        <text x="120" y="1105" font-size="11">Epson L690SE (SUD/NORD - murs 10m)</text>
+
+        <circle cx="400" cy="1100" r="10" fill="#9c27b0" stroke="#6a1b9a" stroke-width="2"/>
+        <text x="420" y="1105" font-size="11">Epson L570U (EST/OUEST - murs 8m)</text>
+
+        <rect x="700" y="1090" width="40" height="20" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2"/>
+        <text x="750" y="1105" font-size="11">Zone de projection (5.6×3.5m)</text>
+
+        <rect x="1000" y="1090" width="40" height="20" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="1050" y="1105" font-size="11">Soft edge overlap 20% (1.12m)</text>
+
+        <text x="700" y="1135" text-anchor="middle" font-size="10" fill="#666">Échelle: 80px = 1m | Hauteur montage: Y = 3.50m | Coverage: 0m → 3.5m</text>
+        <text x="700" y="1155" text-anchor="middle" font-size="10" fill="#666" font-weight="bold">Spillover: Murs 10m = 4cm/côté (PARFAIT) | Murs 8m = 1.04m/côté (content à cropper)</text>
+    </svg>
+
+    <h2>📊 Configuration des Projecteurs</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Proj</th>
+                <th>Modèle</th>
+                <th>Mur</th>
+                <th>Position (X,Y,Z)</th>
+                <th>Recul</th>
+                <th>Image L×H</th>
+                <th>Ratio</th>
+                <th>Lens Shift V</th>
+                <th>Soft Edge</th>
+                <th>Coverage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>P1</strong></td>
+                <td>L690SE</td>
+                <td>SUD-G</td>
+                <td class="coord">(-2.24, 3.5, +1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04 → +0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P2</strong></td>
+                <td>L690SE</td>
+                <td>SUD-D</td>
+                <td class="coord">(+2.24, 3.5, +1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56 → +5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P3</strong></td>
+                <td>L690SE</td>
+                <td>NORD-G</td>
+                <td class="coord">(-2.24, 3.5, -1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04 → +0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P4</strong></td>
+                <td>L690SE</td>
+                <td>NORD-D</td>
+                <td class="coord">(+2.24, 3.5, -1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56 → +5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P5</strong></td>
+                <td>L570U</td>
+                <td>EST-H</td>
+                <td class="coord">(-3.56, 3.5, -2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Haut 20%</td>
+                <td>Z: -5.04 → +0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P6</strong></td>
+                <td>L570U</td>
+                <td>EST-B</td>
+                <td class="coord">(-3.56, 3.5, +2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Bas 20%</td>
+                <td>Z: -0.56 → +5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P7</strong></td>
+                <td>L570U</td>
+                <td>OUEST-H</td>
+                <td class="coord">(+3.56, 3.5, -2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Haut 20%</td>
+                <td>Z: -5.04 → +0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P8</strong></td>
+                <td>L570U</td>
+                <td>OUEST-B</td>
+                <td class="coord">(+3.56, 3.5, +2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Bas 20%</td>
+                <td>Z: -0.56 → +5.04m</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info-box">
+        <h4>📺 Résolution et Couverture par Mur</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Mur SUD (10m):</strong> 2 proj × 1920px - overlap 20% = 3,456 × 1,200 px effectifs | Coverage: 10.08m sur 10m = <strong>99.2% PARFAIT!</strong></li>
+            <li><strong>Mur NORD (10m):</strong> 2 proj × 1920px - overlap 20% = 3,456 × 1,200 px effectifs | Coverage: 10.08m sur 10m = <strong>99.2% PARFAIT!</strong></li>
+            <li><strong>Mur EST (8m):</strong> 2 proj × 1920px - overlap 20% = 3,456 × 1,200 px effectifs | Coverage: 10.08m sur 8m (spillover 1.04m/côté)</li>
+            <li><strong>Mur OUEST (8m):</strong> 2 proj × 1920px - overlap 20% = 3,456 × 1,200 px effectifs | Coverage: 10.08m sur 8m (spillover 1.04m/côté)</li>
+            <li><strong>TOTAL panoramique:</strong> 13,824 × 1,200 pixels effectifs (après blending standard 20%)</li>
+            <li><strong>Couverture hauteur:</strong> 3.5m (0m à 3.5m) = 87.5% du mur | Gap plafond: 0.5m</li>
+        </ul>
+    </div>
+
+    <div class="warning-box">
+        <h4>⚠️ GESTION DU SPILLOVER</h4>
+        <ul style="margin-left:20px;font-size:9pt;line-height:1.6;">
+            <li><strong>Murs 10m (SUD/NORD):</strong> Spillover minimal 4cm chaque côté → quasi-parfait, aucune action requise</li>
+            <li><strong>Murs 8m (EST/OUEST):</strong> Spillover 1.04m chaque côté → content doit être croppé de 1.04m sur les bords</li>
+            <li><strong>Option 1:</strong> Créer le content en 5.6m de large, accepter crop naturel sur les côtés</li>
+            <li><strong>Option 2:</strong> Créer le content centré sur 8m, avec zones mortes de 1.04m chaque côté</li>
+            <li><strong>Recommandation:</strong> Utiliser Option 1 pour contenu immersif, Option 2 pour contenu précis/texte</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>📏 MESURES CLÉS</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Recul L690SE (murs 10m):</strong> 3.25m (throw ratio 0.58:1)</li>
+            <li><strong>Recul L570U (murs 8m):</strong> 7.56m (throw ratio 1.35:1 minimum)</li>
+            <li><strong>Zone soft edge:</strong> 1.12m de large (20% de 5.6m) - Standard facile à calibrer</li>
+            <li><strong>Distance P1 ↔ P2:</strong> 4.48m horizontal (même pour P3↔P4)</li>
+            <li><strong>Distance P5 ↔ P6:</strong> 4.48m vertical (même pour P7↔P8)</li>
+            <li><strong>Image hauteur:</strong> De Y=0m (sol) à Y=3.5m (tous projecteurs)</li>
+            <li><strong>Gap plafond:</strong> 0.5m non couvert (3.5m → 4.0m)</li>
+        </ul>
+    </div>
+
+    <h2>🎯 Matériel Requis</h2>
+
+    <table>
+        <thead>
+            <tr><th>Qté</th><th>Matériel</th><th>Spécifications</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>4×</strong></td>
+                <td>Epson EB-L690SE</td>
+                <td>6000 lm, WUXGA 1920×1200, 0.50-0.70:1</td>
+                <td>Murs NORD/SUD (10m) - 2 par mur</td>
+            </tr>
+            <tr>
+                <td><strong>4×</strong></td>
+                <td>Epson EB-L570U</td>
+                <td>5200 lm, WUXGA 1920×1200, 1.35-2.20:1</td>
+                <td>Murs EST/OUEST (8m) - 2 par mur</td>
+            </tr>
+            <tr>
+                <td><strong>8×</strong></td>
+                <td>Support plafond</td>
+                <td>Charge min 15kg, réglable en hauteur</td>
+                <td>Montage à 3.50m avec ajustement précis</td>
+            </tr>
+            <tr>
+                <td><strong>1×</strong></td>
+                <td>Switch réseau</td>
+                <td>Gigabit 12 ports minimum</td>
+                <td>Contrôle centralisé des projecteurs</td>
+            </tr>
+            <tr>
+                <td><strong>8×</strong></td>
+                <td>Câble réseau Cat6</td>
+                <td>Longueur selon implantation</td>
+                <td>Connexion switch → projecteurs</td>
+            </tr>
+            <tr>
+                <td><strong>8×</strong></td>
+                <td>Prise 230V/16A</td>
+                <td>Dédiée, protégée</td>
+                <td>Alimentation électrique</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info-box">
+        <h4>🔧 Notes d'Installation</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>Fixation:</strong> 8 supports plafond robustes à 3.50m de hauteur exacte</li>
+            <li><strong>Recul mixte:</strong> L690SE à 3.25m, L570U à 7.56m des murs respectifs</li>
+            <li><strong>Lens Shift:</strong> -50% vertical OBLIGATOIRE sur TOUS projecteurs (image 0m → 3.5m)</li>
+            <li><strong>Throw Ratio:</strong> L690SE réglé à 0.58:1, L570U réglé à 1.35:1 (minimum zoom)</li>
+            <li><strong>Soft Edge:</strong> Calibration STANDARD 20% via Epson Edge Blending (simple et fiable)</li>
+            <li><strong>Alignement:</strong> Vérifier perpendiculaire parfait aux murs, utiliser laser pour précision</li>
+            <li><strong>Réseau:</strong> IP statiques recommandées, VLAN dédié si possible</li>
+            <li><strong>Test blending:</strong> Pattern de grille blanc pour vérifier raccords soft edge</li>
+            <li><strong>Content:</strong> Prévoir crop 1.04m chaque côté sur murs 8m dans la création</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>⚡ Consommation Électrique</h4>
+        <ul style="margin-left:20px;line-height:1.8;font-size:9pt;">
+            <li><strong>L690SE:</strong> 4× 495W = 1,980W total</li>
+            <li><strong>L570U:</strong> 4× 465W = 1,860W total</li>
+            <li><strong>TOTAL système:</strong> 3,840W (16.7A @ 230V)</li>
+            <li><strong>Recommandation:</strong> 2 circuits séparés 16A (4 proj par circuit)</li>
+        </ul>
+    </div>
+
+    <div style="margin-top: 40px; text-align: center; color: #666; font-size: 9pt; border-top: 2px solid #ddd; padding-top: 20px;">
+        <p><strong>Plan Technique - 8 Projecteurs Epson - Salle 8m×10m - Approche Simplifiée</strong></p>
+        <p>Configuration optimale: Overlap standard 20% | Hauteur garantie 3.5m | Spillover acceptable</p>
+        <p>Murs 10m: Coverage parfaite 99.2% | Murs 8m: Spillover 1.04m/côté (content à cropper)</p>
+        <p>Document généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
+    </div>
+</body>
+</html>

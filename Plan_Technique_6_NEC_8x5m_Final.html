@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Technique - 6 NEC - 8×5m - Overlap 20%</title>
+    <style>
+        @page { size: A3 landscape; margin: 10mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: white; padding: 15px; }
+        h1 { text-align: center; color: #d32f2f; font-size: 22pt; margin-bottom: 10px; }
+        .subtitle { text-align: center; color: #666; font-size: 11pt; margin-bottom: 15px; }
+        svg { width: 100%; height: auto; border: 2px solid #333; background: white; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 9pt; }
+        th, td { padding: 8px; border: 1px solid #333; text-align: left; }
+        th { background: #1976d2; color: white; font-weight: bold; }
+        tr:nth-child(even) { background: #f5f5f5; }
+        .info-box { background: #e3f2fd; border-left: 5px solid #1976d2; padding: 12px; margin: 10px 0; font-size: 9pt; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #f57c00; padding: 12px; margin: 10px 0; font-size: 9pt; }
+        .coord { font-family: 'Courier New', monospace; background: #f0f0f0; padding: 2px 5px; border-radius: 3px; }
+        @media print { body { padding: 0; } .no-print { display: none; } }
+    </style>
+</head>
+<body>
+    <h1>📐 PLAN TECHNIQUE D'IMPLANTATION</h1>
+    <div class="subtitle">SALLE 8m×5m×4m | 6 Projecteurs NEC NP-PX803UL | Objectifs NP31ZL | Hauteur 3.50m | Overlap standard 20%</div>
+
+    <svg viewBox="0 0 1400 900" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                <polygon points="0 0, 10 3, 0 6" fill="#ff6b6b" />
+            </marker>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e0e0e0" stroke-width="0.5"/>
+            </pattern>
+        </defs>
+
+        <rect width="1400" height="900" fill="url(#grid)"/>
+
+        <!-- Title -->
+        <text x="700" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#1976d2">VUE DE DESSUS - Plan Y=3.5m (hauteur projecteurs)</text>
+        <text x="700" y="50" text-anchor="middle" font-size="12" fill="#666">Échelle: 100px = 1m | Images 5.6×3.5m avec overlap 20% (1.12m)</text>
+
+        <!-- Room walls (8m×5m, scale 100px/m, centered at 700,450) -->
+        <!-- X: 700-400=300 to 700+400=1100 (8m) -->
+        <!-- Z: 450-250=200 to 450+250=700 (5m) -->
+        <rect x="300" y="200" width="800" height="500" fill="none" stroke="#000" stroke-width="4"/>
+
+        <!-- Wall labels -->
+        <text x="700" y="180" text-anchor="middle" font-size="16" font-weight="bold" fill="#d32f2f">NORD (8m)</text>
+        <text x="700" y="730" text-anchor="middle" font-size="16" font-weight="bold" fill="#d32f2f">SUD (8m)</text>
+        <text x="270" y="450" text-anchor="middle" font-size="16" font-weight="bold" fill="#d32f2f" transform="rotate(-90 270 450)">OUEST (5m)</text>
+        <text x="1130" y="450" text-anchor="middle" font-size="16" font-weight="bold" fill="#d32f2f" transform="rotate(-90 1130 450)">EST (5m)</text>
+
+        <!-- Room dimensions -->
+        <line x1="300" y1="170" x2="1100" y2="170" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="1100" y1="170" x2="300" y2="170" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="700" y="165" text-anchor="middle" font-size="14" font-weight="bold" fill="#ff6b6b">8.00m</text>
+
+        <line x1="280" y1="200" x2="280" y2="700" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrow)"/>
+        <line x1="280" y1="700" x2="280" y2="200" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrow)"/>
+        <text x="250" y="455" text-anchor="middle" font-size="14" font-weight="bold" fill="#ff6b6b" transform="rotate(-90 250 455)">5.00m</text>
+
+        <!-- Projection areas P1 (SUD-Gauche) -->
+        <!-- P1 covers -5.04m to +0.56m → X: 300-104=196 to 700+56=756 (560px = 5.6m) -->
+        <rect x="196" y="650" width="560" height="50" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5"/>
+        <text x="476" y="680" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P1: 5.6m×3.5m</text>
+
+        <!-- Projection area P2 (SUD-Droite) -->
+        <!-- P2 covers -0.56m to +5.04m → X: 700-56=644 to 1100+104=1204 -->
+        <rect x="644" y="650" width="560" height="50" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5"/>
+        <text x="924" y="680" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P2: 5.6m×3.5m</text>
+
+        <!-- Overlap zone SUD (20%) -->
+        <!-- Overlap from -0.56m to +0.56m → X: 644 to 756 (112px = 1.12m) -->
+        <rect x="644" y="650" width="112" height="50" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="700" y="675" text-anchor="middle" font-size="10" font-weight="bold" fill="#e65100">OVERLAP</text>
+        <text x="700" y="688" text-anchor="middle" font-size="10" font-weight="bold" fill="#e65100">20%</text>
+
+        <!-- Projection areas P3/P4 (NORD) - mirror of SUD -->
+        <rect x="196" y="200" width="560" height="50" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5"/>
+        <text x="476" y="230" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P3: 5.6m×3.5m</text>
+
+        <rect x="644" y="200" width="560" height="50" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5"/>
+        <text x="924" y="230" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P4: 5.6m×3.5m</text>
+
+        <rect x="644" y="200" width="112" height="50" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="700" y="225" text-anchor="middle" font-size="10" font-weight="bold" fill="#e65100">OVERLAP 20%</text>
+
+        <!-- Projection areas P5/P6 (OUEST/EST) -->
+        <rect x="300" y="200" width="50" height="500" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5"/>
+        <text x="325" y="445" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32" transform="rotate(-90 325 445)">P5: 5.0m×3.125m</text>
+
+        <rect x="1050" y="200" width="50" height="500" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-width="2" stroke-dasharray="5,5"/>
+        <text x="1075" y="445" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32" transform="rotate(-90 1075 445)">P6: 5.0m×3.125m</text>
+
+        <!-- Projectors -->
+        <!-- P1: (-2.24, 3.5, +1.98) → X=700-224=476, Z=450+198=648 -->
+        <circle cx="476" cy="648" r="18" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="476" y="653" text-anchor="middle" font-size="14" font-weight="bold" fill="white">P1</text>
+        <line x1="476" y1="648" x2="476" y2="690" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+
+        <!-- P2: (+2.24, 3.5, +1.98) → X=700+224=924, Z=648 -->
+        <circle cx="924" cy="648" r="18" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="924" y="653" text-anchor="middle" font-size="14" font-weight="bold" fill="white">P2</text>
+        <line x1="924" y1="648" x2="924" y2="690" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+
+        <!-- P3: (-2.24, 3.5, -1.98) → X=476, Z=450-198=252 -->
+        <circle cx="476" cy="252" r="18" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="476" y="257" text-anchor="middle" font-size="14" font-weight="bold" fill="white">P3</text>
+        <line x1="476" y1="252" x2="476" y2="210" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+
+        <!-- P4: (+2.24, 3.5, -1.98) → X=924, Z=252 -->
+        <circle cx="924" cy="252" r="18" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="924" y="257" text-anchor="middle" font-size="14" font-weight="bold" fill="white">P4</text>
+        <line x1="924" y1="252" x2="924" y2="210" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+
+        <!-- P5: (+0.5, 3.5, 0) → X=700+50=750, Z=450 -->
+        <circle cx="750" cy="450" r="18" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="750" y="455" text-anchor="middle" font-size="14" font-weight="bold" fill="white">P5</text>
+        <line x1="750" y1="450" x2="340" y2="450" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+
+        <!-- P6: (-0.5, 3.5, 0) → X=700-50=650, Z=450 -->
+        <circle cx="650" cy="450" r="18" fill="#1976d2" stroke="#0d47a1" stroke-width="3"/>
+        <text x="650" y="455" text-anchor="middle" font-size="14" font-weight="bold" fill="white">P6</text>
+        <line x1="650" y1="450" x2="1060" y2="450" stroke="#4caf50" stroke-width="2" stroke-dasharray="3,3"/>
+
+        <!-- Distance annotations -->
+        <!-- Recul P1 (4.48m) -->
+        <line x1="476" y1="658" x2="476" y2="700" stroke="#ff6b6b" stroke-width="2" stroke-dasharray="2,2"/>
+        <text x="490" y="685" font-size="12" font-weight="bold" fill="#ff6b6b">4.48m</text>
+
+        <!-- Distance P1-P2 (4.48m) -->
+        <line x1="476" y1="630" x2="924" y2="630" stroke="#ff6b6b" stroke-width="2"/>
+        <line x1="476" y1="625" x2="476" y2="635" stroke="#ff6b6b" stroke-width="2"/>
+        <line x1="924" y1="625" x2="924" y2="635" stroke="#ff6b6b" stroke-width="2"/>
+        <text x="700" y="620" text-anchor="middle" font-size="12" font-weight="bold" fill="#ff6b6b">4.48m</text>
+
+        <!-- Overlap width (1.12m) -->
+        <line x1="644" y1="745" x2="756" y2="745" stroke="#ff9800" stroke-width="2"/>
+        <line x1="644" y1="740" x2="644" y2="750" stroke="#ff9800" stroke-width="2"/>
+        <line x1="756" y1="740" x2="756" y2="750" stroke="#ff9800" stroke-width="2"/>
+        <text x="700" y="765" text-anchor="middle" font-size="12" font-weight="bold" fill="#ff9800">Overlap: 1.12m (20%)</text>
+
+        <!-- Total coverage width (10.08m) -->
+        <line x1="196" y1="780" x2="1204" y2="780" stroke="#4caf50" stroke-width="3"/>
+        <line x1="196" y1="775" x2="196" y2="785" stroke="#4caf50" stroke-width="3"/>
+        <line x1="1204" y1="775" x2="1204" y2="785" stroke="#4caf50" stroke-width="3"/>
+        <text x="700" y="800" text-anchor="middle" font-size="14" font-weight="bold" fill="#4caf50">Coverage totale: 10.08m (déborde 1.04m de chaque côté)</text>
+
+        <!-- Wall coverage (8m) -->
+        <line x1="300" y1="815" x2="1100" y2="815" stroke="#d32f2f" stroke-width="3"/>
+        <text x="700" y="835" text-anchor="middle" font-size="14" font-weight="bold" fill="#d32f2f">Mur: 8.00m</text>
+
+        <!-- Center marker -->
+        <circle cx="700" cy="450" r="6" fill="#ff6b6b"/>
+        <text x="715" y="445" font-size="10" fill="#ff6b6b">Centre (0,0,0)</text>
+
+        <!-- Coordinate labels -->
+        <text x="476" y="670" text-anchor="middle" font-size="9" fill="#0d47a1">(-2.24, 3.5, +1.98)</text>
+        <text x="924" y="670" text-anchor="middle" font-size="9" fill="#0d47a1">(+2.24, 3.5, +1.98)</text>
+        <text x="476" y="240" text-anchor="middle" font-size="9" fill="#0d47a1">(-2.24, 3.5, -1.98)</text>
+        <text x="924" y="240" text-anchor="middle" font-size="9" fill="#0d47a1">(+2.24, 3.5, -1.98)</text>
+
+        <!-- Legend -->
+        <rect x="50" y="750" width="200" height="120" fill="white" stroke="#333" stroke-width="2"/>
+        <text x="150" y="770" text-anchor="middle" font-size="12" font-weight="bold">LÉGENDE</text>
+        <rect x="60" y="780" width="20" height="15" fill="rgba(76, 175, 80, 0.2)" stroke="#4caf50" stroke-dasharray="3,3"/>
+        <text x="85" y="792" font-size="9">Zone projection</text>
+        <rect x="60" y="800" width="20" height="15" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800"/>
+        <text x="85" y="812" font-size="9">Overlap 20%</text>
+        <circle cx="70" cy="830" r="8" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+        <text x="85" y="835" font-size="9">Projecteur Y=3.5m</text>
+        <line x1="60" y1="850" x2="80" y2="850" stroke="#ff6b6b" stroke-width="2"/>
+        <text x="85" y="855" font-size="9">Cotation (m)</text>
+    </svg>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Proj</th>
+                <th>Mur</th>
+                <th>Position (X, Y, Z)</th>
+                <th>Recul</th>
+                <th>Image</th>
+                <th>Ratio</th>
+                <th>Lens Shift</th>
+                <th>Overlap</th>
+                <th>Coverage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>P1</strong></td>
+                <td>SUD-G</td>
+                <td class="coord">(-2.24, 3.5, +1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04 → +0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P2</strong></td>
+                <td>SUD-D</td>
+                <td class="coord">(+2.24, 3.5, +1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56 → +5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P3</strong></td>
+                <td>NORD-G</td>
+                <td class="coord">(-2.24, 3.5, -1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04 → +0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P4</strong></td>
+                <td>NORD-D</td>
+                <td class="coord">(+2.24, 3.5, -1.98)</td>
+                <td>4.48m</td>
+                <td>5.6×3.5m</td>
+                <td>0.80:1</td>
+                <td>-50%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56 → +5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P5</strong></td>
+                <td>OUEST</td>
+                <td class="coord">(+0.5, 3.5, 0)</td>
+                <td>4.5m</td>
+                <td>5.0×3.125m</td>
+                <td>0.90:1</td>
+                <td>-50%</td>
+                <td>-</td>
+                <td>Z: -2.5 → +2.5m</td>
+            </tr>
+            <tr>
+                <td><strong>P6</strong></td>
+                <td>EST</td>
+                <td class="coord">(-0.5, 3.5, 0)</td>
+                <td>4.5m</td>
+                <td>5.0×3.125m</td>
+                <td>0.90:1</td>
+                <td>-50%</td>
+                <td>-</td>
+                <td>Z: -2.5 → +2.5m</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="info-box">
+        <strong>✅ AVANTAGES OVERLAP STANDARD 20%:</strong><br>
+        • <strong>Simple:</strong> Calibration soft edge standard, facile à configurer<br>
+        • <strong>Économique:</strong> Moins de pixels perdus dans overlap (vs 57%)<br>
+        • <strong>Débordement acceptable:</strong> Images débordent de 1.04m chaque côté - contenu ajusté ou cropped<br>
+        • <strong>Couverture garantie:</strong> 3.5m hauteur (0-3.5m) = 87.5% du mur<br>
+        • <strong>Lens Shift -50%:</strong> Descend image de 1.75m pour couvrir depuis le sol
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ POINTS D'ATTENTION:</strong><br>
+        • Images débordent: 10.08m sur mur 8m → <strong>crop 1.04m chaque côté</strong> dans le contenu<br>
+        • Gap plafond: <strong>0.5m non couvert</strong> (de 3.5m à 4m plafond)<br>
+        • Recul: <strong>4.48m</strong> pour P1-P4 (proche du mur opposé dans salle 5m)<br>
+        • Ratio throw: <strong>0.80:1</strong> (mid-range NP31ZL) - réglage précis requis
+    </div>
+
+    <div style="margin-top:20px; text-align:center; font-size:9pt; color:#666; border-top:2px solid #333; padding-top:15px;">
+        <strong>Plan Technique - 6 Projecteurs NEC NP-PX803UL</strong><br>
+        Salle 8m×5m×4m | Overlap standard 20% | Images 5.6×3.5m | Recul 4.48m<br>
+        Couverture 3.5m (87.5%) avec débordement latéral acceptable<br>
+        Document généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script>
+    </div>
+</body>
+</html>
