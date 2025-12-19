@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan Technique CORRIGÉ - 8×10m - 8 Projecteurs Epson</title>
+    <style>
+        @page { size: A3 landscape; margin: 10mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; line-height: 1.5; color: #222; background: white; padding: 15px; }
+        h1 { color: #d32f2f; border-bottom: 4px solid #d32f2f; padding-bottom: 10px; margin-bottom: 15px; font-size: 22pt; }
+        h2 { color: #1976d2; margin-top: 20px; margin-bottom: 12px; font-size: 14pt; border-left: 5px solid #1976d2; padding-left: 10px; }
+        .header-info { background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 15px; border-left: 5px solid #d32f2f; font-size: 10pt; }
+        .header-info p { margin: 4px 0; }
+        .header-info strong { color: #d32f2f; min-width: 160px; display: inline-block; }
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 8.5pt; }
+        thead { background: #1976d2; color: white; }
+        th, td { padding: 8px; text-align: left; border: 1px solid #ddd; }
+        tbody tr:nth-child(even) { background: #f8f9fa; }
+        .warning-box { background: #fff3e0; border-left: 5px solid #f57c00; padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 9pt; }
+        .warning-box h4 { color: #e65100; margin-bottom: 6px; font-size: 10pt; }
+        .info-box { background: #e1f5fe; border-left: 5px solid #0288d1; padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 9pt; }
+        .info-box h4 { color: #0277bd; margin-bottom: 6px; font-size: 10pt; }
+        .success-box { background: #e8f5e9; border-left: 5px solid #4caf50; padding: 12px; margin: 12px 0; border-radius: 4px; font-size: 9pt; }
+        .success-box h4 { color: #2e7d32; margin-bottom: 6px; font-size: 10pt; }
+        .coord { font-family: 'Courier New', monospace; background: #f5f5f5; padding: 2px 5px; border-radius: 3px; font-size: 8.5pt; }
+        svg { border: 2px solid #333; border-radius: 6px; margin: 15px 0; background: white; }
+        @media print { .print-instruction { display: none; } body { padding: 5px; } }
+        .print-instruction { background: #4caf50; color: white; padding: 12px; border-radius: 6px; text-align: center; margin: 15px 0; font-weight: 600; font-size: 10pt; }
+    </style>
+</head>
+<body>
+    <div class="print-instruction">📄 Ctrl+P → Enregistrer au format PDF (Paysage, A3)</div>
+
+    <h1>📐 PLAN TECHNIQUE CORRIGÉ - 8 Projecteurs Epson - SALLE 8×10m</h1>
+
+    <div class="header-info">
+        <p><strong>Dimensions CORRECTES:</strong> 8m LARGEUR (X) × 10m PROFONDEUR (Z) × 4m HAUTEUR (Y)</p>
+        <p><strong>Projecteurs:</strong> 4× Epson L690SE (murs 8m) + 4× Epson L570U (murs 10m) - WUXGA 1920×1200</p>
+        <p><strong>Hauteur montage:</strong> 3.50m (plafond) - TOUS les projecteurs</p>
+        <p><strong>Configuration:</strong> Panoramique 360° - Coverage 3.5m hauteur (0m→3.5m = 87.5%)</p>
+        <p><strong>Soft Edge:</strong> 20% STANDARD (1.12m overlap)</p>
+    </div>
+
+    <div class="warning-box">
+        <h4>⚠️ CORRECTION MAJEURE - DIMENSIONS INVERSÉES</h4>
+        <ul style="margin-left:18px;line-height:1.6;">
+            <li><strong>NORD/SUD:</strong> 8m de large (X: -4m à +4m) - PAS 10m!</li>
+            <li><strong>EST/OUEST:</strong> 10m de long (Z: -5m à +5m) - PAS 8m!</li>
+            <li><strong>Projecteurs murs 8m (NORD/SUD):</strong> Epson L690SE (court throw 0.58:1)</li>
+            <li><strong>Projecteurs murs 10m (EST/OUEST):</strong> Epson L570U (long throw 1.35:1)</li>
+        </ul>
+    </div>
+
+    <h2>📐 Plan Vue de Dessus - Positions Réelles</h2>
+
+    <svg viewBox="0 0 1600 1400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+                <polygon points="0 0, 10 3, 0 6" fill="#666" />
+            </marker>
+            <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                <path d="M 50 0 L 0 0 0 50" fill="none" stroke="#e8e8e8" stroke-width="0.5"/>
+            </pattern>
+
+            <!-- Projector icons -->
+            <g id="proj-nord">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+                <path d="M -9,-9 L 0,-19 L 9,-9 Z" fill="#64b5f6" stroke="#0d47a1" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+            <g id="proj-sud">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#1976d2" stroke="#0d47a1" stroke-width="2"/>
+                <path d="M -9,9 L 0,19 L 9,9 Z" fill="#64b5f6" stroke="#0d47a1" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+            <g id="proj-est">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#9c27b0" stroke="#6a1b9a" stroke-width="2"/>
+                <path d="M 13,-9 L 23,0 L 13,9 Z" fill="#ba68c8" stroke="#6a1b9a" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+            <g id="proj-ouest">
+                <rect x="-13" y="-9" width="26" height="18" rx="2" fill="#9c27b0" stroke="#6a1b9a" stroke-width="2"/>
+                <path d="M -13,-9 L -23,0 L -13,9 Z" fill="#ba68c8" stroke="#6a1b9a" stroke-width="1.5"/>
+                <circle cx="0" cy="0" r="3" fill="#fff"/>
+            </g>
+        </defs>
+
+        <rect width="1600" height="1400" fill="url(#grid)"/>
+
+        <!-- Title -->
+        <text x="800" y="35" text-anchor="middle" font-size="18" font-weight="bold" fill="#1976d2">VUE DE DESSUS - Échelle 80px = 1m</text>
+        <text x="800" y="55" text-anchor="middle" font-size="13" fill="#d32f2f" font-weight="bold">DIMENSIONS CORRECTES: 8m (largeur X) × 10m (profondeur Z)</text>
+
+        <!-- Room outline: 8m×10m, scale 80px/m, centered at 800,700 -->
+        <!-- X: 800-320=480 to 800+320=1120 (8m = 640px) -->
+        <!-- Z: 700-400=300 to 700+400=1100 (10m = 800px) -->
+        <rect x="480" y="300" width="640" height="800" fill="none" stroke="#000" stroke-width="5"/>
+
+        <!-- Wall labels with CORRECT dimensions -->
+        <text x="800" y="280" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f">NORD - 8m</text>
+        <text x="800" y="1135" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f">SUD - 8m</text>
+        <text x="1145" y="700" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f" transform="rotate(90 1145 700)">EST - 10m</text>
+        <text x="455" y="700" text-anchor="middle" font-size="20" font-weight="bold" fill="#d32f2f" transform="rotate(-90 455 700)">OUEST - 10m</text>
+
+        <!-- Room dimensions -->
+        <line x1="480" y1="260" x2="1120" y2="260" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <line x1="1120" y1="260" x2="480" y2="260" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <text x="800" y="250" text-anchor="middle" font-size="16" font-weight="bold" fill="#ff5722">8.00m (largeur)</text>
+
+        <line x1="1160" y1="300" x2="1160" y2="1100" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <line x1="1160" y1="1100" x2="1160" y2="300" stroke="#ff5722" stroke-width="3" marker-end="url(#arrowhead)"/>
+        <text x="1200" y="700" text-anchor="middle" font-size="16" font-weight="bold" fill="#ff5722" transform="rotate(90 1200 700)">10.00m (profondeur)</text>
+
+        <!-- Center point -->
+        <circle cx="800" cy="700" r="8" fill="#ff5722"/>
+        <text x="820" y="695" font-size="11" fill="#ff5722" font-weight="bold">Centre (0,0,0)</text>
+
+        <!-- NORD wall (Z=-5, 8m wide) - 2 projecteurs L690SE -->
+        <!-- P1 NORD-G: (-2.24, 3.5, -1.75) → SVG: (800-179, 700-140) = (621, 560) -->
+        <!-- P2 NORD-D: (+2.24, 3.5, -1.75) → SVG: (800+179, 700-140) = (979, 560) -->
+
+        <rect x="360" y="320" width="448" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="584" y="350" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P1: 5.6×3.5m</text>
+
+        <rect x="792" y="320" width="448" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="1016" y="350" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P2: 5.6×3.5m</text>
+
+        <rect x="792" y="320" width="90" height="50" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="837" y="345" text-anchor="middle" font-size="9" font-weight="bold" fill="#e65100">20%</text>
+
+        <use href="#proj-nord" x="621" y="560"/>
+        <text x="621" y="540" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P1</text>
+        <text x="621" y="585" text-anchor="middle" font-size="9" fill="#0d47a1">(-2.24, 3.5, -1.75)</text>
+        <line x1="621" y1="560" x2="621" y2="370" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <use href="#proj-nord" x="979" y="560"/>
+        <text x="979" y="540" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P2</text>
+        <text x="979" y="585" text-anchor="middle" font-size="9" fill="#0d47a1">(+2.24, 3.5, -1.75)</text>
+        <line x1="979" y1="560" x2="979" y2="370" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <!-- SUD wall (Z=+5, 8m wide) - 2 projecteurs L690SE -->
+        <!-- P3 SUD-G: (-2.24, 3.5, +1.75) → SVG: (621, 840) -->
+        <!-- P4 SUD-D: (+2.24, 3.5, +1.75) → SVG: (979, 840) -->
+
+        <rect x="360" y="1030" width="448" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="584" y="1060" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P3: 5.6×3.5m</text>
+
+        <rect x="792" y="1030" width="448" height="50" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="1016" y="1060" text-anchor="middle" font-size="11" font-weight="bold" fill="#2e7d32">P4: 5.6×3.5m</text>
+
+        <rect x="792" y="1030" width="90" height="50" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="837" y="1055" text-anchor="middle" font-size="9" font-weight="bold" fill="#e65100">20%</text>
+
+        <use href="#proj-sud" x="621" y="840"/>
+        <text x="621" y="870" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P3</text>
+        <text x="621" y="825" text-anchor="middle" font-size="9" fill="#0d47a1">(-2.24, 3.5, +1.75)</text>
+        <line x1="621" y1="840" x2="621" y2="1030" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <use href="#proj-sud" x="979" y="840"/>
+        <text x="979" y="870" text-anchor="middle" font-size="12" font-weight="bold" fill="#0d47a1">P4</text>
+        <text x="979" y="825" text-anchor="middle" font-size="9" fill="#0d47a1">(+2.24, 3.5, +1.75)</text>
+        <line x1="979" y1="840" x2="979" y2="1030" stroke="#1976d2" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <!-- EST wall (X=+4, 10m long) - 2 projecteurs L570U -->
+        <!-- P5 EST-H: (-3.56, 3.5, -2.24) → SVG: (800-285, 700-179) = (515, 521) -->
+        <!-- P6 EST-B: (-3.56, 3.5, +2.24) → SVG: (515, 879) -->
+
+        <rect x="1040" y="256" width="50" height="448" fill="rgba(156, 39, 176, 0.15)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="1065" y="480" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a" transform="rotate(90 1065 480)">P5: 5.6×3.5m</text>
+
+        <rect x="1040" y="696" width="50" height="448" fill="rgba(156, 39, 176, 0.15)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="1065" y="920" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a" transform="rotate(90 1065 920)">P6: 5.6×3.5m</text>
+
+        <rect x="1040" y="696" width="50" height="90" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+
+        <use href="#proj-est" x="515" y="521"/>
+        <text x="490" y="527" text-anchor="end" font-size="12" font-weight="bold" fill="#6a1b9a">P5</text>
+        <text x="515" y="545" text-anchor="middle" font-size="9" fill="#6a1b9a">(-3.56, 3.5, -2.24)</text>
+        <line x1="515" y1="521" x2="1040" y2="521" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <use href="#proj-est" x="515" y="879"/>
+        <text x="490" y="885" text-anchor="end" font-size="12" font-weight="bold" fill="#6a1b9a">P6</text>
+        <text x="515" y="897" text-anchor="middle" font-size="9" fill="#6a1b9a">(-3.56, 3.5, +2.24)</text>
+        <line x1="515" y1="879" x2="1040" y2="879" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <!-- OUEST wall (X=-4, 10m long) - 2 projecteurs L570U -->
+        <!-- P7 OUEST-H: (+3.56, 3.5, -2.24) → SVG: (1085, 521) -->
+        <!-- P8 OUEST-B: (+3.56, 3.5, +2.24) → SVG: (1085, 879) -->
+
+        <rect x="510" y="256" width="50" height="448" fill="rgba(156, 39, 176, 0.15)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="535" y="480" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a" transform="rotate(90 535 480)">P7: 5.6×3.5m</text>
+
+        <rect x="510" y="696" width="50" height="448" fill="rgba(156, 39, 176, 0.15)" stroke="#9c27b0" stroke-width="2"/>
+        <text x="535" y="920" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a1b9a" transform="rotate(90 535 920)">P8: 5.6×3.5m</text>
+
+        <rect x="510" y="696" width="50" height="90" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+
+        <use href="#proj-ouest" x="1085" y="521"/>
+        <text x="1110" y="527" text-anchor="start" font-size="12" font-weight="bold" fill="#6a1b9a">P7</text>
+        <text x="1085" y="545" text-anchor="middle" font-size="9" fill="#6a1b9a">(+3.56, 3.5, -2.24)</text>
+        <line x1="1085" y1="521" x2="560" y2="521" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <use href="#proj-ouest" x="1085" y="879"/>
+        <text x="1110" y="885" text-anchor="start" font-size="12" font-weight="bold" fill="#6a1b9a">P8</text>
+        <text x="1085" y="897" text-anchor="middle" font-size="9" fill="#6a1b9a">(+3.56, 3.5, +2.24)</text>
+        <line x1="1085" y1="879" x2="560" y2="879" stroke="#9c27b0" stroke-width="2" stroke-dasharray="4,4" opacity="0.4"/>
+
+        <!-- Throw distance annotations -->
+        <text x="621" y="480" text-anchor="middle" font-size="11" font-weight="bold" fill="#ff5722">Recul: 3.25m</text>
+        <text x="720" y="700" text-anchor="middle" font-size="11" font-weight="bold" fill="#ff5722">Recul: 7.56m</text>
+
+        <!-- Clearance warnings -->
+        <ellipse cx="621" cy="700" rx="120" ry="200" fill="none" stroke="#ff9800" stroke-width="3" stroke-dasharray="10,5"/>
+        <text x="621" y="650" text-anchor="middle" font-size="10" font-weight="bold" fill="#ff9800">ZONE PROXIMITÉ</text>
+        <text x="621" y="665" text-anchor="middle" font-size="9" fill="#ff9800">P1/P3/P5 proches</text>
+
+        <ellipse cx="979" cy="700" rx="120" ry="200" fill="none" stroke="#ff9800" stroke-width="3" stroke-dasharray="10,5"/>
+        <text x="979" y="650" text-anchor="middle" font-size="10" font-weight="bold" fill="#ff9800">ZONE PROXIMITÉ</text>
+        <text x="979" y="665" text-anchor="middle" font-size="9" fill="#ff9800">P2/P4/P7 proches</text>
+
+        <!-- Legend -->
+        <rect x="100" y="1220" width="1400" height="140" fill="#f9f9f9" stroke="#333" stroke-width="2" rx="6"/>
+        <text x="800" y="1245" text-anchor="middle" font-size="15" font-weight="bold">LÉGENDE</text>
+
+        <use href="#proj-sud" x="150" y="1280" transform="scale(0.8)"/>
+        <text x="180" y="1285" font-size="10">L690SE (NORD/SUD - murs 8m)</text>
+
+        <use href="#proj-est" x="450" y="1280" transform="scale(0.8)"/>
+        <text x="480" y="1285" font-size="10">L570U (EST/OUEST - murs 10m)</text>
+
+        <rect x="750" y="1270" width="40" height="20" fill="rgba(76, 175, 80, 0.15)" stroke="#4caf50" stroke-width="2"/>
+        <text x="800" y="1285" font-size="10">Zone projection</text>
+
+        <rect x="1050" y="1270" width="40" height="20" fill="rgba(255, 152, 0, 0.4)" stroke="#ff9800" stroke-width="2"/>
+        <text x="1100" y="1285" font-size="10">Overlap 20%</text>
+
+        <text x="800" y="1310" text-anchor="middle" font-size="10" fill="#666">Échelle: 80px = 1m | Hauteur: Y = 3.50m | Coverage: 0m → 3.5m (87.5%)</text>
+        <text x="800" y="1330" text-anchor="middle" font-size="10" fill="#ff9800" font-weight="bold">⚠️ Zones proximité: Installation avec décalages légers + lens shift horizontal si besoin</text>
+    </svg>
+
+    <h2>📊 Configuration Projecteurs - Positions Réelles</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Proj</th>
+                <th>Modèle</th>
+                <th>Mur</th>
+                <th>Position (X,Y,Z)</th>
+                <th>Recul</th>
+                <th>Image</th>
+                <th>Ratio</th>
+                <th>Shift V</th>
+                <th>Shift H</th>
+                <th>Overlap</th>
+                <th>Coverage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>P1</strong></td>
+                <td>L690SE</td>
+                <td>NORD 8m</td>
+                <td class="coord">(-2.24, 3.5, -1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04→+0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P2</strong></td>
+                <td>L690SE</td>
+                <td>NORD 8m</td>
+                <td class="coord">(+2.24, 3.5, -1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56→+5.04m</td>
+            </tr>
+            <tr>
+                <td><strong>P3</strong></td>
+                <td>L690SE</td>
+                <td>SUD 8m</td>
+                <td class="coord">(-2.24, 3.5, +1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Droite 20%</td>
+                <td>X: -5.04→+0.56m</td>
+            </tr>
+            <tr>
+                <td><strong>P4</strong></td>
+                <td>L690SE</td>
+                <td>SUD 8m</td>
+                <td class="coord">(+2.24, 3.5, +1.75)</td>
+                <td>3.25m</td>
+                <td>5.6×3.5m</td>
+                <td>0.58:1</td>
+                <td>-50%</td>
+                <td>0%</td>
+                <td>Gauche 20%</td>
+                <td>X: -0.56→+5.04m</td>
+            </tr>
+            <tr style="background:#f3e5f5;">
+                <td><strong>P5</strong></td>
+                <td>L570U</td>
+                <td>EST 10m</td>
+                <td class="coord">(-3.56, 3.5, -2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Ajuster*</td>
+                <td>Haut 20%</td>
+                <td>Z: -5.04→+0.56m</td>
+            </tr>
+            <tr style="background:#f3e5f5;">
+                <td><strong>P6</strong></td>
+                <td>L570U</td>
+                <td>EST 10m</td>
+                <td class="coord">(-3.56, 3.5, +2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Ajuster*</td>
+                <td>Bas 20%</td>
+                <td>Z: -0.56→+5.04m</td>
+            </tr>
+            <tr style="background:#f3e5f5;">
+                <td><strong>P7</strong></td>
+                <td>L570U</td>
+                <td>OUEST 10m</td>
+                <td class="coord">(+3.56, 3.5, -2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Ajuster*</td>
+                <td>Haut 20%</td>
+                <td>Z: -5.04→+0.56m</td>
+            </tr>
+            <tr style="background:#f3e5f5;">
+                <td><strong>P8</strong></td>
+                <td>L570U</td>
+                <td>OUEST 10m</td>
+                <td class="coord">(+3.56, 3.5, +2.24)</td>
+                <td>7.56m</td>
+                <td>5.6×3.5m</td>
+                <td>1.35:1</td>
+                <td>-50%</td>
+                <td>Ajuster*</td>
+                <td>Bas 20%</td>
+                <td>Z: -0.56→+5.04m</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="warning-box">
+        <h4>⚠️ ZONES DE PROXIMITÉ - INSTALLATION RÉALISTE</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Zone Gauche (X≈-2 à -4):</strong> P1 (NORD), P3 (SUD), P5 (EST) sont proches
+                <br>→ Distance P1↔P5: ~1.5m | Distance P3↔P5: ~1.5m | Distance P1↔P3: 3.5m
+                <br>→ <strong>Solution:</strong> Décalage léger en installation (ex: P1 +10cm en X, P3 -10cm en X) + lens shift horizontal ±5%</li>
+            <li><strong>Zone Droite (X≈+2 à +4):</strong> P2 (NORD), P4 (SUD), P7 (OUEST) sont proches
+                <br>→ Mêmes distances et solutions que zone gauche</li>
+            <li><strong>Clearance physique:</strong> Projecteurs ~50cm de long → besoin 60-80cm minimum entre projecteurs</li>
+            <li><strong>Faisabilité:</strong> ✅ RÉALISTE avec ajustements installation (décalages ±10-20cm + lens shift horizontal)</li>
+            <li><strong>Alternative:</strong> Offset vertical léger (ex: ±20cm en Y depuis 3.5m) si lens shift horizontal insuffisant</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>📺 Résolution et Coverage - DIMENSIONS CORRECTES</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Murs NORD/SUD (8m):</strong> 2×L690SE = 3,456×1,200px effectifs | Coverage: 10.08m sur 8m = spillover 1.04m/côté</li>
+            <li><strong>Murs EST/OUEST (10m):</strong> 2×L570U = 3,456×1,200px effectifs | Coverage: 10.08m sur 10m = <strong>99.2% PARFAIT!</strong></li>
+            <li><strong>Hauteur (tous murs):</strong> 3.5m (0→3.5m = 87.5% du mur de 4m) | Gap plafond: 0.5m</li>
+            <li><strong>Total panoramique:</strong> 13,824 × 1,200 pixels effectifs après soft edge 20%</li>
+        </ul>
+    </div>
+
+    <div class="success-box">
+        <h4>✅ GUIDE INSTALLATION - GESTION PROXIMITÉS</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>1. Montage supports:</strong> Fixer 8 supports plafond robustes à H=3.50m exacte</li>
+            <li><strong>2. Positioning base:</strong> Utiliser coordonnées théoriques comme point de départ</li>
+            <li><strong>3. Ajustements proximité:</strong>
+                <ul style="margin-left:15px;margin-top:5px;">
+                    <li>Si P1 et P5 trop proches → Décaler P1 de +15cm en X (vers centre)</li>
+                    <li>Compenser avec lens shift horizontal ~-3% sur P1</li>
+                    <li>Répéter pour autres zones de proximité</li>
+                </ul>
+            </li>
+            <li><strong>4. Réglages optiques:</strong>
+                <ul style="margin-left:15px;margin-top:5px;">
+                    <li>Lens shift vertical: -50% sur TOUS (image 0→3.5m)</li>
+                    <li>Lens shift horizontal: Ajuster selon décalages installation (±3 à 8%)</li>
+                    <li>Throw ratio: 0.58:1 (L690SE), 1.35:1 (L570U)</li>
+                </ul>
+            </li>
+            <li><strong>5. Soft edge:</strong> Calibration standard 20% (1.12m) via Epson Edge Blending</li>
+            <li><strong>6. Test alignement:</strong> Grille blanche pour vérifier raccords et géométrie</li>
+        </ul>
+    </div>
+
+    <div class="info-box">
+        <h4>📏 MESURES CLÉS</h4>
+        <ul style="margin-left:18px;line-height:1.7;">
+            <li><strong>Recul L690SE:</strong> 3.25m (murs 8m NORD/SUD)</li>
+            <li><strong>Recul L570U:</strong> 7.56m (murs 10m EST/OUEST)</li>
+            <li><strong>Overlap:</strong> 1.12m (20% de 5.6m)</li>
+            <li><strong>Espacement NORD/SUD:</strong> 4.48m entre P1↔P2 et P3↔P4</li>
+            <li><strong>Espacement EST/OUEST:</strong> 4.48m entre P5↔P6 et P7↔P8</li>
+            <li><strong>Consommation:</strong> L690SE: 4×495W=1,980W | L570U: 4×465W=1,860W | TOTAL: 3,840W (16.7A@230V)</li>
+        </ul>
+    </div>
+
+    <h2>🎯 Matériel Requis</h2>
+
+    <table>
+        <thead>
+            <tr><th>Qté</th><th>Matériel</th><th>Spécifications</th><th>Usage</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><strong>4×</strong></td><td>Epson EB-L690SE</td><td>6000 lm, WUXGA, 0.50-0.70:1</td><td>Murs NORD/SUD (8m)</td></tr>
+            <tr><td><strong>4×</strong></td><td>Epson EB-L570U</td><td>5200 lm, WUXGA, 1.35-2.20:1</td><td>Murs EST/OUEST (10m)</td></tr>
+            <tr><td><strong>8×</strong></td><td>Support plafond ajustable</td><td>Charge 15kg min, micro-ajustements</td><td>Montage H=3.50m avec latitude ±20cm XZ</td></tr>
+            <tr><td><strong>1×</strong></td><td>Switch réseau Gigabit</td><td>12 ports minimum</td><td>Contrôle projecteurs</td></tr>
+            <tr><td><strong>8×</strong></td><td>Câble réseau Cat6</td><td>Longueurs selon positions</td><td>Connexion réseau</td></tr>
+            <tr><td><strong>8×</strong></td><td>Prise 230V/16A dédiée</td><td>Protégée, circuit séparé</td><td>Alimentation électrique</td></tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top:25px; text-align:center; font-size:9pt; color:#666; border-top:3px solid #d32f2f; padding-top:15px;">
+        <p style="font-size:11pt;"><strong>Plan Technique CORRIGÉ - 8 Projecteurs Epson - Salle 8m×10m</strong></p>
+        <p><strong style="color:#d32f2f;">DIMENSIONS CORRECTES:</strong> 8m largeur (NORD/SUD) × 10m profondeur (EST/OUEST)</p>
+        <p>Configuration réaliste avec gestion des proximités | Décalages installation + lens shift horizontal</p>
+        <p>Overlap 20% standard | Coverage 3.5m hauteur | Spillover gérable</p>
+        <p>Document généré le <script>document.write(new Date().toLocaleDateString('fr-FR'))</script></p>
+    </div>
+</body>
+</html>
