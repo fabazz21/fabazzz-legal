@@ -4266,6 +4266,15 @@
             <span>Plan</span>
         </div>
         <div class="popup-divider"></div>
+        <!-- Section Tables & Mobilier -->
+        <div style="padding:8px; font-size:10px; color:#888; font-weight:600; text-transform:uppercase;">
+            🪑 Mobilier
+        </div>
+        <div class="popup-item" onclick="addPrimitive('table-ronde')">
+            <span class="popup-icon">⭕</span>
+            <span>Table Ronde (Ø1.5m, 8 places)</span>
+        </div>
+        <div class="popup-divider"></div>
         <div class="popup-item" onclick="addPrimitive('human-realistic')">
             <span class="popup-icon">🧍</span>
             <span>Mannequin Realistic (1.80m)</span>
@@ -9169,6 +9178,10 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
                 geometry = new THREE.PlaneGeometry(sizeX * 3, sizeY * 3);
                 name = 'Plan';
                 break;
+            case 'table-ronde':
+                // Will be handled separately below
+                name = 'Table Ronde';
+                break;
             case 'human-realistic':
                 isHuman = true;
                 name = 'Mannequin Realistic';
@@ -9363,6 +9376,143 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
             // Update hierarchy
             populateSceneHierarchy();
             
+            document.getElementById('primitive-popup')?.classList.remove('visible');
+            return;
+        }
+
+        // Create round table with 8 place settings
+        if (type === 'table-ronde') {
+            const tableGroup = new THREE.Group();
+            tableGroup.userData = { name: 'Table Ronde Ø1.5m (8 places)', type: 'object' };
+
+            // Table dimensions
+            const tableDiameter = 1.5; // 1.5m diameter
+            const tableHeight = 0.75; // Standard table height 75cm
+            const tableThickness = 0.05; // 5cm thick top
+
+            // Create table top (cylinder)
+            const tableTopGeo = new THREE.CylinderGeometry(tableDiameter / 2, tableDiameter / 2, tableThickness, 32);
+            const tableMat = createProjectedMaterial();
+            tableMat.uniforms.baseColor.value.setRGB(0.4, 0.3, 0.2); // Wood color
+            const tableTop = new THREE.Mesh(tableTopGeo, tableMat);
+            tableTop.position.y = tableHeight;
+            tableTop.castShadow = true;
+            tableTop.receiveShadow = true;
+            tableGroup.add(tableTop);
+            projectedObjects.push(tableTop);
+
+            // Create table leg (cylinder)
+            const legRadius = 0.05;
+            const legGeo = new THREE.CylinderGeometry(legRadius, legRadius * 1.2, tableHeight - tableThickness / 2, 16);
+            const legMat = createProjectedMaterial();
+            legMat.uniforms.baseColor.value.setRGB(0.35, 0.25, 0.15); // Darker wood
+            const leg = new THREE.Mesh(legGeo, legMat);
+            leg.position.y = (tableHeight - tableThickness / 2) / 2;
+            leg.castShadow = true;
+            leg.receiveShadow = true;
+            tableGroup.add(leg);
+            projectedObjects.push(leg);
+
+            // Add 8 place settings in a circle
+            const numPlaces = 8;
+            const plateRadius = 0.12; // 24cm diameter plates
+            const plateThickness = 0.02;
+            const placeDistance = tableDiameter / 2 - 0.25; // Distance from center to place setting
+
+            for (let i = 0; i < numPlaces; i++) {
+                const angle = (i / numPlaces) * Math.PI * 2;
+                const x = Math.cos(angle) * placeDistance;
+                const z = Math.sin(angle) * placeDistance;
+
+                // Plate (white cylinder)
+                const plateGeo = new THREE.CylinderGeometry(plateRadius, plateRadius, plateThickness, 32);
+                const plateMat = createProjectedMaterial();
+                plateMat.uniforms.baseColor.value.setRGB(0.95, 0.95, 0.95); // White
+                const plate = new THREE.Mesh(plateGeo, plateMat);
+                plate.position.set(x, tableHeight + tableThickness / 2 + plateThickness / 2, z);
+                plate.castShadow = true;
+                plate.receiveShadow = true;
+                tableGroup.add(plate);
+                projectedObjects.push(plate);
+
+                // Fork (left side, small cylinder)
+                const forkGeo = new THREE.BoxGeometry(0.02, 0.005, 0.15);
+                const cutleryMat = createProjectedMaterial();
+                cutleryMat.uniforms.baseColor.value.setRGB(0.7, 0.7, 0.75); // Silver
+                const fork = new THREE.Mesh(forkGeo, cutleryMat.clone());
+                fork.position.set(
+                    x + Math.cos(angle + Math.PI / 2) * (plateRadius + 0.08),
+                    tableHeight + tableThickness / 2 + 0.005,
+                    z + Math.sin(angle + Math.PI / 2) * (plateRadius + 0.08)
+                );
+                fork.rotation.y = angle;
+                fork.castShadow = true;
+                tableGroup.add(fork);
+                projectedObjects.push(fork);
+
+                // Knife (right side, small cylinder)
+                const knifeGeo = new THREE.BoxGeometry(0.015, 0.005, 0.15);
+                const knife = new THREE.Mesh(knifeGeo, cutleryMat.clone());
+                knife.position.set(
+                    x + Math.cos(angle - Math.PI / 2) * (plateRadius + 0.08),
+                    tableHeight + tableThickness / 2 + 0.005,
+                    z + Math.sin(angle - Math.PI / 2) * (plateRadius + 0.08)
+                );
+                knife.rotation.y = angle;
+                knife.castShadow = true;
+                tableGroup.add(knife);
+                projectedObjects.push(knife);
+
+                // Spoon (right side, next to knife)
+                const spoonGeo = new THREE.BoxGeometry(0.02, 0.005, 0.13);
+                const spoon = new THREE.Mesh(spoonGeo, cutleryMat.clone());
+                spoon.position.set(
+                    x + Math.cos(angle - Math.PI / 2) * (plateRadius + 0.15),
+                    tableHeight + tableThickness / 2 + 0.005,
+                    z + Math.sin(angle - Math.PI / 2) * (plateRadius + 0.15)
+                );
+                spoon.rotation.y = angle;
+                spoon.castShadow = true;
+                tableGroup.add(spoon);
+                projectedObjects.push(spoon);
+
+                // Glass (small cylinder, above plate)
+                const glassRadius = 0.035;
+                const glassHeight = 0.10;
+                const glassGeo = new THREE.CylinderGeometry(glassRadius, glassRadius * 0.9, glassHeight, 16);
+                const glassMat = createProjectedMaterial();
+                glassMat.uniforms.baseColor.value.setRGB(0.8, 0.9, 0.95); // Light blue tint
+                const glass = new THREE.Mesh(glassGeo, glassMat);
+                glass.position.set(
+                    x + Math.cos(angle) * (plateRadius + 0.10),
+                    tableHeight + tableThickness / 2 + glassHeight / 2,
+                    z + Math.sin(angle) * (plateRadius + 0.10)
+                );
+                glass.castShadow = true;
+                glass.receiveShadow = true;
+                tableGroup.add(glass);
+                projectedObjects.push(glass);
+            }
+
+            // Position at center
+            tableGroup.position.set(0, 0, 0);
+
+            scene.add(tableGroup);
+            selectableObjects.push(tableGroup);
+
+            // Record for undo
+            pushHistory({
+                type: 'create_object',
+                object: tableGroup,
+                objectType: 'table'
+            });
+
+            updateProjectionMatrix();
+            selectObject(tableGroup);
+
+            // Update hierarchy
+            populateSceneHierarchy();
+
             document.getElementById('primitive-popup')?.classList.remove('visible');
             return;
         }
