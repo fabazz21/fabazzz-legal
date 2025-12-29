@@ -6265,13 +6265,17 @@
         }
         if (epsonWuxga) {
             epsonWuxga.innerHTML = '';
-            ['EB-PU2220B', 'EB-PU2120W', 'EB-L30000U'].forEach(model => {
+            ['EB-PU2220B', 'EB-PU2120W', 'EB-L30000U',
+             'EB-L1755U', 'EB-L1750U', 'EB-L1505U',
+             'EB-PU1007B', 'EB-PU1007W'].forEach(model => {
                 epsonWuxga.appendChild(createProjectorCard(model));
             });
         }
         if (epsonShortThrow) {
             epsonShortThrow.innerHTML = '';
-            ['EB-L630SU', 'EB-L570U', 'PowerLite L690SE', 'PowerLite L695SE'].forEach(model => {
+            ['EB-L630SU', 'EB-L570U', 'PowerLite L690SE', 'PowerLite L695SE',
+             'EB-800F', 'EB-735F', 'EB-735Fi', 'EB-725Wi',
+             'EB-L200F', 'EB-L200W', 'EB-L200SX'].forEach(model => {
                 epsonShortThrow.appendChild(createProjectorCard(model));
             });
         }
