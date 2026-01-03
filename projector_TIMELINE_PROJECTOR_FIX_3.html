@@ -3591,19 +3591,25 @@
         </div>
 
         <div class="param-section">
-            <div class="param-section-title">📏 Size (Bounding Box)</div>
+            <div class="param-section-title">📏 Size (Dimensions réelles)</div>
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <button id="size-lock-btn" onclick="toggleSizeLock()" style="padding: 6px 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: var(--primary); cursor: pointer; font-size: 14px; min-width: 40px;" title="Lock proportions">
+                    🔓
+                </button>
+                <span style="font-size: 9px; color: var(--muted-foreground);">Lock pour homothétie</span>
+            </div>
             <div class="param-row">
                 <div class="param-input">
-                    <label>W</label>
-                    <input type="text" id="size-x" readonly style="background:#1a1a1a;cursor:default;">
+                    <label>W (m)</label>
+                    <input type="number" id="size-x" step="0.01" min="0.01" onchange="updateSizeFromInputs('x')" style="background:#16171c;">
                 </div>
                 <div class="param-input">
-                    <label>H</label>
-                    <input type="text" id="size-y" readonly style="background:#1a1a1a;cursor:default;">
+                    <label>H (m)</label>
+                    <input type="number" id="size-y" step="0.01" min="0.01" onchange="updateSizeFromInputs('y')" style="background:#16171c;">
                 </div>
                 <div class="param-input">
-                    <label>D</label>
-                    <input type="text" id="size-z" readonly style="background:#1a1a1a;cursor:default;">
+                    <label>D (m)</label>
+                    <input type="number" id="size-z" step="0.01" min="0.01" onchange="updateSizeFromInputs('z')" style="background:#16171c;">
                 </div>
             </div>
         </div>
@@ -8356,9 +8362,14 @@
             const box = new THREE.Box3().setFromObject(obj);
             const size = new THREE.Vector3();
             box.getSize(size);
-            sizeX.value = size.x.toFixed(2) + 'm';
-            sizeY.value = size.y.toFixed(2) + 'm';
-            sizeZ.value = size.z.toFixed(2) + 'm';
+            sizeX.value = size.x.toFixed(2);
+            sizeY.value = size.y.toFixed(2);
+            sizeZ.value = size.z.toFixed(2);
+
+            // Store original size for proportional scaling
+            if (!obj.userData.originalSize) {
+                obj.userData.originalSize = { x: size.x, y: size.y, z: size.z };
+            }
         }
     }
 
@@ -8397,6 +8408,82 @@
 
         updateTransformInputs();
         updateProjectionMatrix();
+    };
+
+    // ===== SIZE CONTROL WITH LOCK/UNLOCK =====
+
+    let sizeLocked = false;
+
+    window.toggleSizeLock = function() {
+        sizeLocked = !sizeLocked;
+        const btn = document.getElementById('size-lock-btn');
+        if (btn) {
+            btn.innerHTML = sizeLocked ? '🔒' : '🔓';
+            btn.style.color = sizeLocked ? '#fbbf24' : 'var(--primary)';
+        }
+    };
+
+    window.updateSizeFromInputs = function(changedAxis) {
+        if (!selectedObject) return;
+
+        const obj = selectedObject.userData.isProjector ? projectorGroup : selectedObject;
+
+        // Get current actual size
+        const box = new THREE.Box3().setFromObject(obj);
+        const currentSize = new THREE.Vector3();
+        box.getSize(currentSize);
+
+        // Get original size (before any scaling)
+        const originalSize = obj.userData.originalSize || {
+            x: currentSize.x / obj.scale.x,
+            y: currentSize.y / obj.scale.y,
+            z: currentSize.z / obj.scale.z
+        };
+
+        // Get desired sizes from inputs
+        const desiredX = parseFloat(document.getElementById('size-x').value || currentSize.x);
+        const desiredY = parseFloat(document.getElementById('size-y').value || currentSize.y);
+        const desiredZ = parseFloat(document.getElementById('size-z').value || currentSize.z);
+
+        if (sizeLocked && changedAxis) {
+            // Proportional scaling - calculate ratio from changed axis
+            let ratio = 1;
+
+            if (changedAxis === 'x') {
+                ratio = desiredX / currentSize.x;
+            } else if (changedAxis === 'y') {
+                ratio = desiredY / currentSize.y;
+            } else if (changedAxis === 'z') {
+                ratio = desiredZ / currentSize.z;
+            }
+
+            // Apply same ratio to all axes
+            obj.scale.x *= ratio;
+            obj.scale.y *= ratio;
+            obj.scale.z *= ratio;
+
+            // Update all size inputs to reflect new sizes
+            const newBox = new THREE.Box3().setFromObject(obj);
+            const newSize = new THREE.Vector3();
+            newBox.getSize(newSize);
+
+            document.getElementById('size-x').value = newSize.x.toFixed(2);
+            document.getElementById('size-y').value = newSize.y.toFixed(2);
+            document.getElementById('size-z').value = newSize.z.toFixed(2);
+        } else {
+            // Independent scaling for each axis
+            if (originalSize.x > 0) obj.scale.x = (desiredX / originalSize.x) * (obj.userData.originalSize ? 1 : obj.scale.x);
+            if (originalSize.y > 0) obj.scale.y = (desiredY / originalSize.y) * (obj.userData.originalSize ? 1 : obj.scale.y);
+            if (originalSize.z > 0) obj.scale.z = (desiredZ / originalSize.z) * (obj.userData.originalSize ? 1 : obj.scale.z);
+        }
+
+        // Update scale inputs
+        document.getElementById('scale-x').value = obj.scale.x.toFixed(2);
+        document.getElementById('scale-y').value = obj.scale.y.toFixed(2);
+        document.getElementById('scale-z').value = obj.scale.z.toFixed(2);
+
+        updateProjectionMatrix();
+        updateMeasurements();
     };
 
     // ===== KEYSTONE CONTROLS =====
