@@ -8417,10 +8417,19 @@
     window.toggleSizeLock = function() {
         sizeLocked = !sizeLocked;
         const btn = document.getElementById('size-lock-btn');
+        const btnPanel = document.getElementById('size-lock-btn-panel');
+
         if (btn) {
             btn.innerHTML = sizeLocked ? '🔒' : '🔓';
             btn.style.color = sizeLocked ? '#fbbf24' : 'var(--primary)';
         }
+        if (btnPanel) {
+            btnPanel.innerHTML = sizeLocked ? '🔒' : '🔓';
+            btnPanel.style.color = sizeLocked ? '#fbbf24' : 'var(--primary)';
+        }
+
+        // Refresh panel to update status text
+        updatePropertiesPanel();
     };
 
     window.updateSizeFromInputs = function(changedAxis) {
@@ -8484,6 +8493,56 @@
 
         updateProjectionMatrix();
         updateMeasurements();
+    };
+
+    // Update size from panel inputs (simplified version for dynamic panel)
+    window.updateSizeFromInputPanel = function(axis, value) {
+        if (!selectedObject) return;
+
+        const obj = selectedObject.userData.isProjector ? projectorGroup : selectedObject;
+        const desiredValue = parseFloat(value);
+
+        // Get current actual size
+        const box = new THREE.Box3().setFromObject(obj);
+        const currentSize = new THREE.Vector3();
+        box.getSize(currentSize);
+
+        // Store original size if not already stored
+        if (!obj.userData.originalSize) {
+            obj.userData.originalSize = {
+                x: currentSize.x / obj.scale.x,
+                y: currentSize.y / obj.scale.y,
+                z: currentSize.z / obj.scale.z
+            };
+        }
+
+        const originalSize = obj.userData.originalSize;
+
+        if (sizeLocked) {
+            // Proportional scaling - calculate ratio from changed axis
+            let ratio = 1;
+            if (axis === 'x') ratio = desiredValue / currentSize.x;
+            else if (axis === 'y') ratio = desiredValue / currentSize.y;
+            else if (axis === 'z') ratio = desiredValue / currentSize.z;
+
+            // Apply same ratio to all axes
+            obj.scale.x *= ratio;
+            obj.scale.y *= ratio;
+            obj.scale.z *= ratio;
+        } else {
+            // Independent scaling for each axis
+            if (axis === 'x' && originalSize.x > 0) {
+                obj.scale.x = desiredValue / originalSize.x;
+            } else if (axis === 'y' && originalSize.y > 0) {
+                obj.scale.y = desiredValue / originalSize.y;
+            } else if (axis === 'z' && originalSize.z > 0) {
+                obj.scale.z = desiredValue / originalSize.z;
+            }
+        }
+
+        updateProjectionMatrix();
+        updateMeasurements();
+        updatePropertiesPanel(); // Refresh panel to show new values
     };
 
     // ===== KEYSTONE CONTROLS =====
@@ -12336,22 +12395,36 @@ BR: X=${cornerPinBRX}, Y=${cornerPinBRY}`;
                     </div>
                 </div>
 
-                <!-- SIZE (Bounding Box) - TRES IMPORTANTE! -->
+                <!-- SIZE (Éditable avec Lock/Unlock) -->
                 <div style="margin-bottom: 16px;">
-                    <div style="font-size: 10px; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; font-weight: 600;">📏 Size (Bounding Box)</div>
-                    <div style="background: #1a1a1a; padding: 12px; border-radius: 4px; font-size: 11px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                            <span style="color: #888;">Width:</span>
-                            <span style="color: var(--primary); font-weight: 600;">${size.x.toFixed(2)} m</span>
+                    <div style="font-size: 10px; color: var(--primary); text-transform: uppercase; margin-bottom: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                        📏 Size (Dimensions)
+                        <button id="size-lock-btn-panel" onclick="toggleSizeLock()" style="padding: 4px 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); border-radius: 4px; color: var(--primary); cursor: pointer; font-size: 12px; margin-left: auto;" title="Lock/Unlock proportions">
+                            🔓
+                        </button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+                        <div style="background: #1a1a1a; padding: 8px; border-radius: 4px; text-align: center;">
+                            <div style="font-size: 9px; color: #888; margin-bottom: 4px;">W (m)</div>
+                            <input type="number" value="${size.x.toFixed(2)}" step="0.01" min="0.01"
+                                style="width: 100%; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 3px; padding: 4px; text-align: center; font-size: 11px;"
+                                onchange="updateSizeFromInputPanel('x', this.value)">
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                            <span style="color: #888;">Height:</span>
-                            <span style="color: var(--primary); font-weight: 600;">${size.y.toFixed(2)} m</span>
+                        <div style="background: #1a1a1a; padding: 8px; border-radius: 4px; text-align: center;">
+                            <div style="font-size: 9px; color: #888; margin-bottom: 4px;">H (m)</div>
+                            <input type="number" value="${size.y.toFixed(2)}" step="0.01" min="0.01"
+                                style="width: 100%; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 3px; padding: 4px; text-align: center; font-size: 11px;"
+                                onchange="updateSizeFromInputPanel('y', this.value)">
                         </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span style="color: #888;">Depth:</span>
-                            <span style="color: var(--primary); font-weight: 600;">${size.z.toFixed(2)} m</span>
+                        <div style="background: #1a1a1a; padding: 8px; border-radius: 4px; text-align: center;">
+                            <div style="font-size: 9px; color: #888; margin-bottom: 4px;">D (m)</div>
+                            <input type="number" value="${size.z.toFixed(2)}" step="0.01" min="0.01"
+                                style="width: 100%; background: #2a2a2a; border: 1px solid #444; color: white; border-radius: 3px; padding: 4px; text-align: center; font-size: 11px;"
+                                onchange="updateSizeFromInputPanel('z', this.value)">
                         </div>
+                    </div>
+                    <div style="font-size: 8px; color: #666; margin-top: 6px; text-align: center;">
+                        ${sizeLocked ? '🔒 Homothétie activée' : '🔓 Dimensions indépendantes'}
                     </div>
                 </div>
 
