@@ -29,6 +29,17 @@ class Renderer:
 
         print("✅ Renderer initialized")
 
+    def _get_or_create_vao(self, obj, shader):
+        """Get or create VAO for object"""
+        if obj.vao is None and hasattr(obj, 'vbo') and hasattr(obj, 'ibo'):
+            # Create VAO with current shader
+            obj.vao = self.ctx.vertex_array(
+                shader,
+                [(obj.vbo, '3f 3f', 'in_position', 'in_normal')],
+                obj.ibo
+            )
+        return obj.vao
+
     def _load_shaders(self):
         """Load all GLSL shaders"""
         # Depth shader
@@ -141,9 +152,10 @@ class Renderer:
             self.depth_shader['view'].write(view_matrix.astype('f4').tobytes())
             self.depth_shader['projection'].write(proj_matrix.astype('f4').tobytes())
 
-            # Render object
-            if hasattr(obj, 'vao') and obj.vao is not None:
-                obj.vao.render(moderngl.TRIANGLES)
+            # Render object (create VAO if needed)
+            vao = self._get_or_create_vao(obj, self.depth_shader)
+            if vao is not None:
+                vao.render(moderngl.TRIANGLES)
 
         # Unbind framebuffer
         self.ctx.screen.use()
@@ -253,9 +265,10 @@ class Renderer:
             self.projector_shader['projection'].write(proj_matrix.astype('f4').tobytes())
             self.projector_shader['normalMatrix'].write(normal_matrix.astype('f4').tobytes())
 
-            # Render object
-            if hasattr(obj, 'vao') and obj.vao is not None:
-                obj.vao.render(moderngl.TRIANGLES)
+            # Render object (create VAO if needed)
+            vao = self._get_or_create_vao(obj, self.projector_shader)
+            if vao is not None:
+                vao.render(moderngl.TRIANGLES)
 
     def render_helpers(self, scene, camera):
         """Render helpers: grid, frustums, gizmos"""

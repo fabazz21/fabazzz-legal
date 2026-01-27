@@ -70,11 +70,7 @@ class Cube(Object3D):
         if self.ctx:
             self.vbo = self.ctx.buffer(vertices.tobytes())
             self.ibo = self.ctx.buffer(indices.tobytes())
-            self.vao = self.ctx.vertex_array(
-                None,  # Program will be set during rendering
-                [(self.vbo, '3f 3f', 'in_position', 'in_normal')],
-                self.ibo
-            )
+            self.vao = None  # Will be created during rendering with proper shader
 
 
 class Plane(Object3D):
@@ -109,11 +105,7 @@ class Plane(Object3D):
         if self.ctx:
             self.vbo = self.ctx.buffer(vertices.tobytes())
             self.ibo = self.ctx.buffer(indices.tobytes())
-            self.vao = self.ctx.vertex_array(
-                None,
-                [(self.vbo, '3f 3f', 'in_position', 'in_normal')],
-                self.ibo
-            )
+            self.vao = None  # Will be created during rendering with proper shader
 
 
 class Sphere(Object3D):
