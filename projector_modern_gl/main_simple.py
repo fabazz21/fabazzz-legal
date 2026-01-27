@@ -53,10 +53,9 @@ class ProjectionMappingAppSimple:
         self.fps = 0.0
 
         print(f"✅ Projection Mapping System Initialized (Simple Mode)")
-        print(f"   OpenGL Version: {self.ctx.info['GL_VERSION']}")
-        print(f"   GLSL Version: {self.ctx.info['GL_SHADING_LANGUAGE_VERSION']}")
-        print(f"   Renderer: {self.ctx.info['GL_RENDERER']}")
-        print(f"   Vendor: {self.ctx.info['GL_VENDOR']}")
+        print(f"   OpenGL Version: {self.ctx.info.get('GL_VERSION', 'Unknown')}")
+        print(f"   Renderer: {self.ctx.info.get('GL_RENDERER', 'Unknown')}")
+        print(f"   Vendor: {self.ctx.info.get('GL_VENDOR', 'Unknown')}")
         print()
         print("   Controls:")
         print("   - WASD: Move camera")
