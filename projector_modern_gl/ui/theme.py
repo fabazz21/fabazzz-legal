@@ -85,9 +85,6 @@ class ProjectorTheme:
         colors[imgui.COLOR_TITLE_BACKGROUND_ACTIVE] = (*ProjectorTheme.PANEL_HEADER, 1.0)
         colors[imgui.COLOR_TITLE_BACKGROUND_COLLAPSED] = (*ProjectorTheme.PANEL_HEADER, 0.8)
 
-        # Menu bar
-        colors[imgui.COLOR_MENU_BAR_BACKGROUND] = (*ProjectorTheme.PANEL_HEADER, 1.0)
-
         # Text
         colors[imgui.COLOR_TEXT] = (*ProjectorTheme.FOREGROUND, 1.0)
         colors[imgui.COLOR_TEXT_DISABLED] = (*ProjectorTheme.MUTED_FOREGROUND, 1.0)
@@ -117,12 +114,15 @@ class ProjectorTheme:
         colors[imgui.COLOR_RESIZE_GRIP_HOVERED] = (*ProjectorTheme.PRIMARY, 0.4)
         colors[imgui.COLOR_RESIZE_GRIP_ACTIVE] = (*ProjectorTheme.PRIMARY, 0.6)
 
-        # Tabs
-        colors[imgui.COLOR_TAB] = (*ProjectorTheme.MUTED, 0.6)
-        colors[imgui.COLOR_TAB_HOVERED] = (*ProjectorTheme.PRIMARY, 0.5)
-        colors[imgui.COLOR_TAB_ACTIVE] = (*ProjectorTheme.PRIMARY, 0.7)
-        colors[imgui.COLOR_TAB_UNFOCUSED] = (*ProjectorTheme.MUTED, 0.4)
-        colors[imgui.COLOR_TAB_UNFOCUSED_ACTIVE] = (*ProjectorTheme.MUTED, 0.6)
+        # Tabs (if available)
+        try:
+            colors[imgui.COLOR_TAB] = (*ProjectorTheme.MUTED, 0.6)
+            colors[imgui.COLOR_TAB_HOVERED] = (*ProjectorTheme.PRIMARY, 0.5)
+            colors[imgui.COLOR_TAB_ACTIVE] = (*ProjectorTheme.PRIMARY, 0.7)
+            colors[imgui.COLOR_TAB_UNFOCUSED] = (*ProjectorTheme.MUTED, 0.4)
+            colors[imgui.COLOR_TAB_UNFOCUSED_ACTIVE] = (*ProjectorTheme.MUTED, 0.6)
+        except AttributeError:
+            pass  # Tab colors not available in this imgui version
 
         # Scrollbar
         colors[imgui.COLOR_SCROLLBAR_BACKGROUND] = (*ProjectorTheme.MUTED, 0.3)
@@ -149,13 +149,19 @@ class ProjectorTheme:
         # Drag and drop
         colors[imgui.COLOR_DRAG_DROP_TARGET] = (*ProjectorTheme.PRIMARY_GLOW, 0.9)
 
-        # Nav highlight
-        colors[imgui.COLOR_NAV_HIGHLIGHT] = (*ProjectorTheme.PRIMARY, 1.0)
-        colors[imgui.COLOR_NAV_WINDOWING_HIGHLIGHT] = (*ProjectorTheme.PRIMARY_GLOW, 0.7)
-        colors[imgui.COLOR_NAV_WINDOWING_DIM_BACKGROUND] = (0.2, 0.2, 0.2, 0.2)
+        # Nav highlight (if available)
+        try:
+            colors[imgui.COLOR_NAV_HIGHLIGHT] = (*ProjectorTheme.PRIMARY, 1.0)
+            colors[imgui.COLOR_NAV_WINDOWING_HIGHLIGHT] = (*ProjectorTheme.PRIMARY_GLOW, 0.7)
+            colors[imgui.COLOR_NAV_WINDOWING_DIM_BACKGROUND] = (0.2, 0.2, 0.2, 0.2)
+        except AttributeError:
+            pass
 
-        # Modal background
-        colors[imgui.COLOR_MODAL_WINDOW_DIM_BACKGROUND] = (0.0, 0.0, 0.0, 0.6)
+        # Modal background (if available)
+        try:
+            colors[imgui.COLOR_MODAL_WINDOW_DIM_BACKGROUND] = (0.0, 0.0, 0.0, 0.6)
+        except AttributeError:
+            pass
 
         print("✅ HTML theme applied to ImGui")
 
