@@ -59,9 +59,6 @@ class MainUI:
 
     def render(self):
         """Render UI (call every frame)"""
-        # Start new frame
-        imgui.new_frame()
-
         # Main menu bar
         self._render_menu_bar()
 
@@ -90,10 +87,6 @@ class MainUI:
         # Demo window (for development)
         if self.show_demo_window:
             imgui.show_demo_window()
-
-        # Render ImGui
-        imgui.render()
-        self.impl.render(imgui.get_draw_data())
 
     def _render_menu_bar(self):
         """Render main menu bar"""
