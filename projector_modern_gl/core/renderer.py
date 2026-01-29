@@ -17,6 +17,18 @@ class Renderer:
         self.width = width
         self.height = height
 
+        # Rendering settings
+        self.background_color = [0.071, 0.078, 0.090]  # #121418
+        self.shadow_map_size = 2048
+        self.wireframe_mode = False
+        self.show_frustums = False
+
+        # Stats
+        self.stats = {
+            'draw_calls': 0,
+            'triangles': 0
+        }
+
         # Load shaders
         self.shader_dir = Path(__file__).parent.parent / "shaders"
         self._load_shaders()
