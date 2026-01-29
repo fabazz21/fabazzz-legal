@@ -31,14 +31,28 @@ class Renderer:
 
     def _get_or_create_vao(self, obj, shader):
         """Get or create VAO for object"""
-        if obj.vao is None and hasattr(obj, 'vbo') and hasattr(obj, 'ibo'):
-            # Create VAO with current shader
-            obj.vao = self.ctx.vertex_array(
-                shader,
-                [(obj.vbo, '3f 3f', 'in_position', 'in_normal')],
-                obj.ibo
-            )
-        return obj.vao
+        if not hasattr(obj, 'vbo') or not hasattr(obj, 'ibo'):
+            return None
+
+        # Check if this is the depth shader or projector shader
+        if shader == self.depth_shader:
+            # Depth shader only needs position
+            if not hasattr(obj, 'vao_depth') or obj.vao_depth is None:
+                obj.vao_depth = self.ctx.vertex_array(
+                    shader,
+                    [(obj.vbo, '3f 3f', 'in_position')],  # Skip normal data
+                    obj.ibo
+                )
+            return obj.vao_depth
+        else:
+            # Projector shader needs position + normal
+            if obj.vao is None:
+                obj.vao = self.ctx.vertex_array(
+                    shader,
+                    [(obj.vbo, '3f 3f', 'in_position', 'in_normal')],
+                    obj.ibo
+                )
+            return obj.vao
 
     def _load_shaders(self):
         """Load all GLSL shaders"""
