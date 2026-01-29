@@ -44,15 +44,14 @@ class PhotometricPanel:
             imgui.text_colored("Select a projector to analyze", 0.6, 0.6, 0.6)
         else:
             self._render_photometric_analysis(proj)
+
     def _render_photometric_analysis(self, proj):
-    def _render_photometric_analysis(self, proj):
-        """Render photometric analysis for projector"""
         """Render photometric analysis for projector"""
         from utils.math_utils import (
-        calculate_projection_size,
-        calculate_distance,
-        calculate_illuminance,
-        calculate_luminance
+            calculate_projection_size,
+            calculate_distance,
+            calculate_illuminance,
+            calculate_luminance
         )
 
         # Projector specifications

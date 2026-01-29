@@ -156,7 +156,7 @@ class ExportPanel:
             imgui.text("Import project from file:")
             if imgui.button("Import JSON Project", width=200):
                 self._import_json()
-    def _import_json(self):
+
     def _import_json(self):
         """Import project from JSON"""
         print("  📂 Importing project JSON...")
