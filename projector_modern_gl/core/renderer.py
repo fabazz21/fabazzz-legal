@@ -36,11 +36,11 @@ class Renderer:
 
         # Check if this is the depth shader or projector shader
         if shader == self.depth_shader:
-            # Depth shader only needs position
+            # Depth shader only needs position (skip normals with 12x = 12 bytes padding)
             if not hasattr(obj, 'vao_depth') or obj.vao_depth is None:
                 obj.vao_depth = self.ctx.vertex_array(
                     shader,
-                    [(obj.vbo, '3f 3f', 'in_position')],  # Skip normal data
+                    [(obj.vbo, '3f 12x', 'in_position')],  # 3f position, skip 3f (12 bytes) normals
                     obj.ibo
                 )
             return obj.vao_depth
