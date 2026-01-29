@@ -9,10 +9,29 @@ import imgui
 class TimelinePanel:
     """Timeline panel for animation"""
 
+    def __init__(self, ui):
+        """Initialize timeline panel"""
+        self.ui = ui
+
+    def render(self):
+        """Render timeline panel"""
+        imgui.set_next_window_size(800, 200, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_position(10, 670, imgui.FIRST_USE_EVER)
+
+        expanded, opened = imgui.begin("Timeline", True)
+        if not opened:
+            self.ui.show_timeline_panel = False
+            imgui.end()
+            return
+
+        if expanded:
+            self.render_content()
+
+        imgui.end()
 
     def render_content(self):
         """Render panel content (without window wrapper)"""
-            timeline = self.ui.app.timeline
+        timeline = self.ui.app.timeline
             imgui.push_style_var(imgui.STYLE_FRAME_PADDING, (8, 4))
             if timeline.playing:
                 if imgui.button("⏸ Pause"):

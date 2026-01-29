@@ -38,12 +38,13 @@ class PhotometricPanel:
 
     def render_content(self):
         """Render panel content (without window wrapper)"""
-            proj = self.ui.selected_projector
-            if proj is None:
-                imgui.text("No projector selected")
-                imgui.text_colored("Select a projector to analyze", 0.6, 0.6, 0.6)
-            else:
-                self._render_photometric_analysis(proj)
+        proj = self.ui.selected_projector
+        if proj is None:
+            imgui.text("No projector selected")
+            imgui.text_colored("Select a projector to analyze", 0.6, 0.6, 0.6)
+        else:
+            self._render_photometric_analysis(proj)
+    def _render_photometric_analysis(self, proj):
     def _render_photometric_analysis(self, proj):
         """Render photometric analysis for projector"""
         from utils.math_utils import (
