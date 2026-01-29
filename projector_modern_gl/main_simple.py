@@ -7,6 +7,7 @@ import sys
 import moderngl
 import glfw
 import numpy as np
+from pyrr import Vector3
 
 from core.window import Window
 from core.renderer import Renderer
@@ -79,9 +80,8 @@ class ProjectionMappingAppSimple:
         print(f"✅ Added test cube")
 
         # Add a projector
-        projector = Projector('panasonic_pt_rq13k', 'panasonic_et_d3lew10', self.ctx)
-        projector.set_position(0, 3, 8)
-        projector.look_at([0, 0, 0])
+        projector = Projector('panasonic_pt_rq13k', 'panasonic_et_d3lew10', self.ctx, position=(0, 3, 8))
+        projector.target_position = Vector3([0, 0, 0])
         self.scene.add_projector(projector)
         print(f"✅ Added test projector: {projector.name}")
 
