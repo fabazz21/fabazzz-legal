@@ -21,7 +21,7 @@ from core.window import Window
 from core.renderer import Renderer
 from core.scene import Scene
 from core.camera import Camera
-from ui.main_ui import MainUI
+from ui.main_ui_tabbed import MainUITabbed as MainUI  # Using tabbed UI (HTML-style)
 from animation.timeline import Timeline
 from utils.history import History
 
