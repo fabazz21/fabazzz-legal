@@ -3,6 +3,7 @@ Projector Class
 Professional projector instance with full configuration
 """
 
+import moderngl
 import numpy as np
 from pyrr import Matrix44, Vector3, Quaternion
 from .projector_database import get_projector_by_id
