@@ -76,7 +76,12 @@ class Scene:
 
     def add_projector(self, projector):
         """Add projector to scene"""
-        self.projectors.append(projector)
+        # Assign FBO index (max 4 projectors)
+        if len(self.projectors) < 4:
+            projector.depth_fbo_index = len(self.projectors)
+            self.projectors.append(projector)
+        else:
+            print(f"  ⚠️ Maximum 4 projectors reached. Cannot add {projector.name}")
         self.projector_count = len(self.projectors)
         return projector
 
