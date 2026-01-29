@@ -74,6 +74,25 @@ class ProjectionMappingApp:
         print(f"   Renderer: {self.ctx.info.get('GL_RENDERER', 'Unknown')}")
         print(f"   Vendor: {self.ctx.info.get('GL_VENDOR', 'Unknown')}")
 
+        # Add default test scene
+        self._create_test_scene()
+
+    def _create_test_scene(self):
+        """Create initial test scene"""
+        from objects.primitives import create_primitive
+        from projectors.projector import Projector
+
+        # Add a cube
+        cube = create_primitive('cube', self.ctx)
+        cube.name = "Test Cube"
+        self.scene.add_object(cube)
+        print(f"  ✅ Added test cube to scene")
+
+        # Add a projector
+        projector = Projector('panasonic_pt_rq13k', 'panasonic_et_d3lew10', self.ctx, position=(0, 3, 8))
+        self.scene.add_projector(projector)
+        print(f"  ✅ Added test projector: {projector.name}")
+
     def run(self):
         """Main application loop"""
         print("\n🚀 Starting main render loop...")
