@@ -129,7 +129,7 @@ class TimelinePanel:
 
                                 # Easing submenu
                                 if imgui.begin_menu("Change Easing"):
-                                    from ...animation.easing import get_easing_names
+                                    from animation.easing import get_easing_names
                                     for easing_name in get_easing_names():
                                         if imgui.selectable(easing_name)[0]:
                                             kf.easing = easing_name

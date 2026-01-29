@@ -5,7 +5,7 @@ Load 3D models from various formats (OBJ, FBX, glTF, GLB)
 
 import numpy as np
 import trimesh
-from ..objects.base_object import Object3D
+from objects.base_object import Object3D
 
 
 class ModelLoader:
@@ -173,7 +173,7 @@ class MannequinLoader:
         Returns:
             List of Object3D parts (head, torso, arms, legs)
         """
-        from ..objects.primitives import Sphere, Cube, Cylinder
+        from objects.primitives import Sphere, Cube, Cylinder
 
         parts = []
         scale = height / 1.8  # Normalize to 1.8m standard height

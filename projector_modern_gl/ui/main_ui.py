@@ -173,7 +173,7 @@ class MainUI:
             if imgui.begin_menu("Add", True):
                 if imgui.begin_menu("Projector", True):
                     # List projector models
-                    from ..projectors.projector_database import get_all_projectors
+                    from projectors.projector_database import get_all_projectors
                     projectors = get_all_projectors()
 
                     for proj in projectors:
@@ -282,8 +282,8 @@ class MainUI:
 
     def _add_projector(self, model_id):
         """Add projector to scene"""
-        from ..projectors.projector import Projector
-        from ..projectors.lens_database import get_all_lenses
+        from projectors.projector import Projector
+        from projectors.lens_database import get_all_lenses
 
         # Get first compatible lens
         lenses = get_all_lenses()
@@ -296,7 +296,7 @@ class MainUI:
 
     def _add_primitive(self, primitive_type):
         """Add primitive object to scene"""
-        from ..objects.primitives import create_primitive
+        from objects.primitives import create_primitive
 
         obj = create_primitive(primitive_type, self.app.ctx)
         self.app.scene.add_object(obj)

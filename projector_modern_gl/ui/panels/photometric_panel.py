@@ -41,7 +41,7 @@ class PhotometricPanel:
 
     def _render_photometric_analysis(self, proj):
         """Render photometric analysis for projector"""
-        from ...utils.math_utils import (
+        from utils.math_utils import (
             calculate_projection_size,
             calculate_distance,
             calculate_illuminance,
