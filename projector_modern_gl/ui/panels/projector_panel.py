@@ -25,15 +25,19 @@ class ProjectorPanel:
             return
 
         if expanded:
-            proj = self.ui.selected_projector
-
-            if proj is None:
-                imgui.text("No projector selected")
-                imgui.text_colored("Select a projector from the Scene panel", 0.6, 0.6, 0.6)
-            else:
-                self._render_projector_controls(proj)
+            self.render_content()
 
         imgui.end()
+
+    def render_content(self):
+        """Render projector panel content (without window wrapper)"""
+        proj = self.ui.selected_projector
+
+        if proj is None:
+            imgui.text("No projector selected")
+            imgui.text_colored("Select a projector from the Scene panel", 0.6, 0.6, 0.6)
+        else:
+            self._render_projector_controls(proj)
 
     def _render_projector_controls(self, proj):
         """Render projector controls"""

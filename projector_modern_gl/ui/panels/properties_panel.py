@@ -26,15 +26,19 @@ class PropertiesPanel:
             return
 
         if expanded:
-            # Get selected object
-            obj = self.ui.selected_object or self.ui.selected_projector
-
-            if obj is None:
-                imgui.text("No object selected")
-            else:
-                self._render_object_properties(obj)
+            self.render_content()
 
         imgui.end()
+
+    def render_content(self):
+        """Render properties panel content (without window wrapper)"""
+        # Get selected object
+        obj = self.ui.selected_object or self.ui.selected_projector
+
+        if obj is None:
+            imgui.text("No object selected")
+        else:
+            self._render_object_properties(obj)
 
     def _render_object_properties(self, obj):
         """Render properties for object"""
