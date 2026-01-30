@@ -168,10 +168,10 @@ class ProjectorTheme:
     @staticmethod
     def push_primary_button():
         """Style for primary buttons (teal glow)"""
-        imgui.push_style_color(imgui.COLOR_BUTTON, *ProjectorTheme.PRIMARY, 0.3)
-        imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, *ProjectorTheme.PRIMARY, 0.5)
-        imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, *ProjectorTheme.PRIMARY, 0.7)
-        imgui.push_style_color(imgui.COLOR_TEXT, 1.0, 1.0, 1.0, 1.0)
+        imgui.push_style_color(imgui.COLOR_BUTTON, (*ProjectorTheme.PRIMARY, 0.3))
+        imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, (*ProjectorTheme.PRIMARY, 0.5))
+        imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, (*ProjectorTheme.PRIMARY, 0.7))
+        imgui.push_style_color(imgui.COLOR_TEXT, (1.0, 1.0, 1.0, 1.0))
 
     @staticmethod
     def pop_primary_button():
@@ -181,10 +181,10 @@ class ProjectorTheme:
     @staticmethod
     def push_secondary_button():
         """Style for secondary buttons (muted)"""
-        imgui.push_style_color(imgui.COLOR_BUTTON, *ProjectorTheme.MUTED, 0.5)
-        imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, *ProjectorTheme.MUTED, 0.7)
-        imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, *ProjectorTheme.MUTED, 0.9)
-        imgui.push_style_color(imgui.COLOR_TEXT, *ProjectorTheme.MUTED_FOREGROUND, 1.0)
+        imgui.push_style_color(imgui.COLOR_BUTTON, (*ProjectorTheme.MUTED, 0.5))
+        imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, (*ProjectorTheme.MUTED, 0.7))
+        imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, (*ProjectorTheme.MUTED, 0.9))
+        imgui.push_style_color(imgui.COLOR_TEXT, (*ProjectorTheme.MUTED_FOREGROUND, 1.0))
 
     @staticmethod
     def pop_secondary_button():
