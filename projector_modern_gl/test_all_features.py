@@ -13,14 +13,16 @@ try:
     from main import ProjectionMappingApp
     from core.scene import Scene
     from core.camera import Camera
-    from objects.projector import Projector
-    from objects.cube import Cube
+    from projectors.projector import Projector
+    from objects.primitives import Cube, Sphere, Plane, Cylinder
     from projectors.projector_database import PROJECTOR_DATABASE
     from ui.panels.projector_panel import ProjectorPanel
     from ui.panels.scene_panel import ScenePanel
     from ui.panels.photometric_panel import PhotometricPanel
 except Exception as e:
     print(f"[ERROR] Impossible d'importer les modules: {e}")
+    import traceback
+    traceback.print_exc()
     sys.exit(1)
 
 
@@ -136,35 +138,23 @@ class FeatureTester:
             lambda: hasattr(Cube, '__init__'))
 
         # Test Cylindre
-        try:
-            from objects.cylinder import Cylinder
-            self.test_feature('objects', 'Créer Cylindre',
-                lambda: hasattr(Cylinder, '__init__'))
-        except ImportError:
-            self.test_feature('objects', 'Créer Cylindre', lambda: False)
+        self.test_feature('objects', 'Créer Cylindre',
+            lambda: hasattr(Cylinder, '__init__'))
 
         # Test Sphère
-        try:
-            from objects.sphere import Sphere
-            self.test_feature('objects', 'Créer Sphère',
-                lambda: hasattr(Sphere, '__init__'))
-        except ImportError:
-            self.test_feature('objects', 'Créer Sphère', lambda: False)
+        self.test_feature('objects', 'Créer Sphère',
+            lambda: hasattr(Sphere, '__init__'))
 
         # Test Plane
-        try:
-            from objects.plane import Plane
-            self.test_feature('objects', 'Créer Plane',
-                lambda: hasattr(Plane, '__init__'))
-        except ImportError:
-            self.test_feature('objects', 'Créer Plane', lambda: False)
+        self.test_feature('objects', 'Créer Plane',
+            lambda: hasattr(Plane, '__init__'))
 
-        # Test Circle
+        # Test Circle - vérifier s'il existe dans primitives
         try:
-            from objects.circle import Circle
+            from objects.primitives import Circle
             self.test_feature('objects', 'Créer Circle',
                 lambda: hasattr(Circle, '__init__'))
-        except ImportError:
+        except (ImportError, AttributeError):
             self.test_feature('objects', 'Créer Circle', lambda: False)
 
     def test_projectors(self):
