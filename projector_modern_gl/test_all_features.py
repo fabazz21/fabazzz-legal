@@ -10,7 +10,7 @@ from pathlib import Path
 
 # Importer tous les modules
 try:
-    from main import ProjectorMappingApp
+    from main import ProjectionMappingApp
     from core.scene import Scene
     from core.camera import Camera
     from objects.projector import Projector
