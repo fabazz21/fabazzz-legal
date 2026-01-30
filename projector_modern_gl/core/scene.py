@@ -23,12 +23,17 @@ class Scene:
         # Helpers
         self.show_helpers = True
         self.show_grid = True
+        self.show_axes = True
         self.show_frustums = True
 
         # Grid
         self.grid = None
         self.grid_size = 50.0  # Grid size in units
         self._create_grid()
+
+        # Axes
+        self.axes = None
+        self._create_axes()
 
         # Scene settings
         self.ambient_light_intensity = 0.1
@@ -74,6 +79,30 @@ class Scene:
             })
 
         self.grid = grid_lines
+
+    def _create_axes(self):
+        """Create 3D axes (X=red, Y=green, Z=blue)"""
+        axis_length = 5.0
+        self.axes = [
+            # X axis (Red)
+            {
+                'start': [0, 0, 0],
+                'end': [axis_length, 0, 0],
+                'color': [1.0, 0.0, 0.0]
+            },
+            # Y axis (Green)
+            {
+                'start': [0, 0, 0],
+                'end': [0, axis_length, 0],
+                'color': [0.0, 1.0, 0.0]
+            },
+            # Z axis (Blue)
+            {
+                'start': [0, 0, 0],
+                'end': [0, 0, axis_length],
+                'color': [0.0, 0.0, 1.0]
+            }
+        ]
 
     def add_projector(self, projector):
         """Add projector to scene"""
@@ -144,6 +173,10 @@ class Scene:
     def toggle_grid(self):
         """Toggle grid visibility"""
         self.show_grid = not self.show_grid
+
+    def toggle_axes(self):
+        """Toggle axes visibility"""
+        self.show_axes = not self.show_axes
 
     def toggle_helpers(self):
         """Toggle all helpers"""
