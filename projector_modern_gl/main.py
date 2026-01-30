@@ -130,8 +130,10 @@ class ProjectionMappingApp:
 
     def update(self, dt):
         """Update application state"""
-        # Update camera
-        self.camera.update(self.window, dt)
+        # Update camera (only if ImGui doesn't want the mouse)
+        io = imgui.get_io()
+        if not io.want_capture_mouse:
+            self.camera.update(self.window, dt)
 
         # Update timeline if playing
         if self.timeline.playing:

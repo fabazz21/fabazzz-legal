@@ -141,6 +141,33 @@ class Camera:
 
         self.position = self.target + Vector3([x, y, z])
 
+    def rotate(self, delta_azimuth, delta_elevation):
+        """Rotate camera around target (orbit controls)"""
+        self.azimuth += delta_azimuth * self.rotate_speed
+        self.elevation = np.clip(
+            self.elevation + delta_elevation * self.rotate_speed,
+            -89.0, 89.0
+        )
+        self.update_position_from_orbit()
+        self.update_matrices()
+
+    def pan(self, delta_x, delta_y):
+        """Pan camera (move target and position together)"""
+        right = self.get_right()
+        up = self.up
+        pan_speed = 0.1
+        self.position -= right * delta_x * pan_speed
+        self.position -= up * delta_y * pan_speed
+        self.target -= right * delta_x * pan_speed
+        self.target -= up * delta_y * pan_speed
+        self.update_matrices()
+
+    def zoom(self, delta):
+        """Zoom camera (change distance from target)"""
+        self.distance = max(0.5, self.distance + delta * self.zoom_speed)
+        self.update_position_from_orbit()
+        self.update_matrices()
+
     def get_forward(self):
         """Get forward direction vector"""
         forward = self.target - self.position
