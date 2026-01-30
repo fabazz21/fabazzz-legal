@@ -269,6 +269,47 @@ class Cone(Object3D):
             )
 
 
+class Circle(Object3D):
+    """Circle primitive (flat disc)"""
+
+    def __init__(self, radius=1.0, segments=32, ctx=None):
+        super().__init__("Circle", ctx)
+        self.radius = radius
+        self.segments = segments
+        self._create_geometry()
+
+    def _create_geometry(self):
+        """Create circle geometry"""
+        vertices = []
+        indices = []
+
+        # Center vertex
+        vertices.extend([0, 0, 0, 0, 1, 0])  # position + normal (up)
+
+        # Outer vertices
+        for i in range(self.segments + 1):
+            angle = 2 * np.pi * i / self.segments
+            x = np.cos(angle) * self.radius
+            z = np.sin(angle) * self.radius
+            vertices.extend([x, 0, z, 0, 1, 0])
+
+        # Indices (triangle fan from center)
+        for i in range(self.segments):
+            indices.extend([0, i + 1, i + 2])
+
+        self.vertices = np.array(vertices, dtype='f4')
+        self.indices = np.array(indices, dtype='i4')
+
+        if self.ctx:
+            self.vbo = self.ctx.buffer(self.vertices.tobytes())
+            self.ibo = self.ctx.buffer(self.indices.tobytes())
+            self.vao = self.ctx.vertex_array(
+                None,
+                [(self.vbo, '3f 3f', 'in_position', 'in_normal')],
+                self.ibo
+            )
+
+
 def create_primitive(primitive_type, ctx=None):
     """Factory function to create primitives"""
     primitives = {
@@ -276,7 +317,8 @@ def create_primitive(primitive_type, ctx=None):
         'plane': Plane,
         'sphere': Sphere,
         'cylinder': Cylinder,
-        'cone': Cone
+        'cone': Cone,
+        'circle': Circle
     }
 
     if primitive_type.lower() in primitives:
