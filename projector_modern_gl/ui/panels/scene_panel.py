@@ -101,15 +101,36 @@ class ScenePanel:
                 imgui.selectable(f"💡 {light.name}")
             imgui.tree_pop()
 
-        # Grid
+        # Grid & Axes
         imgui.separator()
-        if imgui.tree_node("Grid"):
+        if imgui.tree_node("Display Options"):
             changed, scene.show_grid = imgui.checkbox("Show Grid", scene.show_grid)
             if scene.show_grid:
                 changed, scene.grid_size = imgui.slider_float(
                     "Grid Size", scene.grid_size, 1.0, 100.0
                 )
+            changed, scene.show_axes = imgui.checkbox("Show Axes", scene.show_axes)
             imgui.tree_pop()
+
+        # Scene actions
+        imgui.separator()
+        if imgui.button("Clear Scene", width=-1):
+            self.clear_scene()
+
+    def clear_scene(self):
+        """Clear all objects and projectors from scene"""
+        scene = self.ui.app.scene
+        # Clear all lists
+        scene.objects.clear()
+        scene.projectors.clear()
+        scene.lights.clear()
+        # Reset selection
+        self.ui.selected_object = None
+        self.ui.selected_projector = None
+        # Update counters
+        scene.object_count = 0
+        scene.projector_count = 0
+        print("[OK] Scene cleared")
 
     def _get_object_icon(self, obj):
         """Get icon for object type"""
