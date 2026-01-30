@@ -13,6 +13,14 @@ class TimelinePanel:
         """Initialize timeline panel"""
         self.ui = ui
 
+    def play(self):
+        """Play timeline animation"""
+        self.ui.app.timeline.play()
+
+    def pause(self):
+        """Pause timeline animation"""
+        self.ui.app.timeline.pause()
+
     def render(self):
         """Render timeline panel"""
         imgui.set_next_window_size(800, 200, imgui.FIRST_USE_EVER)
