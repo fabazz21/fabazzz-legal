@@ -28,8 +28,10 @@ class Object3D:
 
         # Rendering
         self.visible = True
+        self.active = True  # Whether object is active/enabled
         self.cast_shadow = True
         self.receive_shadow = True
+        self.intensity = 1.0  # For lights or emissive objects
 
         # Geometry
         self.vao = None  # Vertex Array Object

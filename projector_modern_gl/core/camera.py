@@ -195,6 +195,11 @@ class Camera:
         self.distance = np.linalg.norm(self.position - self.target)
         self.update_matrices()
 
+    def reset(self):
+        """Reset camera to default perspective view"""
+        self.set_view('perspective')
+        print("  🔄 Camera reset to default view")
+
     def resize(self, width, height):
         """Update camera aspect ratio"""
         self.width = width
