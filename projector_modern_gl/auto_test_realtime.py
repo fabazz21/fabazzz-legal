@@ -18,6 +18,48 @@ class RealtimeAppTester:
         self.test_runs = []
         self.max_attempts = 10
         self.success_duration = 10  # secondes sans crash = succès
+        self.report_file = Path("complete_error_report.txt")
+
+        # Charger les erreurs existantes si le rapport existe
+        self.load_existing_errors()
+
+    def load_existing_errors(self):
+        """Charge les erreurs du rapport précédent s'il existe"""
+        if not self.report_file.exists():
+            return
+
+        print("[INFO] Chargement des erreurs du rapport précédent...")
+        try:
+            with open(self.report_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+
+            # Parser les erreurs du rapport
+            # Format: "X. ErrorType\n   Message: ...\n   Fichier: ...\n"
+            error_blocks = re.split(r'\n\d+\. ', content)
+            for block in error_blocks[1:]:  # Skip header
+                lines = block.split('\n')
+                if len(lines) >= 3:
+                    error_type = lines[0].strip()
+                    message = None
+                    file_loc = None
+
+                    for line in lines[1:]:
+                        if line.strip().startswith('Message:'):
+                            message = line.split('Message:', 1)[1].strip()
+                        elif line.strip().startswith('Fichier:'):
+                            file_loc = line.split('Fichier:', 1)[1].strip()
+
+                    if message:
+                        self.all_errors.append({
+                            'type': error_type,
+                            'message': message,
+                            'file': file_loc,
+                            'traceback': []
+                        })
+
+            print(f"[OK] {len(self.all_errors)} erreur(s) chargée(s) du rapport précédent")
+        except Exception as e:
+            print(f"[WARNING] Impossible de charger le rapport: {e}")
 
     def run_test_cycle(self, attempt_num):
         """Lance un cycle de test"""
@@ -171,7 +213,16 @@ class RealtimeAppTester:
         print(f"  - Maximum {self.max_attempts} tentatives")
         print(f"  - Succès = {self.success_duration}s sans crash")
         print(f"  - Relance automatique après chaque crash")
+
+        if self.all_errors:
+            print(f"  - Erreurs déjà connues: {len(self.all_errors)}")
+            print(f"  - Mode: INCRÉMENTIEL (nouvelles erreurs seront ajoutées)")
+        else:
+            print(f"  - Mode: NOUVEAU RAPPORT")
+
         print()
+
+        new_errors_count = 0
 
         for attempt in range(1, self.max_attempts + 1):
             result = self.run_test_cycle(attempt)
@@ -183,6 +234,8 @@ class RealtimeAppTester:
                     # Éviter les doublons
                     if not any(e.get('message') == error.get('message') for e in self.all_errors):
                         self.all_errors.append(error)
+                        new_errors_count += 1
+                        print(f"\n[NEW ERROR] Nouvelle erreur détectée: {error.get('type')}")
 
             # Si succès, on arrête
             if result['success']:
@@ -194,7 +247,9 @@ class RealtimeAppTester:
                 print(f"\n[INFO] Relance dans 2 secondes...")
                 time.sleep(2)
 
-    def generate_report(self):
+        return new_errors_count
+
+    def generate_report(self, new_errors_count=0):
         """Génère le rapport final"""
         print("\n" + "="*70)
         print("RAPPORT FINAL")
@@ -211,7 +266,12 @@ class RealtimeAppTester:
         print(f"  Échecs: {failed_runs}")
 
         # Erreurs uniques trouvées
-        print(f"\nErreurs uniques trouvées: {len(self.all_errors)}")
+        print(f"\nErreurs totales: {len(self.all_errors)}")
+        if new_errors_count > 0:
+            print(f"  - Nouvelles erreurs trouvées: {new_errors_count}")
+            print(f"  - Erreurs déjà connues: {len(self.all_errors) - new_errors_count}")
+        else:
+            print(f"  - Aucune nouvelle erreur (toutes déjà connues)")
 
         if self.all_errors:
             print("\n" + "="*70)
@@ -225,9 +285,8 @@ class RealtimeAppTester:
                 if error.get('traceback'):
                     print(f"   Traceback ({len(error['traceback'])} lignes)")
 
-        # Sauvegarder rapport
-        report_file = Path("complete_error_report.txt")
-        with open(report_file, 'w', encoding='utf-8') as f:
+        # Sauvegarder rapport (mode incrémentiel)
+        with open(self.report_file, 'w', encoding='utf-8') as f:
             f.write("="*70 + "\n")
             f.write("RAPPORT DE TEST AUTOMATISÉ\n")
             f.write(f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
@@ -252,7 +311,9 @@ class RealtimeAppTester:
                         f.write(f"   {line}")
                     f.write("\n")
 
-        print(f"\n[FILE] Rapport sauvegardé: {report_file}")
+        print(f"\n[FILE] Rapport sauvegardé: {self.report_file}")
+        if new_errors_count > 0:
+            print(f"[FILE] {new_errors_count} nouvelle(s) erreur(s) ajoutée(s) au rapport")
 
         # Instructions
         print("\n" + "="*70)
@@ -265,8 +326,8 @@ class RealtimeAppTester:
 
 def main():
     tester = RealtimeAppTester()
-    tester.run_all_tests()
-    tester.generate_report()
+    new_errors = tester.run_all_tests()
+    tester.generate_report(new_errors)
 
 if __name__ == "__main__":
     main()
