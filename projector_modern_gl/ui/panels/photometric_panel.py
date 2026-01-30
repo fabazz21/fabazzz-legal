@@ -172,8 +172,80 @@ class PhotometricPanel:
             imgui.text(f"Lens Shift V: ±{proj.lens_config['shift_v']}%")
             imgui.text(f"Lens Shift H: ±{proj.lens_config['shift_h']}%")
 
+        # Coverage & Overlap Analysis
+        if len(self.ui.app.scene.projectors) > 0:
+            imgui.separator()
+            if imgui.button("Calculate Coverage", width=-1):
+                coverage = self.calculate_coverage()
+                print(f"[OK] Coverage calculated: {coverage:.2f} m²")
+
+            if len(self.ui.app.scene.projectors) > 1:
+                if imgui.button("Calculate Overlap", width=-1):
+                    overlap = self.calculate_overlap()
+                    print(f"[OK] Overlap calculated: {overlap:.2f} m²")
+
         # Export analysis
         imgui.separator()
         if imgui.button("Export Analysis Report (PDF)", width=250):
             print("  📄 Exporting photometric analysis report...")
             print("  ⚠️ PDF export not yet implemented")
+
+    def calculate_coverage(self):
+        """Calculate total projection coverage area"""
+        from utils.math_utils import calculate_projection_size
+
+        total_coverage = 0.0
+        for proj in self.ui.app.scene.projectors:
+            # Calculate projected size at projector's distance
+            distance = abs(proj.position[2])  # Simple distance (Z axis)
+            proj_width, proj_height = calculate_projection_size(
+                proj.throw_ratio,
+                distance,
+                proj.aspect
+            )
+            coverage_area = proj_width * proj_height
+            total_coverage += coverage_area
+            print(f"  {proj.name}: {coverage_area:.2f} m²")
+
+        print(f"  Total coverage: {total_coverage:.2f} m²")
+        return total_coverage
+
+    def calculate_overlap(self):
+        """Calculate overlap area between projectors"""
+        import numpy as np
+        from utils.math_utils import calculate_projection_size
+
+        projectors = self.ui.app.scene.projectors
+        if len(projectors) < 2:
+            return 0.0
+
+        # Simple overlap calculation
+        # For each pair of projectors, calculate intersection
+        total_overlap = 0.0
+
+        for i, proj1 in enumerate(projectors):
+            for j, proj2 in enumerate(projectors[i+1:], start=i+1):
+                # Get projection rectangles
+                dist1 = abs(proj1.position[2])
+                dist2 = abs(proj2.position[2])
+
+                w1, h1 = calculate_projection_size(proj1.throw_ratio, dist1, proj1.aspect)
+                w2, h2 = calculate_projection_size(proj2.throw_ratio, dist2, proj2.aspect)
+
+                # Calculate rectangle centers (simplified)
+                x1, y1 = proj1.position[0], proj1.position[1]
+                x2, y2 = proj2.position[0], proj2.position[1]
+
+                # Calculate overlap (simplified 2D rectangle intersection)
+                left = max(x1 - w1/2, x2 - w2/2)
+                right = min(x1 + w1/2, x2 + w2/2)
+                bottom = max(y1 - h1/2, y2 - h2/2)
+                top = min(y1 + h1/2, y2 + h2/2)
+
+                if right > left and top > bottom:
+                    overlap_area = (right - left) * (top - bottom)
+                    total_overlap += overlap_area
+                    print(f"  {proj1.name} ∩ {proj2.name}: {overlap_area:.2f} m²")
+
+        print(f"  Total overlap: {total_overlap:.2f} m²")
+        return total_overlap
