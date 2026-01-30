@@ -194,6 +194,9 @@ def main():
     # ========== TEST 11: IMGUI INTEGRATION ==========
     print_header("TEST 11: IMGUI INTEGRATION")
 
+    global total_tests, passed_tests, failed_tests
+    total_tests += 1
+
     try:
         import imgui
         from imgui.integrations.glfw import GlfwRenderer
@@ -205,7 +208,6 @@ def main():
         print_info(f"Error: {str(e)}")
         errors.append(f"ImGui integration: {str(e)}")
         failed_tests += 1
-    total_tests += 1
 
     # ========== FINAL REPORT ==========
     print_header("FINAL REPORT")
