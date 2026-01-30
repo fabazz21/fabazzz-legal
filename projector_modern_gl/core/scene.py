@@ -27,6 +27,7 @@ class Scene:
 
         # Grid
         self.grid = None
+        self.grid_size = 50.0  # Grid size in units
         self._create_grid()
 
         # Scene settings
@@ -43,7 +44,7 @@ class Scene:
     def _create_grid(self):
         """Create reference grid"""
         # Grid: 100x100 units, 1 unit spacing
-        grid_size = 50
+        grid_size = int(self.grid_size)
         grid_lines = []
 
         # X lines (red tint)
