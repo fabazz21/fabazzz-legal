@@ -1,0 +1,52 @@
+======================================================================
+CHANGEMENTS MODERNGL APP
+Date: 2026-01-30 20:12:03
+======================================================================
+
+FONCTIONNALITES AJOUTEES:
+
+  1. Orbit Controls - Rotation camera avec souris (middle click)
+  2. Pan - Deplacement camera (shift + middle click)
+  3. Zoom - Molette souris
+  4. Objet Circle - Nouvelle primitive 3D
+  5. Axes 3D - X (rouge), Y (vert), Z (bleu)
+  6. Clear Scene - Bouton pour vider la scene
+  7. Calculate Coverage - Calcul surface de projection
+  8. Calculate Overlap - Calcul chevauchement projecteurs
+  9. Play/Pause Timeline - Controles timeline
+  10. Systeme Gizmos - Translate/Rotate/Scale 3D
+  11. Base de donnees complete:
+      - 29 projecteurs (etait 18)
+      - 5 marques: Panasonic, Christie, Barco, Epson, Digital Projection
+      - 20 lentilles avec lens shift complet
+      - Lentilles UST Epson (ELPLX02S)
+
+======================================================================
+FICHIERS MODIFIES:
+
+  - core/camera.py
+  - core/scene.py
+  - objects/primitives.py
+  - ui/gizmo.py
+  - ui/panels/scene_panel.py
+  - ui/panels/photometric_panel.py
+  - ui/panels/timeline_panel.py
+  - projectors/projector_database.py
+  - test_all_features.py
+  - auto_test_realtime.py
+  - fix_dict_bug.py
+  - main.py
+
+======================================================================
+INSTALLATION:
+
+1. Copiez tous les fichiers dans votre projet projector_modern_gl/
+2. Lancez: py -3.11 main.py
+3. Test: py -3.11 test_all_features.py
+
+CONTROLES:
+  - Middle Mouse: Rotation camera (orbit)
+  - Shift + Middle Mouse: Pan camera
+  - Scroll: Zoom
+  - WASD: Deplacement camera
+  - Q/E: Haut/Bas
