@@ -123,7 +123,7 @@ class Renderer:
         print(f"  ✅ Created {len(self.depth_framebuffers)} depth render targets ({self.depth_map_size}x{self.depth_map_size})")
 
     def _create_line_renderer(self):
-        """Create simple line renderer for helpers (grid, frustums)"""
+        """Create simple line renderer for helpers (grid, frustums, gizmo)"""
         # Simple line shader
         line_vs = """
         #version 330 core
@@ -145,6 +145,83 @@ class Renderer:
         }
         """
         self.line_shader = self.ctx.program(vertex_shader=line_vs, fragment_shader=line_fs)
+
+        # No persistent VBO - we'll create it dynamically for each draw call
+        # This is simpler and more flexible for dynamic gizmo rendering
+
+    def draw_line(self, start_pos, end_pos, color, width=2.0, camera=None, mvp_matrix=None):
+        """
+        Draw a single 3D line
+
+        Args:
+            start_pos: (x, y, z) start position
+            end_pos: (x, y, z) end position
+            color: (r, g, b) color (0.0 to 1.0)
+            width: line width in pixels (default 2.0)
+            camera: Camera object (if mvp_matrix not provided)
+            mvp_matrix: Pre-computed MVP matrix (optional)
+        """
+        self.draw_lines([start_pos], [end_pos], [color], width, camera, mvp_matrix)
+
+    def draw_lines(self, start_positions, end_positions, colors, width=2.0, camera=None, mvp_matrix=None):
+        """
+        Draw multiple 3D lines efficiently in a single draw call
+
+        Args:
+            start_positions: List of (x, y, z) start positions
+            end_positions: List of (x, y, z) end positions
+            colors: List of (r, g, b) colors or single color for all lines
+            width: line width in pixels (default 2.0)
+            camera: Camera object (if mvp_matrix not provided)
+            mvp_matrix: Pre-computed MVP matrix (optional)
+        """
+        if len(start_positions) == 0:
+            return
+
+        # Get MVP matrix
+        if mvp_matrix is None:
+            if camera is None:
+                raise ValueError("Must provide either camera or mvp_matrix")
+            mvp_matrix = camera.get_projection_matrix() @ camera.get_view_matrix()
+
+        # Handle single color for all lines
+        if len(colors) == 1 or (isinstance(colors, tuple) and len(colors) == 3):
+            colors = [colors] * len(start_positions)
+
+        # Build vertex data: [x, y, z, r, g, b] for each vertex
+        vertices = []
+        for start, end, color in zip(start_positions, end_positions, colors):
+            # Start vertex
+            vertices.extend(start)
+            vertices.extend(color)
+            # End vertex
+            vertices.extend(end)
+            vertices.extend(color)
+
+        # Convert to numpy array
+        vertex_data = np.array(vertices, dtype='f4')
+
+        # Create VBO
+        vbo = self.ctx.buffer(vertex_data.tobytes())
+
+        # Create VAO
+        vao = self.ctx.vertex_array(
+            self.line_shader,
+            [(vbo, '3f 3f', 'in_position', 'in_color')]
+        )
+
+        # Set line width
+        self.ctx.line_width = width
+
+        # Set MVP matrix
+        self.line_shader['mvp'].write(mvp_matrix.astype('f4').tobytes())
+
+        # Render lines
+        vao.render(moderngl.LINES)
+
+        # Cleanup
+        vao.release()
+        vbo.release()
 
     def render_depth_pass(self, projector, scene):
         """Render depth pass from projector's perspective for shadow mapping"""
@@ -301,28 +378,112 @@ class Renderer:
         if not scene.show_helpers:
             return
 
-        # Get MVP matrix
-        vp_matrix = camera.get_projection_matrix() @ camera.get_view_matrix()
-
         # Render grid
         if scene.show_grid and scene.grid:
-            self._render_grid(scene.grid, vp_matrix)
+            self._render_grid(scene.grid, camera)
 
         # Render projector frustums
         if scene.show_frustums:
             for projector in scene.get_active_projectors():
-                if hasattr(projector, 'frustum_lines'):
-                    self._render_frustum(projector.frustum_lines, vp_matrix)
+                self._render_frustum(projector, camera)
 
-    def _render_grid(self, grid, vp_matrix):
+    def _render_grid(self, grid, camera):
         """Render grid lines"""
-        # TODO: Implement efficient line rendering
-        pass
+        # Grid parameters
+        grid_size = 20  # 20x20 grid
+        grid_spacing = 1.0
+        half_size = grid_size * grid_spacing / 2.0
 
-    def _render_frustum(self, frustum_lines, vp_matrix):
+        # Grid color
+        grid_color = (0.3, 0.3, 0.35)  # Subtle gray
+
+        # Build grid lines
+        start_positions = []
+        end_positions = []
+
+        # Lines along X axis
+        for i in range(grid_size + 1):
+            z = -half_size + i * grid_spacing
+            start_positions.append((-half_size, 0, z))
+            end_positions.append((half_size, 0, z))
+
+        # Lines along Z axis
+        for i in range(grid_size + 1):
+            x = -half_size + i * grid_spacing
+            start_positions.append((x, 0, -half_size))
+            end_positions.append((x, 0, half_size))
+
+        # Draw all grid lines
+        self.draw_lines(start_positions, end_positions, grid_color, width=1.0, camera=camera)
+
+    def _render_frustum(self, projector, camera):
         """Render projector frustum"""
-        # TODO: Implement frustum rendering
-        pass
+        # Get frustum corners
+        near_plane = projector.near
+        far_plane = projector.far
+
+        # Get FOV and aspect ratio
+        fov_h = projector.fov  # Horizontal FOV in degrees
+        aspect = projector.aspect
+
+        # Calculate half dimensions at near and far planes
+        import math
+        half_h_near = near_plane * math.tan(math.radians(fov_h / 2))
+        half_v_near = half_h_near / aspect
+        half_h_far = far_plane * math.tan(math.radians(fov_h / 2))
+        half_v_far = half_h_far / aspect
+
+        # Frustum corners in projector local space
+        # Near plane
+        ntr = np.array([half_h_near, half_v_near, -near_plane])
+        ntl = np.array([-half_h_near, half_v_near, -near_plane])
+        nbr = np.array([half_h_near, -half_v_near, -near_plane])
+        nbl = np.array([-half_h_near, -half_v_near, -near_plane])
+
+        # Far plane
+        ftr = np.array([half_h_far, half_v_far, -far_plane])
+        ftl = np.array([-half_h_far, half_v_far, -far_plane])
+        fbr = np.array([half_h_far, -half_v_far, -far_plane])
+        fbl = np.array([-half_h_far, -half_v_far, -far_plane])
+
+        # Transform to world space
+        transform = projector.get_model_matrix()
+
+        def transform_point(p):
+            p_h = np.append(p, 1.0)
+            p_world = transform @ p_h
+            return tuple(p_world[:3])
+
+        ntr_w = transform_point(ntr)
+        ntl_w = transform_point(ntl)
+        nbr_w = transform_point(nbr)
+        nbl_w = transform_point(nbl)
+        ftr_w = transform_point(ftr)
+        ftl_w = transform_point(ftl)
+        fbr_w = transform_point(fbr)
+        fbl_w = transform_point(fbl)
+
+        # Build frustum lines
+        start_positions = []
+        end_positions = []
+
+        # Near plane edges
+        start_positions.extend([ntr_w, ntl_w, nbl_w, nbr_w])
+        end_positions.extend([ntl_w, nbl_w, nbr_w, ntr_w])
+
+        # Far plane edges
+        start_positions.extend([ftr_w, ftl_w, fbl_w, fbr_w])
+        end_positions.extend([ftl_w, fbl_w, fbr_w, ftr_w])
+
+        # Connecting edges
+        start_positions.extend([ntr_w, ntl_w, nbr_w, nbl_w])
+        end_positions.extend([ftr_w, ftl_w, fbr_w, fbl_w])
+
+        # Frustum color (yellow for active projector)
+        frustum_color = (1.0, 0.8, 0.0) if projector.active else (0.5, 0.5, 0.5)
+
+        # Draw frustum
+        self.draw_lines(start_positions, end_positions, frustum_color, width=2.0, camera=camera)
 
     def resize(self, width, height):
         """Handle window resize"""

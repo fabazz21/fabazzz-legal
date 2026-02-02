@@ -8,6 +8,7 @@ Features:
 - Timeline-based animation system
 - Photometric analysis
 - Professional UI with ImGui
+- Interactive 3D Gizmo System
 """
 
 import sys
@@ -22,6 +23,7 @@ from core.renderer import Renderer
 from core.scene import Scene
 from core.camera import Camera
 from ui.main_ui_tabbed import MainUITabbed as MainUI  # Using tabbed UI (HTML-style)
+from ui.gizmo import Gizmo
 from animation.timeline import Timeline
 from utils.history import History
 
@@ -62,6 +64,12 @@ class ProjectionMappingApp:
         # UI
         self.ui = MainUI(self)
 
+        # Gizmo system for 3D object manipulation
+        self.gizmo = Gizmo(self.ctx)
+        self.gizmo_mode = 'translate'
+        self.gizmo_active = True
+        self.key_pressed = {}  # Track key states to prevent repeats
+
         # Application state
         self.running = True
         self.delta_time = 0.0
@@ -73,6 +81,16 @@ class ProjectionMappingApp:
         print(f"   OpenGL Version: {self.ctx.info.get('GL_VERSION', 'Unknown')}")
         print(f"   Renderer: {self.ctx.info.get('GL_RENDERER', 'Unknown')}")
         print(f"   Vendor: {self.ctx.info.get('GL_VENDOR', 'Unknown')}")
+
+        # Print keyboard shortcuts
+        print("\n⌨️  KEYBOARD SHORTCUTS:")
+        print("  G = Toggle Gizmo On/Off")
+        print("  W = Translate Mode")
+        print("  E = Rotate Mode")
+        print("  R = Scale Mode")
+        print("  H = Toggle Helpers (Grid/Axes)")
+        print("  F = Toggle Frustums (Projectors)")
+        print()
 
         # Add default test scene
         self._create_test_scene()
@@ -92,6 +110,61 @@ class ProjectionMappingApp:
         projector = Projector('panasonic_pt_rq13k', 'panasonic_et_d3lew10', self.ctx, position=(0, 3, 8))
         self.scene.add_projector(projector)
         print(f"  ✅ Added test projector: {projector.name}")
+
+    def _handle_keyboard(self):
+        """Handle keyboard shortcuts"""
+        window = self.window.glfw_window
+
+        # G = Toggle Gizmo
+        if glfw.get_key(window, glfw.KEY_G) == glfw.PRESS:
+            if not self.key_pressed.get('G', False):
+                self.gizmo_active = not self.gizmo_active
+                print(f"[GIZMO] {'✅ Enabled' if self.gizmo_active else '❌ Disabled'}")
+                self.key_pressed['G'] = True
+        else:
+            self.key_pressed['G'] = False
+
+        # W = Translate Mode
+        if glfw.get_key(window, glfw.KEY_W) == glfw.PRESS:
+            if not self.key_pressed.get('W', False):
+                self.gizmo.set_mode('translate')
+                self.key_pressed['W'] = True
+        else:
+            self.key_pressed['W'] = False
+
+        # E = Rotate Mode
+        if glfw.get_key(window, glfw.KEY_E) == glfw.PRESS:
+            if not self.key_pressed.get('E', False):
+                self.gizmo.set_mode('rotate')
+                self.key_pressed['E'] = True
+        else:
+            self.key_pressed['E'] = False
+
+        # R = Scale Mode
+        if glfw.get_key(window, glfw.KEY_R) == glfw.PRESS:
+            if not self.key_pressed.get('R', False):
+                self.gizmo.set_mode('scale')
+                self.key_pressed['R'] = True
+        else:
+            self.key_pressed['R'] = False
+
+        # H = Toggle Helpers
+        if glfw.get_key(window, glfw.KEY_H) == glfw.PRESS:
+            if not self.key_pressed.get('H', False):
+                self.scene.show_helpers = not self.scene.show_helpers
+                print(f"[HELPERS] {'✅ Enabled' if self.scene.show_helpers else '❌ Disabled'}")
+                self.key_pressed['H'] = True
+        else:
+            self.key_pressed['H'] = False
+
+        # F = Toggle Frustums
+        if glfw.get_key(window, glfw.KEY_F) == glfw.PRESS:
+            if not self.key_pressed.get('F', False):
+                self.scene.show_frustums = not self.scene.show_frustums
+                print(f"[FRUSTUMS] {'✅ Enabled' if self.scene.show_frustums else '❌ Disabled'}")
+                self.key_pressed['F'] = True
+        else:
+            self.key_pressed['F'] = False
 
     def run(self):
         """Main application loop"""
@@ -114,6 +187,9 @@ class ProjectionMappingApp:
             # Handle ImGui input
             self.imgui_impl.process_inputs()
 
+            # Handle keyboard shortcuts
+            self._handle_keyboard()
+
             # Update systems
             self.update(self.delta_time)
 
@@ -130,8 +206,9 @@ class ProjectionMappingApp:
 
     def update(self, dt):
         """Update application state"""
-        # Update camera (only if ImGui doesn't want the mouse)
         io = imgui.get_io()
+
+        # Update camera (only if ImGui doesn't want the mouse)
         if not io.want_capture_mouse:
             self.camera.update(self.window, dt)
 
@@ -143,6 +220,28 @@ class ProjectionMappingApp:
 
         # Update scene
         self.scene.update(dt)
+
+        # Update gizmo if active and an object is selected
+        if self.gizmo_active and not io.want_capture_mouse:
+            # Get selected object or projector from UI
+            selected_target = None
+            if hasattr(self.ui, 'selected_object') and self.ui.selected_object is not None:
+                selected_target = self.ui.selected_object
+            elif hasattr(self.ui, 'selected_projector') and self.ui.selected_projector is not None:
+                selected_target = self.ui.selected_projector
+
+            # Set gizmo target
+            if selected_target:
+                self.gizmo.set_target(selected_target)
+
+                # Get mouse state
+                mouse_x, mouse_y = glfw.get_cursor_pos(self.window.glfw_window)
+                mouse_down = glfw.get_mouse_button(self.window.glfw_window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS
+
+                # Update gizmo
+                self.gizmo.update(self.camera, (mouse_x, mouse_y), mouse_down)
+            else:
+                self.gizmo.set_target(None)
 
     def render(self):
         """Render the scene"""
@@ -156,9 +255,16 @@ class ProjectionMappingApp:
         # Render main scene
         self.renderer.render_scene(self.scene, self.camera)
 
-        # Render helpers (frustums, gizmos, grid, etc.)
+        # Render helpers (frustums, grid, etc.)
         if self.scene.show_helpers:
             self.renderer.render_helpers(self.scene, self.camera)
+
+        # Render gizmo (on top of everything)
+        if self.gizmo_active and self.gizmo.target_object is not None:
+            # Disable depth test for gizmo (always on top)
+            self.ctx.disable(moderngl.DEPTH_TEST)
+            self.gizmo.render(self.renderer, self.camera)
+            self.ctx.enable(moderngl.DEPTH_TEST)
 
     def render_ui(self):
         """Render ImGui interface"""
@@ -177,6 +283,11 @@ class ProjectionMappingApp:
                    imgui.WINDOW_NO_SCROLLBAR)
         imgui.text(f"FPS: {self.fps:.1f}")
         imgui.text(f"Frame: {self.frame_count}")
+
+        # Gizmo status
+        if self.gizmo_active:
+            imgui.text(f"Gizmo: {self.gizmo.mode.upper()}")
+
         imgui.end()
 
         imgui.render()

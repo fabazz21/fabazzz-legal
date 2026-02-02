@@ -250,33 +250,150 @@ class Gizmo:
             elif self.active_axis == 'z':
                 self.target_object.scale[2] = max(0.1, self.drag_start_object_scale[2] + scale_delta)
 
-    def render(self, camera):
-        """Render gizmo"""
+    def render(self, renderer, camera):
+        """
+        Render gizmo
+
+        Args:
+            renderer: Renderer object (provides draw_line/draw_lines methods)
+            camera: Camera object (for MVP matrix)
+        """
         if self.target_object is None:
             return
 
         # Render based on current mode
         if self.mode == 'translate':
-            self._render_translate_gizmo(camera)
+            self._render_translate_gizmo(renderer, camera)
         elif self.mode == 'rotate':
-            self._render_rotate_gizmo(camera)
+            self._render_rotate_gizmo(renderer, camera)
         elif self.mode == 'scale':
-            self._render_scale_gizmo(camera)
+            self._render_scale_gizmo(renderer, camera)
 
-    def _render_translate_gizmo(self, camera):
+    def _render_translate_gizmo(self, renderer, camera):
         """Render translation arrows"""
-        # Would render the arrow geometry here
-        pass
+        if self.target_object is None:
+            return
 
-    def _render_rotate_gizmo(self, camera):
+        # Get gizmo position (target object position)
+        gizmo_pos = self.target_object.position
+
+        # Render each arrow
+        for axis, data in self.translate_geometry.items():
+            # Get color (highlight if hovered/active)
+            if self.active_axis == axis:
+                color = self.colors['active']
+            elif self.hovered_axis == axis:
+                color = self.colors['hover']
+            else:
+                color = data['color']
+
+            # Extract vertices (4 points = 2 lines for arrow shaft + head)
+            vertices = data['vertices']
+
+            # Build lines for this arrow
+            start_positions = []
+            end_positions = []
+
+            # Arrow is stored as [start1, end1, start2, end2]
+            # We need to transform to world space
+            for i in range(0, len(vertices), 6):  # 6 floats per pair (x,y,z start + x,y,z end)
+                start = vertices[i:i+3] + gizmo_pos
+                end = vertices[i+3:i+6] + gizmo_pos
+                start_positions.append(tuple(start))
+                end_positions.append(tuple(end))
+
+            # Draw arrow
+            renderer.draw_lines(start_positions, end_positions, color, width=3.0, camera=camera)
+
+    def _render_rotate_gizmo(self, renderer, camera):
         """Render rotation circles"""
-        # Would render the circle geometry here
-        pass
+        if self.target_object is None:
+            return
 
-    def _render_scale_gizmo(self, camera):
+        # Get gizmo position
+        gizmo_pos = self.target_object.position
+
+        # Render each circle
+        for axis, data in self.rotate_geometry.items():
+            # Get color
+            if self.active_axis == axis:
+                color = self.colors['active']
+            elif self.hovered_axis == axis:
+                color = self.colors['hover']
+            else:
+                color = data['color']
+
+            # Extract vertices (circle as line strip)
+            vertices = data['vertices']
+
+            # Build lines for circle (connecting consecutive points)
+            start_positions = []
+            end_positions = []
+
+            # Circle vertices: [x0, y0, z0, x1, y1, z1, ...]
+            for i in range(0, len(vertices) - 3, 3):  # -3 to avoid last point
+                start = vertices[i:i+3] + gizmo_pos
+                end = vertices[i+3:i+6] + gizmo_pos
+                start_positions.append(tuple(start))
+                end_positions.append(tuple(end))
+
+            # Draw circle
+            renderer.draw_lines(start_positions, end_positions, color, width=2.0, camera=camera)
+
+    def _render_scale_gizmo(self, renderer, camera):
         """Render scale cubes"""
-        # Would render the cube geometry here
-        pass
+        if self.target_object is None:
+            return
+
+        # Get gizmo position
+        gizmo_pos = self.target_object.position
+
+        # Render each cube (as wireframe box)
+        for axis, data in self.scale_geometry.items():
+            # Get color
+            if self.active_axis == axis:
+                color = self.colors['active']
+            elif self.hovered_axis == axis:
+                color = self.colors['hover']
+            else:
+                color = data['color']
+
+            # Cube center and size
+            cube_center = np.array(data['position']) + gizmo_pos
+            cube_size = data['size']
+            half = cube_size / 2.0
+
+            # Cube corners
+            corners = [
+                cube_center + np.array([-half, -half, -half]),
+                cube_center + np.array([half, -half, -half]),
+                cube_center + np.array([half, half, -half]),
+                cube_center + np.array([-half, half, -half]),
+                cube_center + np.array([-half, -half, half]),
+                cube_center + np.array([half, -half, half]),
+                cube_center + np.array([half, half, half]),
+                cube_center + np.array([-half, half, half]),
+            ]
+
+            # Cube edges (12 edges)
+            edges = [
+                (0, 1), (1, 2), (2, 3), (3, 0),  # Bottom face
+                (4, 5), (5, 6), (6, 7), (7, 4),  # Top face
+                (0, 4), (1, 5), (2, 6), (3, 7),  # Vertical edges
+            ]
+
+            start_positions = []
+            end_positions = []
+
+            for edge in edges:
+                start_positions.append(tuple(corners[edge[0]]))
+                end_positions.append(tuple(corners[edge[1]]))
+
+            # Draw cube wireframe
+            renderer.draw_lines(start_positions, end_positions, color, width=2.0, camera=camera)
+
+            # Also draw line from origin to cube center
+            renderer.draw_line(tuple(gizmo_pos), tuple(cube_center), color, width=3.0, camera=camera)
 
     def get_position(self):
         """Get gizmo position (same as target object)"""
