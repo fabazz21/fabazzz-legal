@@ -107,7 +107,7 @@ class ProjectionMappingApp:
         print(f"  ✅ Added test cube to scene")
 
         # Add a projector
-        projector = Projector('panasonic_pt_rq13k', 'panasonic_et_d3lew10', self.ctx, position=(0, 3, 8))
+        projector = Projector('PT-RQ13K', 'ET-D3LEW10', self.ctx, position=(0, 3, 8))
         self.scene.add_projector(projector)
         print(f"  ✅ Added test projector: {projector.name}")
 
