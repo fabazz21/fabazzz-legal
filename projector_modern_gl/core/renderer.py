@@ -423,7 +423,7 @@ class Renderer:
         far_plane = projector.far
 
         # Get FOV and aspect ratio
-        fov_h = projector.fov  # Horizontal FOV in degrees
+        fov_h = projector.get_fov()  # Horizontal FOV in degrees
         aspect = projector.aspect
 
         # Calculate half dimensions at near and far planes
