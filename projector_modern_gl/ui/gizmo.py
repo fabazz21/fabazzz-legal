@@ -19,7 +19,7 @@ class Gizmo:
         self.hovered_axis = None
         self.active_axis = None
 
-        # Visual settings
+        # Visual settings (LARGER for better visibility)
         self.size = 1.0
         self.line_thickness = 3.0
 
@@ -56,7 +56,7 @@ class Gizmo:
     def _create_arrows(self):
         """Create arrow geometry for translation"""
         arrows = {}
-        arrow_length = 2.0
+        arrow_length = 5.0  # LARGER arrows (was 2.0)
 
         # X axis arrow (Red)
         arrows['x'] = {
@@ -99,7 +99,7 @@ class Gizmo:
         """Create circle geometry for rotation"""
         circles = {}
         segments = 64
-        radius = 1.5
+        radius = 3.0  # LARGER radius (was 1.5)
 
         # X rotation circle (around YZ plane)
         vertices_x = []
@@ -139,8 +139,8 @@ class Gizmo:
     def _create_cubes(self):
         """Create cube geometry for scaling"""
         cubes = {}
-        cube_size = 0.2
-        offset = 2.0
+        cube_size = 0.4  # LARGER cubes (was 0.2)
+        offset = 4.0  # Further offset (was 2.0)
 
         # X axis cube
         cubes['x'] = {
@@ -302,8 +302,8 @@ class Gizmo:
                 start_positions.append(tuple(start))
                 end_positions.append(tuple(end))
 
-            # Draw arrow
-            renderer.draw_lines(start_positions, end_positions, color, width=3.0, camera=camera)
+            # Draw arrow with THICKER lines for visibility
+            renderer.draw_lines(start_positions, end_positions, color, width=5.0, camera=camera)
 
     def _render_rotate_gizmo(self, renderer, camera):
         """Render rotation circles"""
@@ -337,8 +337,8 @@ class Gizmo:
                 start_positions.append(tuple(start))
                 end_positions.append(tuple(end))
 
-            # Draw circle
-            renderer.draw_lines(start_positions, end_positions, color, width=2.0, camera=camera)
+            # Draw circle with THICKER lines
+            renderer.draw_lines(start_positions, end_positions, color, width=4.0, camera=camera)
 
     def _render_scale_gizmo(self, renderer, camera):
         """Render scale cubes"""
@@ -389,11 +389,11 @@ class Gizmo:
                 start_positions.append(tuple(corners[edge[0]]))
                 end_positions.append(tuple(corners[edge[1]]))
 
-            # Draw cube wireframe
-            renderer.draw_lines(start_positions, end_positions, color, width=2.0, camera=camera)
+            # Draw cube wireframe with THICKER lines
+            renderer.draw_lines(start_positions, end_positions, color, width=4.0, camera=camera)
 
             # Also draw line from origin to cube center
-            renderer.draw_line(tuple(gizmo_pos), tuple(cube_center), color, width=3.0, camera=camera)
+            renderer.draw_line(tuple(gizmo_pos), tuple(cube_center), color, width=5.0, camera=camera)
 
     def get_position(self):
         """Get gizmo position (same as target object)"""

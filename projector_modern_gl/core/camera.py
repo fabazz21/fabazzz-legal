@@ -19,8 +19,8 @@ class Camera:
         self.near = near
         self.far = far
 
-        # Camera position and target
-        self.position = Vector3([15.0, 10.0, 15.0])
+        # Camera position and target (CLOSER to origin for better visibility)
+        self.position = Vector3([8.0, 6.0, 8.0])
         self.target = Vector3([0.0, 0.0, 0.0])
         self.up = Vector3([0.0, 1.0, 0.0])
 
@@ -168,6 +168,27 @@ class Camera:
         self.update_position_from_orbit()
         self.update_matrices()
 
+    def focus_on_object(self, obj):
+        """Focus camera on an object"""
+        if obj is None:
+            return
+
+        # Set target to object position
+        self.target = Vector3([obj.position[0], obj.position[1], obj.position[2]])
+
+        # Set appropriate distance based on object size
+        # Default to 10 units if no scale info
+        if hasattr(obj, 'scale'):
+            max_scale = max(abs(obj.scale[0]), abs(obj.scale[1]), abs(obj.scale[2]))
+            self.distance = max(5.0, max_scale * 5.0)
+        else:
+            self.distance = 10.0
+
+        # Update position from orbit parameters
+        self.update_position_from_orbit()
+        self.update_matrices()
+        print(f"  🎯 Camera focused on {obj.name} at {self.target}")
+
     def get_forward(self):
         """Get forward direction vector"""
         forward = self.target - self.position
@@ -185,7 +206,7 @@ class Camera:
 
     def set_view(self, view_type):
         """Set camera to predefined view"""
-        distance = 20.0
+        distance = 10.0  # CLOSER distance for better visibility
         self.target = Vector3([0.0, 0.0, 0.0])
 
         if view_type == 'top':
@@ -214,7 +235,7 @@ class Camera:
             self.azimuth = 270.0
             self.elevation = 0.0
         elif view_type == 'perspective':
-            self.position = Vector3([15.0, 10.0, 15.0])
+            self.position = Vector3([8.0, 6.0, 8.0])  # CLOSER default
             self.up = Vector3([0.0, 1.0, 0.0])
             self.azimuth = 45.0
             self.elevation = 30.0

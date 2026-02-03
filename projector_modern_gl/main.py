@@ -17,6 +17,7 @@ import glfw
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 import numpy as np
+from OpenGL import GL
 
 from core.window import Window
 from core.renderer import Renderer
@@ -54,6 +55,12 @@ class ProjectionMappingApp:
         imgui.create_context()
         self.imgui_impl = GlfwRenderer(self.window.glfw_window)
 
+        # GL error clearing function (to prevent ModernGL errors affecting ImGui)
+        try:
+            self._gl_clear_errors = lambda: [GL.glGetError() for _ in range(10) if GL.glGetError() == 0]
+        except:
+            self._gl_clear_errors = lambda: None
+
         # Core systems
         self.scene = Scene(self.ctx)
         self.camera = Camera(width, height)
@@ -84,6 +91,11 @@ class ProjectionMappingApp:
 
         # Print keyboard shortcuts
         print("\n⌨️  KEYBOARD SHORTCUTS:")
+        print("  🖱️  Middle Mouse Button = Orbit Camera")
+        print("  🖱️  Mouse Scroll = Zoom")
+        print("  🖱️  Shift + Middle Mouse = Pan Camera")
+        print("  WASD = Move Camera")
+        print("  Q/E = Move Up/Down")
         print("  G = Toggle Gizmo On/Off")
         print("  W = Translate Mode")
         print("  E = Rotate Mode")
@@ -110,6 +122,10 @@ class ProjectionMappingApp:
         projector = Projector('PT-RQ13K', 'ET-D3LEW10', self.ctx, position=(0, 3, 8))
         self.scene.add_projector(projector)
         print(f"  ✅ Added test projector: {projector.name}")
+
+        # Auto-select the cube for immediate gizmo visibility
+        self.ui.selected_object = cube
+        print(f"  ✅ Auto-selected {cube.name}")
 
     def _handle_keyboard(self):
         """Handle keyboard shortcuts"""
@@ -221,8 +237,8 @@ class ProjectionMappingApp:
         # Update scene
         self.scene.update(dt)
 
-        # Update gizmo if active and an object is selected
-        if self.gizmo_active and not io.want_capture_mouse:
+        # Update gizmo if active
+        if self.gizmo_active:
             # Get selected object or projector from UI
             selected_target = None
             if hasattr(self.ui, 'selected_object') and self.ui.selected_object is not None:
@@ -230,18 +246,17 @@ class ProjectionMappingApp:
             elif hasattr(self.ui, 'selected_projector') and self.ui.selected_projector is not None:
                 selected_target = self.ui.selected_projector
 
-            # Set gizmo target
-            if selected_target:
-                self.gizmo.set_target(selected_target)
+            # Always set the target (so gizmo knows what to render)
+            self.gizmo.set_target(selected_target)
 
+            # Update gizmo INTERACTION (only if mouse is not over UI)
+            if selected_target and not io.want_capture_mouse:
                 # Get mouse state
                 mouse_x, mouse_y = glfw.get_cursor_pos(self.window.glfw_window)
                 mouse_down = glfw.get_mouse_button(self.window.glfw_window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS
 
                 # Update gizmo
                 self.gizmo.update(self.camera, (mouse_x, mouse_y), mouse_down)
-            else:
-                self.gizmo.set_target(None)
 
     def render(self):
         """Render the scene"""
@@ -265,6 +280,9 @@ class ProjectionMappingApp:
             self.ctx.disable(moderngl.DEPTH_TEST)
             self.gizmo.render(self.renderer, self.camera)
             self.ctx.enable(moderngl.DEPTH_TEST)
+
+        # Clean up OpenGL errors before UI rendering
+        self._gl_clear_errors()
 
     def render_ui(self):
         """Render ImGui interface"""
