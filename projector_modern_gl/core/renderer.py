@@ -210,14 +210,22 @@ class Renderer:
             [(vbo, '3f 3f', 'in_position', 'in_color')]
         )
 
-        # Set line width
-        self.ctx.line_width = width
+        # Set line width (often ignored by modern GPUs!)
+        self.ctx.line_width = max(1.0, width)
+
+        # Also try point size for debugging
+        self.ctx.point_size = max(10.0, width * 2.0)
+
+        print(f"[RENDERER] Drawing {len(start_positions)} lines with width={width}")
+        print(f"[RENDERER] First line: {start_positions[0]} -> {end_positions[0]}, color={colors[0]}")
 
         # Set MVP matrix
         self.line_shader['mvp'].write(mvp_matrix.astype('f4').tobytes())
 
         # Render lines
         vao.render(moderngl.LINES)
+
+        print(f"[RENDERER] ✅ Lines rendered successfully")
 
         # Cleanup
         vao.release()
