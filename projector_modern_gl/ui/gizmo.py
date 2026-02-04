@@ -42,6 +42,8 @@ class Gizmo:
         # Create geometry
         self._create_geometry()
 
+        print("[GIZMO] ✅ Initialized with LARGE arrows (5.0 units)")
+
     def _create_geometry(self):
         """Create gizmo geometry"""
         # Translation arrows
@@ -168,6 +170,8 @@ class Gizmo:
     def set_target(self, obj):
         """Set target object for gizmo"""
         self.target_object = obj
+        if obj:
+            print(f"[GIZMO] 🎯 Target set: {obj.name}")
 
     def set_mode(self, mode):
         """Set gizmo mode: 'translate', 'rotate', or 'scale'"""
@@ -259,7 +263,10 @@ class Gizmo:
             camera: Camera object (for MVP matrix)
         """
         if self.target_object is None:
+            print("[GIZMO] ⚠️ render() called but NO TARGET")
             return
+
+        print(f"[GIZMO] 🎨 Rendering {self.mode} gizmo for {self.target_object.name} at {self.target_object.position}")
 
         # Render based on current mode
         if self.mode == 'translate':
@@ -276,6 +283,7 @@ class Gizmo:
 
         # Get gizmo position (target object position)
         gizmo_pos = self.target_object.position
+        print(f"[GIZMO] Drawing translate arrows at {gizmo_pos}")
 
         # Render each arrow
         for axis, data in self.translate_geometry.items():
@@ -302,8 +310,14 @@ class Gizmo:
                 start_positions.append(tuple(start))
                 end_positions.append(tuple(end))
 
+            print(f"[GIZMO]   {axis} axis: {len(start_positions)} lines, color={color}")
+
             # Draw arrow with THICKER lines for visibility
-            renderer.draw_lines(start_positions, end_positions, color, width=5.0, camera=camera)
+            try:
+                renderer.draw_lines(start_positions, end_positions, color, width=5.0, camera=camera)
+                print(f"[GIZMO]   ✅ {axis} axis drawn successfully")
+            except Exception as e:
+                print(f"[GIZMO]   ❌ ERROR drawing {axis} axis: {e}")
 
     def _render_rotate_gizmo(self, renderer, camera):
         """Render rotation circles"""
