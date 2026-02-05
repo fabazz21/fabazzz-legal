@@ -1,0 +1,11 @@
+# Core rendering dependencies
+moderngl>=5.8.0
+pygame>=2.5.0
+numpy>=1.24.0
+pyrr>=0.10.3
+
+# UI dependencies
+imgui[pygame]>=2.0.0
+
+# Optional dependencies
+Pillow>=10.0.0  # For texture loading
