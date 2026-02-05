@@ -1,11 +1,16 @@
-# Core rendering dependencies
-moderngl>=5.8.0
-pygame>=2.5.0
-numpy>=1.24.0
+# Core rendering dependencies avec versions spécifiques
+moderngl>=5.8.0,<6.0.0
+pygame>=2.5.0,<3.0.0
+numpy>=1.24.0,<2.0.0
 pyrr>=0.10.3
 
 # UI dependencies
-imgui[pygame]>=2.0.0
+imgui[pygame]>=2.0.0,<3.0.0
 
 # Optional dependencies
-Pillow>=10.0.0  # For texture loading
+Pillow>=10.0.0,<11.0.0  # Pour le chargement de textures
+
+# Note pour Windows :
+# Si vous avez des erreurs de compilation, installez pygame en premier avec :
+# pip install pygame --only-binary :all:
+# Puis installez le reste avec : pip install -r requirements.txt
